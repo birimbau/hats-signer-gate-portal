@@ -12,10 +12,15 @@ import HatsSignerGateForm from './forms/HatsSignerGateForm/HatsSignerGateForm';
 
 const Deployers = () => {
   return (
-    <HStack justifyContent='space-evenly' className='py-2'>
-      <VStack>
+    <HStack
+      justifyContent='space-evenly'
+      alignItems='flex-start'
+      className='py-2'
+      gap='24px'
+    >
+      <VStack width='100%'>
         <h3>What to deploy?</h3>
-        <Accordion allowToggle>
+        <Accordion allowToggle width='100%'>
           <AccordionItem>
             <h2>
               <AccordionButton>
@@ -74,7 +79,7 @@ const Deployers = () => {
           </AccordionItem>
         </Accordion>
       </VStack>
-      <Box>
+      <Box minW='250px'>
         <h3>Result</h3>
         <div className='py-4'>
           <pre>result here</pre>
