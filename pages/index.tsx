@@ -5,8 +5,12 @@ import Head from 'next/head';
 import Content from '../components/Content/Content';
 import Header from '../components/Header/Header';
 import styles from '../styles/Home.module.css';
+import { useAccount } from 'wagmi';
 
 const Home: NextPage = () => {
+
+  const { address, isDisconnected,  } = useAccount()
+
   return (
     <div className={styles.container}>
       <Head>
@@ -21,7 +25,11 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <Header />
         <Box className='py-8'>
-          {/* TODO: Add a contiditon here to check if user has his wallet connected */}
+
+           {/* this is temporary */}
+          { isDisconnected ? <ConnectButton /> : <p>Connected as {address}</p>}
+
+          
           <Content />
         </Box>
       </main>
