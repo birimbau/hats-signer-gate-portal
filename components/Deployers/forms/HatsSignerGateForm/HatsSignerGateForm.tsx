@@ -32,7 +32,7 @@ const HatsSignerGateForm = () => {
 
   const { contractAddress, contractABI } = CONTRACTS.hatsSignerGateFactory;
   const { config } = usePrepareContractWrite({
-    address: contractAddress,
+    address: contractAddress as `0x${string}`,
     abi: contractABI,
     functionName: 'deployHatsSignerGate',
     args: [
