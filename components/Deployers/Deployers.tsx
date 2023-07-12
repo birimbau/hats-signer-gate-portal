@@ -8,9 +8,11 @@ import {
   HStack,
   VStack,
 } from '@chakra-ui/react';
+import HatsSignerGateAndSafeForm from './forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm';
 import HatsSignerGateForm from './forms/HatsSignerGateForm/HatsSignerGateForm';
+import MultiHatsSignerGateForm from './forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 
-export default function Deployers(){
+export default function Deployers() {
   return (
     <HStack
       justifyContent='space-evenly'
@@ -45,8 +47,7 @@ export default function Deployers(){
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod
+              <HatsSignerGateAndSafeForm />
             </AccordionPanel>
           </AccordionItem>
           <AccordionItem>
@@ -59,8 +60,7 @@ export default function Deployers(){
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod
+              <MultiHatsSignerGateForm />
             </AccordionPanel>
           </AccordionItem>
           <AccordionItem>
@@ -87,6 +87,4 @@ export default function Deployers(){
       </Box>
     </HStack>
   );
-};
-
-
+}

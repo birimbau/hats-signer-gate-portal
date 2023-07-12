@@ -1,321 +1,301 @@
-export const MultiHatSignerGateAbi =[
+export const MultiHatsSignerGateAbi = [
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "minThreshold", "type": "uint256" },
-      { "internalType": "uint256", "name": "safeOwnerCount", "type": "uint256" }
+    inputs: [
+      { internalType: 'uint256', name: 'minThreshold', type: 'uint256' },
+      { internalType: 'uint256', name: 'safeOwnerCount', type: 'uint256' },
     ],
-    "name": "BelowMinThreshold",
-    "type": "error"
+    name: 'BelowMinThreshold',
+    type: 'error',
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "guard", "type": "address" }
-    ],
-    "name": "CannotDisableThisGuard",
-    "type": "error"
+    inputs: [{ internalType: 'address', name: 'guard', type: 'address' }],
+    name: 'CannotDisableThisGuard',
+    type: 'error',
   },
-  { "inputs": [], "name": "FailedExecAddSigner", "type": "error" },
-  { "inputs": [], "name": "FailedExecChangeThreshold", "type": "error" },
-  { "inputs": [], "name": "FailedExecRemoveSigner", "type": "error" },
-  { "inputs": [], "name": "InvalidMinThreshold", "type": "error" },
+  { inputs: [], name: 'FailedExecAddSigner', type: 'error' },
+  { inputs: [], name: 'FailedExecChangeThreshold', type: 'error' },
+  { inputs: [], name: 'FailedExecRemoveSigner', type: 'error' },
+  { inputs: [], name: 'InvalidMinThreshold', type: 'error' },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "hatId", "type": "uint256" }
-    ],
-    "name": "InvalidSignerHat",
-    "type": "error"
+    inputs: [{ internalType: 'uint256', name: 'hatId', type: 'uint256' }],
+    name: 'InvalidSignerHat',
+    type: 'error',
   },
-  { "inputs": [], "name": "InvalidSigners", "type": "error" },
-  { "inputs": [], "name": "InvalidTargetThreshold", "type": "error" },
-  { "inputs": [], "name": "MaxSignersReached", "type": "error" },
-  { "inputs": [], "name": "NoInvalidSignersToReplace", "type": "error" },
-  { "inputs": [], "name": "NoReentryAllowed", "type": "error" },
-  { "inputs": [], "name": "NotCalledFromSafe", "type": "error" },
+  { inputs: [], name: 'InvalidSigners', type: 'error' },
+  { inputs: [], name: 'InvalidTargetThreshold', type: 'error' },
+  { inputs: [], name: 'MaxSignersReached', type: 'error' },
+  { inputs: [], name: 'NoInvalidSignersToReplace', type: 'error' },
+  { inputs: [], name: 'NoReentryAllowed', type: 'error' },
+  { inputs: [], name: 'NotCalledFromSafe', type: 'error' },
   {
-    "inputs": [
-      { "internalType": "address", "name": "user", "type": "address" }
-    ],
-    "name": "NotSignerHatWearer",
-    "type": "error"
+    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
+    name: 'NotSignerHatWearer',
+    type: 'error',
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "signer", "type": "address" }
-    ],
-    "name": "SignerAlreadyClaimed",
-    "type": "error"
+    inputs: [{ internalType: 'address', name: 'signer', type: 'address' }],
+    name: 'SignerAlreadyClaimed',
+    type: 'error',
   },
-  { "inputs": [], "name": "SignersCannotChangeModules", "type": "error" },
-  { "inputs": [], "name": "SignersCannotChangeOwners", "type": "error" },
-  { "inputs": [], "name": "SignersCannotChangeThreshold", "type": "error" },
+  { inputs: [], name: 'SignersCannotChangeModules', type: 'error' },
+  { inputs: [], name: 'SignersCannotChangeOwners', type: 'error' },
+  { inputs: [], name: 'SignersCannotChangeThreshold', type: 'error' },
   {
-    "inputs": [
-      { "internalType": "address", "name": "signer", "type": "address" }
-    ],
-    "name": "StillWearsSignerHat",
-    "type": "error"
+    inputs: [{ internalType: 'address', name: 'signer', type: 'address' }],
+    name: 'StillWearsSignerHat',
+    type: 'error',
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "version",
-        "type": "uint8"
-      }
+        indexed: false,
+        internalType: 'uint8',
+        name: 'version',
+        type: 'uint8',
+      },
     ],
-    "name": "Initialized",
-    "type": "event"
+    name: 'Initialized',
+    type: 'event',
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "ownerHat",
-        "type": "uint256"
+        indexed: true,
+        internalType: 'uint256',
+        name: 'ownerHat',
+        type: 'uint256',
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "hatsAddress",
-        "type": "address"
-      }
-    ],
-    "name": "OwnerHatUpdated",
-    "type": "event"
-  },
-  { "stateMutability": "nonpayable", "type": "fallback" },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "_newSignerHats",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "addSignerHats",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" },
-      { "internalType": "bool", "name": "", "type": "bool" }
-    ],
-    "name": "checkAfterExecution",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "to", "type": "address" },
-      { "internalType": "uint256", "name": "value", "type": "uint256" },
-      { "internalType": "bytes", "name": "data", "type": "bytes" },
-      {
-        "internalType": "enum Enum.Operation",
-        "name": "operation",
-        "type": "uint8"
+        indexed: true,
+        internalType: 'address',
+        name: 'hatsAddress',
+        type: 'address',
       },
-      { "internalType": "uint256", "name": "safeTxGas", "type": "uint256" },
-      { "internalType": "uint256", "name": "baseGas", "type": "uint256" },
-      { "internalType": "uint256", "name": "gasPrice", "type": "uint256" },
-      { "internalType": "address", "name": "gasToken", "type": "address" },
+    ],
+    name: 'OwnerHatUpdated',
+    type: 'event',
+  },
+  { stateMutability: 'nonpayable', type: 'fallback' },
+  {
+    inputs: [
       {
-        "internalType": "address payable",
-        "name": "refundReceiver",
-        "type": "address"
+        internalType: 'uint256[]',
+        name: '_newSignerHats',
+        type: 'uint256[]',
       },
-      { "internalType": "bytes", "name": "signatures", "type": "bytes" },
-      { "internalType": "address", "name": "", "type": "address" }
     ],
-    "name": "checkTransaction",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'addSignerHats',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "_hatId", "type": "uint256" }
+    inputs: [
+      { internalType: 'bytes32', name: '', type: 'bytes32' },
+      { internalType: 'bool', name: '', type: 'bool' },
     ],
-    "name": "claimSigner",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'checkAfterExecution',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "claimedSignerHats",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "dataHash", "type": "bytes32" },
-      { "internalType": "bytes", "name": "signatures", "type": "bytes" },
-      { "internalType": "uint256", "name": "sigCount", "type": "uint256" }
-    ],
-    "name": "countValidSignatures",
-    "outputs": [
-      { "internalType": "uint256", "name": "validSigCount", "type": "uint256" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getHatsContract",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_account", "type": "address" }
-    ],
-    "name": "isValidSigner",
-    "outputs": [{ "internalType": "bool", "name": "valid", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_hatId", "type": "uint256" }
-    ],
-    "name": "isValidSignerHat",
-    "outputs": [{ "internalType": "bool", "name": "valid", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "maxSigners",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "minThreshold",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ownerHat",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "reconcileSignerCount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_signer", "type": "address" }
-    ],
-    "name": "removeSigner",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "safe",
-    "outputs": [
-      { "internalType": "contract IGnosisSafe", "name": "", "type": "address" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_minThreshold", "type": "uint256" }
-    ],
-    "name": "setMinThreshold",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_ownerHat", "type": "uint256" },
-      { "internalType": "address", "name": "_hatsContract", "type": "address" }
-    ],
-    "name": "setOwnerHat",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    inputs: [
+      { internalType: 'address', name: 'to', type: 'address' },
+      { internalType: 'uint256', name: 'value', type: 'uint256' },
+      { internalType: 'bytes', name: 'data', type: 'bytes' },
       {
-        "internalType": "uint256",
-        "name": "_targetThreshold",
-        "type": "uint256"
-      }
+        internalType: 'enum Enum.Operation',
+        name: 'operation',
+        type: 'uint8',
+      },
+      { internalType: 'uint256', name: 'safeTxGas', type: 'uint256' },
+      { internalType: 'uint256', name: 'baseGas', type: 'uint256' },
+      { internalType: 'uint256', name: 'gasPrice', type: 'uint256' },
+      { internalType: 'address', name: 'gasToken', type: 'address' },
+      {
+        internalType: 'address payable',
+        name: 'refundReceiver',
+        type: 'address',
+      },
+      { internalType: 'bytes', name: 'signatures', type: 'bytes' },
+      { internalType: 'address', name: '', type: 'address' },
     ],
-    "name": "setTargetThreshold",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    name: 'checkTransaction',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    "inputs": [
-      { "internalType": "bytes", "name": "initializeParams", "type": "bytes" }
+    inputs: [{ internalType: 'uint256', name: '_hatId', type: 'uint256' }],
+    name: 'claimSigner',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: '', type: 'address' }],
+    name: 'claimedSignerHats',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'bytes32', name: 'dataHash', type: 'bytes32' },
+      { internalType: 'bytes', name: 'signatures', type: 'bytes' },
+      { internalType: 'uint256', name: 'sigCount', type: 'uint256' },
     ],
-    "name": "setUp",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }
+    name: 'countValidSignatures',
+    outputs: [
+      { internalType: 'uint256', name: 'validSigCount', type: 'uint256' },
     ],
-    "name": "supportsInterface",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "pure",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "targetThreshold",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [],
+    name: 'getHatsContract',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "validSignerCount",
-    "outputs": [
-      { "internalType": "uint256", "name": "signerCount", "type": "uint256" }
+    inputs: [{ internalType: 'address', name: '_account', type: 'address' }],
+    name: 'isValidSigner',
+    outputs: [{ internalType: 'bool', name: 'valid', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '_hatId', type: 'uint256' }],
+    name: 'isValidSignerHat',
+    outputs: [{ internalType: 'bool', name: 'valid', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxSigners',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'minThreshold',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'ownerHat',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'reconcileSignerCount',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: '_signer', type: 'address' }],
+    name: 'removeSigner',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'safe',
+    outputs: [
+      { internalType: 'contract IGnosisSafe', name: '', type: 'address' },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: 'view',
+    type: 'function',
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "validSignerHats",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
+    inputs: [
+      { internalType: 'uint256', name: '_minThreshold', type: 'uint256' },
+    ],
+    name: 'setMinThreshold',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    "inputs": [],
-    "name": "version",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
-  }
-]
+    inputs: [
+      { internalType: 'uint256', name: '_ownerHat', type: 'uint256' },
+      { internalType: 'address', name: '_hatsContract', type: 'address' },
+    ],
+    name: 'setOwnerHat',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_targetThreshold',
+        type: 'uint256',
+      },
+    ],
+    name: 'setTargetThreshold',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'bytes', name: 'initializeParams', type: 'bytes' },
+    ],
+    name: 'setUp',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
+    name: 'supportsInterface',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'targetThreshold',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'validSignerCount',
+    outputs: [
+      { internalType: 'uint256', name: 'signerCount', type: 'uint256' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    name: 'validSignerHats',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'version',
+    outputs: [{ internalType: 'string', name: '', type: 'string' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];

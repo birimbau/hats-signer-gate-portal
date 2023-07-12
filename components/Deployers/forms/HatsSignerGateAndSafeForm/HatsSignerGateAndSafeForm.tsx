@@ -2,23 +2,24 @@ import { Button, Input, VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { useState } from 'react';
 import { useAccount, useContractWrite } from 'wagmi';
-import { useDeployHSG } from '../../../../utils/hooks/HatsSignerGateFactory';
+import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 
-interface useDeployHSGargs {
+interface useDeployHSGwSargs {
   _ownerHatId: bigint;
   _signerHatId: bigint;
-  _safe: AbiTypeToPrimitiveType<'address'>;
   _minThreshold: bigint;
   _targetThreshold: bigint;
   _maxSigners: bigint;
 }
 
-export default function HatsSignerGateForm() {
-  const { address, isConnected } = useAccount();
+export default function HatsSignerGateAndSafeForm() {
+  const { isConnected } = useAccount();
 
-  const [args, SetArgs] = useState<useDeployHSGargs>({} as useDeployHSGargs);
+  const [args, SetArgs] = useState<useDeployHSGwSargs>(
+    {} as useDeployHSGwSargs
+  );
 
-  const { config } = useDeployHSG(args as useDeployHSGargs);
+  const { config } = useDeployHSGwSafe(args as useDeployHSGwSargs);
   const { data, isLoading, isSuccess, isError, write } =
     useContractWrite(config);
 
@@ -34,15 +35,6 @@ export default function HatsSignerGateForm() {
         placeholder='Signer Hat ID'
         onChange={(e) =>
           SetArgs({ ...args, _signerHatId: BigInt(e.target.value) })
-        }
-      />
-      <Input
-        placeholder='Safe Address'
-        onChange={(e) =>
-          SetArgs({
-            ...args,
-            _safe: e.target.value as AbiTypeToPrimitiveType<'address'>,
-          })
         }
       />
       <Input
