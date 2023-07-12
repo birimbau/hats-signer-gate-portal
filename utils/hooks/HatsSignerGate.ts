@@ -272,7 +272,7 @@ const useTargetThreshold = () =>
 
 const useValidSignerCount = () =>
   useContractRead({
-    abi: CONTRACTS.hatsSignerGateFactory.contractabi: HatsSignerGateAbi,
+    abi: HatsSignerGateAbi,
     address: contract,
     functionName: "validSignerCount",
     
@@ -286,7 +286,7 @@ const useValidSignerCount = () =>
 
 const useVersion = () =>
   useContractRead({
-    abi: CONTRACTS.hatsSignerGateFactory.contractabi: HatsSignerGateAbi,
+    abi: HatsSignerGateAbi,
     address: contract,
     functionName: "version",
     
