@@ -6,10 +6,13 @@ import Content from '../components/Content/Content';
 import Header from '../components/Header/Header';
 import styles from '../styles/Home.module.css';
 import { useAccount } from 'wagmi';
+import { useEffect, useState } from 'react';
 
 const Home: NextPage = () => {
 
-  const { address, isDisconnected,  } = useAccount()
+ 
+
+ 
 
   return (
     <div className={styles.container}>
@@ -25,11 +28,7 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <Header />
         <Box className='py-8'>
-
-           {/* this is temporary */}
-          { isDisconnected ? <ConnectButton /> : <p>Connected as {address}</p>}
-
-          
+            
           <Content />
         </Box>
       </main>

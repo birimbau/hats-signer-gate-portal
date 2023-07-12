@@ -1,139 +1,36 @@
 import {
   Button,
-  FormControl,
-  FormLabel,
   Input,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
-import { useFormik } from 'formik';
+import { AbiTypeToPrimitiveType } from 'abitype';
+import { useState } from 'react';
 import {
-  useAccount,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
+  useAccount, useContractWrite,
 } from 'wagmi';
-import { CONTRACTS } from '../../../../utils/constants';
+import { useDeployHSG } from '../../../../utils/hooks/HatsSignerGateFactory';
 
-const HatsSignerGateForm = () => {
-  const { address, connector, isConnected } = useAccount();
-  const formik = useFormik({
-    initialValues: {
-      ownerHatId: '1',
-      signersHatId: '1',
-      safe: address,
-      minThreshold: '1',
-      targetThreshold: '1',
-      maxSigners: '1',
-    },
-    onSubmit: (values) => {
-      write?.();
-    },
-  });
 
-  const { contractAddress, contractABI } = CONTRACTS.hatsSignerGateFactory;
-  const { config } = usePrepareContractWrite({
-    address: contractAddress as `0x${string}`,
-    abi: contractABI,
-    functionName: 'deployHatsSignerGate',
-    args: [
-      parseInt(formik.values.ownerHatId || '0'),
-      parseInt(formik.values.signersHatId || '0'),
-      formik.values.safe,
-      parseInt(formik.values.minThreshold || '0'),
-      parseInt(formik.values.targetThreshold || '0'),
-      parseInt(formik.values.maxSigners || '0'),
-    ],
-    enabled: false,
-  });
+interface useDeployHSGargs {_ownerHatId: bigint, _signerHatId: bigint, _safe: AbiTypeToPrimitiveType<'address'>, _minThreshold:bigint, _targetThreshold: bigint, _maxSigners: bigint}
 
-  const { data, error, isError, write } = useContractWrite(config);
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  });
+
+export default function HatsSignerGateForm() {
+  const { address, isConnected } = useAccount();
+  
+const [args, SetArgs] = useState<useDeployHSGargs>({} as useDeployHSGargs);
+
+const { config } = useDeployHSG(args as useDeployHSGargs);
+const { data, isLoading, isSuccess,isError,  write } = useContractWrite(config)
+
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          write?.();
-        }}
-        className='w-full'
-      >
-        <VStack spacing={4} align='flex-start'>
-          <FormControl>
-            <FormLabel htmlFor='email'>Owner Hat Id</FormLabel>
-            <Input
-              id='ownerHatId'
-              name='ownerHatId'
-              type='text'
-              variant='filled'
-              onChange={formik.handleChange}
-              value={formik.values.ownerHatId}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor='email'>Signer Hat Id</FormLabel>
-            <Input
-              id='signersHatId'
-              name='signersHatId'
-              type='text'
-              variant='filled'
-              onChange={formik.handleChange}
-              value={formik.values.signersHatId}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor='email'>Safe</FormLabel>
-            <Input
-              id='safe'
-              name='safe'
-              type='text'
-              variant='filled'
-              onChange={formik.handleChange}
-              value={formik.values.safe}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor='email'>Min Threshold</FormLabel>
-            <Input
-              id='minThreshold'
-              name='minThreshold'
-              type='text'
-              variant='filled'
-              onChange={formik.handleChange}
-              value={formik.values.minThreshold}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor='email'>Target Threshold</FormLabel>
-            <Input
-              id='targetThreshold'
-              name='targetThreshold'
-              type='text'
-              variant='filled'
-              onChange={formik.handleChange}
-              value={formik.values.targetThreshold}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor='email'>Max Signers</FormLabel>
-            <Input
-              id='maxSigners'
-              name='maxSigners'
-              type='string'
-              variant='filled'
-              onChange={formik.handleChange}
-              value={formik.values.maxSigners}
-            />
-          </FormControl>
-          <Button type='submit' width='full' isDisabled={isLoading}>
-            Deploy
-          </Button>
-        </VStack>
-      </form>
-    </>
-  );
-};
-
-export default HatsSignerGateForm;
+    <VStack width='100%'>
+      <Input placeholder='Owner Hat ID' onChange={(e) => SetArgs({...args, _ownerHatId: BigInt(e.target.value)})} />
+      <Input placeholder='Signer Hat ID' onChange={(e) => SetArgs({...args, _signerHatId: BigInt(e.target.value)})} />
+      <Input placeholder='Safe Address' onChange={(e) => SetArgs({...args, _safe: e.target.value as AbiTypeToPrimitiveType<'address'>})} />
+      <Input placeholder='Minimum Threshold' onChange={(e) => SetArgs({...args, _minThreshold: BigInt(e.target.value)})} />
+      <Input placeholder='Target Threshold' onChange={(e) => SetArgs({...args, _targetThreshold: BigInt(e.target.value)})} />
+      <Input placeholder='Maximum Signers' onChange={(e) => SetArgs({...args, _maxSigners: BigInt(e.target.value)})} />
+      <Button disabled={!isConnected || !write} onClick={() => write?.()} width={'100%'} variant={'solid'}>Deploy</Button>
+      </VStack>
+  )};

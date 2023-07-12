@@ -1,4 +1,4 @@
-[
+export const HatsSignerGateAbi =[
   {
     "inputs": [
       { "internalType": "uint256", "name": "minThreshold", "type": "uint256" },
@@ -18,13 +18,6 @@
   { "inputs": [], "name": "FailedExecChangeThreshold", "type": "error" },
   { "inputs": [], "name": "FailedExecRemoveSigner", "type": "error" },
   { "inputs": [], "name": "InvalidMinThreshold", "type": "error" },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "hatId", "type": "uint256" }
-    ],
-    "name": "InvalidSignerHat",
-    "type": "error"
-  },
   { "inputs": [], "name": "InvalidSigners", "type": "error" },
   { "inputs": [], "name": "InvalidTargetThreshold", "type": "error" },
   { "inputs": [], "name": "MaxSignersReached", "type": "error" },
@@ -90,19 +83,6 @@
   { "stateMutability": "nonpayable", "type": "fallback" },
   {
     "inputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "_newSignerHats",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "addSignerHats",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "bytes32", "name": "", "type": "bytes32" },
       { "internalType": "bool", "name": "", "type": "bool" }
     ],
@@ -139,19 +119,10 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "_hatId", "type": "uint256" }
-    ],
+    "inputs": [],
     "name": "claimSigner",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "claimedSignerHats",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -179,15 +150,6 @@
       { "internalType": "address", "name": "_account", "type": "address" }
     ],
     "name": "isValidSigner",
-    "outputs": [{ "internalType": "bool", "name": "valid", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_hatId", "type": "uint256" }
-    ],
-    "name": "isValidSignerHat",
     "outputs": [{ "internalType": "bool", "name": "valid", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
@@ -280,6 +242,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "signersHatId",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }
     ],
@@ -301,13 +270,6 @@
     "outputs": [
       { "internalType": "uint256", "name": "signerCount", "type": "uint256" }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "validSignerHats",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },

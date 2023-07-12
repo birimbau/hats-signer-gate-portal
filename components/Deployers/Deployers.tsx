@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import HatsSignerGateForm from './forms/HatsSignerGateForm/HatsSignerGateForm';
 
-const Deployers = () => {
+export default function Deployers(){
   return (
     <HStack
       justifyContent='space-evenly'
@@ -89,4 +89,4 @@ const Deployers = () => {
   );
 };
 
-export default Deployers;
+

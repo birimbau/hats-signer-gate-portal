@@ -1,247 +1,302 @@
-import { useContractRead, useContractWrite } from 'wagmi';
-import { CONTRACTS } from '../constants';
-
+import { Address, useContractRead, usePrepareContractWrite } from "wagmi";
+import { CONTRACTS } from "../constants";
+import { goerli } from "wagmi/chains";
+import { HatsSignerGateAbi } from "../abi/HatsSignerGate/HatsSignerGate";
 // Hooks for write functions for the HatsSignerGate contract
+const contract = process.env.HATS_SIGNER_GATE_CONTRACT_ADDRESS as Address || '0x844b3c7781338d3308eb8d64727033893fce1432';
+const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
-const useCheckAfterExecution = (args: { bytes32: string; bool: boolean }) => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'checkAfterExecution',
+
+const useCheckAfterExecution = (args: { bytes32: string; bool: boolean }) =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "checkAfterExecution",
     args: Array.from(Object.values(args)),
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
 const useCheckTransaction = (args: {
   to: string;
-  value: BigInt;
+  value: bigint;
   data: string;
-  operation: number;
-  safeTxGas: BigInt;
-  baseGas: BigInt;
-  gasPrice: BigInt;
+  operation: bigint;
+  safeTxGas: bigint;
+  baseGas: bigint;
+  gasPrice: bigint;
   gasToken: string;
   refundReceiver: string;
   signatures: string;
   address: string;
-}) => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'checkTransaction',
+}) =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "checkTransaction",
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
-const useClaimSigner = () => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'claimSigner',
-    args: [],
+const useClaimSigner = () =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "claimSigner",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
-const useReconsileSignerCount = () => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'reconsileSignerCount',
-    args: [],
+const useReconsileSignerCount = () =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "reconsileSignerCount",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
-const useRemoveSigner = (args: { _signer: string }) => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'removeSigner',
+const useRemoveSigner = (args: { _signer: string }) =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "removeSigner",
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
-const useSetMinThreshold = (args: { _minThreshold: number }) => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'setMinThreshold',
+const useSetMinThreshold = (args: { _minThreshold: bigint }) =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "setMinThreshold",
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
-const useSetOwnerHat = (args: { _ownerHat: BigInt; _hatsContract: string }) => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'setOwnerHat',
+const useSetOwnerHat = (args: { _ownerHat: bigint; _hatsContract: string }) =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "setOwnerHat",
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
-const useSetTargetThreshold = (args: { _targetThreshold: BigInt }) => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'setTargetThreshold',
+const useSetTargetThreshold = (args: { _targetThreshold: bigint }) =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "setTargetThreshold",
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
-const useSetup = (args: { setUp: BigInt; initializeParams: string }) => {
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'setup',
+const useSetup = (args: { setUp: bigint; initializeParams: string }) =>
+  usePrepareContractWrite({
+    chainId,
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "setup",
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-  return { data, isLoading, isSuccess, isError, write };
-};
 
 // Hooks for read functions for the HatsSignerGate contract
 
 const useCountValidSignatures = (args: {
   dataHash: string;
   signature: string;
-  sigCount: BigInt;
-}) => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGateFactory.contractABI,
-    address: CONTRACTS.hatsSignerGateFactory.contractAddress as `0x${string}`,
-    functionName: 'countValidSignatures',
+  sigCount: bigint;
+}) =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "countValidSignatures",
+    args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+const useGetHatsContract = () =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "getHatsContract",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+const useIsValidSigner = (args: { _account: string }) =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "isValidSigner",
     args: Array.from(Object.values(args)),
   });
 
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useGetHatsContract = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'getHatsContract',
-    args: [],
+const useMaxSigners = () =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "maxSigners",
+    
   });
 
-  return { data, isLoading, isSuccess, isError };
-};
+const useMinThreshold = () =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "minThreshold",
+    
+  });
 
-const useIsValidSigner = (args: { _account: string }) => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'isValidSigner',
+const useOwnerHat = () =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "ownerHat",
+    
+  });
+
+const useSafe = () =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "safe",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+const useSignersHatId = () =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "signersHatId",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+const useSupportsInterface = (args: { interfaceId: string }) =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "supportsInterface",
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useMaxSigners = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'maxSigners',
-    args: [],
+const useTargetThreshold = () =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "targetThreshold",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useMinThreshold = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'minThreshold',
-    args: [],
+const useValidSignerCount = () =>
+  useContractRead({
+    abi: CONTRACTS.hatsSignerGateFactory.contractabi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "validSignerCount",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useOwnerHat = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'ownerHat',
-    args: [],
+const useVersion = () =>
+  useContractRead({
+    abi: CONTRACTS.hatsSignerGateFactory.contractabi: HatsSignerGateAbi,
+    address: contract,
+    functionName: "version",
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
-
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useSafe = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'safe',
-    args: [],
-  });
-
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useSignersHatId = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'signersHatId',
-    args: [],
-  });
-
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useSupportsInterface = (args: { interfaceId: string }) => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'supportsInterface',
-    args: Array.from(Object.values(args)),
-  });
-
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useTargetThreshold = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGate.contractABI,
-    address: CONTRACTS.hatsSignerGate.contractAddress as `0x${string}`,
-    functionName: 'targetThreshold',
-    args: [],
-  });
-
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useValidSignerCount = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGateFactory.contractABI,
-    address: CONTRACTS.hatsSignerGateFactory.contractAddress as `0x${string}`,
-    functionName: 'validSignerCount',
-    args: [],
-  });
-
-  return { data, isLoading, isSuccess, isError };
-};
-
-const useVersion = () => {
-  const { data, isLoading, isSuccess, isError } = useContractRead({
-    abi: CONTRACTS.hatsSignerGateFactory.contractABI,
-    address: CONTRACTS.hatsSignerGateFactory.contractAddress as `0x${string}`,
-    functionName: 'version',
-    args: [],
-  });
-
-  return { data, isLoading, isSuccess, isError };
-};
 
 export {
   useCheckAfterExecution,
