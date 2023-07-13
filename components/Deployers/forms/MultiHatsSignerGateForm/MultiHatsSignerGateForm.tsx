@@ -2,9 +2,9 @@ import { Button, Input, VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { useState } from 'react';
 import { useAccount, useContractWrite } from 'wagmi';
-import { useDeployHSG } from '../../../../utils/hooks/HatsSignerGateFactory';
+import { useDeployMultiHatSG } from '../../../../utils/hooks/HatsSignerGateFactory';
 
-interface useDeployHSGargs {
+interface useDeployMHSGargs {
   _ownerHatId: bigint;
   _signerHatId: bigint;
   _safe: AbiTypeToPrimitiveType<'address'>;
@@ -13,12 +13,12 @@ interface useDeployHSGargs {
   _maxSigners: bigint;
 }
 
-export default function HatsSignerGateForm() {
-  const { address, isConnected } = useAccount();
+export default function MultiHatsSignerGateForm() {
+  const { isConnected } = useAccount();
 
-  const [args, SetArgs] = useState<useDeployHSGargs>({} as useDeployHSGargs);
+  const [args, SetArgs] = useState<useDeployMHSGargs>({} as useDeployMHSGargs);
 
-  const { config } = useDeployHSG(args as useDeployHSGargs);
+  const { config } = useDeployMultiHatSG(args as useDeployMHSGargs);
   const { data, isLoading, isSuccess, isError, write } =
     useContractWrite(config);
 

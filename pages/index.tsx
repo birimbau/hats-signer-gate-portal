@@ -9,11 +9,6 @@ import { useAccount } from 'wagmi';
 import { useEffect, useState } from 'react';
 
 const Home: NextPage = () => {
-
- 
-
- 
-
   return (
     <div className={styles.container}>
       <Head>
@@ -28,7 +23,6 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <Header />
         <Box className='py-8'>
-            
           <Content />
         </Box>
       </main>
