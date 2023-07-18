@@ -1,11 +1,12 @@
 import { Address, useContractRead, usePrepareContractWrite } from 'wagmi';
 import { HatsSignerGateAbi } from '../abi/HatsSignerGate/HatsSignerGate';
 import { AbiTypeToPrimitiveType } from 'abitype';
+import { CONTRACTS } from '../constants';
 
 // Hooks for write functions for the HatsSignerGate contract
 const contract =
-  (process.env.HATS_SIGNER_GATE_CONTRACT_ADDRESS as Address) ||
-  '0x844b3c7781338d3308eb8d64727033893fce1432';
+  (CONTRACTS.hatsSignerGate.contractAddress ||
+  '0x844b3c7781338d3308eb8d64727033893fce1432') as AbiTypeToPrimitiveType<'address'>;
 const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 const useCheckAfterExecution = (args: {

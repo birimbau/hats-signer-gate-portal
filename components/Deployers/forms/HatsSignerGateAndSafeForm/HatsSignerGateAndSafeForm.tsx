@@ -19,7 +19,7 @@ export default function HatsSignerGateAndSafeForm() {
     {} as useDeployHSGwSargs
   );
 
-  const { config } = useDeployHSGwSafe(args as useDeployHSGwSargs);
+  const { config } = useDeployHSGwSafe(args);
   const { data, isLoading, isSuccess, isError, write } =
     useContractWrite(config);
 
