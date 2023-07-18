@@ -24,7 +24,9 @@ const MainContent = () => {
           background='#EDF8FE'
           padding='16px 24px'
         >
-          <HeaderOne />
+          <S.CellContent>
+            <HeaderOne />
+          </S.CellContent>
         </GridItem>
         <GridItem
           rowSpan={1}
@@ -44,7 +46,9 @@ const MainContent = () => {
           background='#F6FCFF'
           padding='24px 24px'
         >
-          <ContentOne />
+          <S.CellContent>
+            <ContentOne />
+          </S.CellContent>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1} background='#F0FCFD'>
           {/* TODO: ContentTwo will be here -> will be responsible for the form itself */}

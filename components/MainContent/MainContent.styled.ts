@@ -12,3 +12,9 @@ export const MainContentStyled = styled(Flex)`
     background-image: url('/background.svg');
   }
 `;
+
+export const CellContent = styled.div`
+  position: relative;
+  z-index: 1;
+  height: 100%;
+`;
