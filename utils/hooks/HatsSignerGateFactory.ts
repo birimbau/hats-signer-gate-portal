@@ -1,23 +1,21 @@
-import { useContractRead, usePrepareContractWrite, Address } from 'wagmi';
-import { CONTRACTS } from '../constants';
-import { goerli } from 'wagmi/chains';
-import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { Abi } from 'abitype';
 import { AbiTypeToPrimitiveType } from 'abitype';
+import { useContractRead, usePrepareContractWrite } from 'wagmi';
+import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSignerGateFactory';
+import { CONTRACTS } from '../constants';
 const contract =
-  (process.env.HATS_SIGNER_GATE_FACTORY_CONTRACT_ADDRESS as Address) ||
-  '0x50dbb35b81c94b8d1a0ff0cb4aa218ff30166187';
+  (CONTRACTS.hatsSignerGateFactory.contractAddress  ||
+  '0x50dbb35b81c94b8d1a0ff0cb4aa218ff30166187') as AbiTypeToPrimitiveType<'address'>;
 const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 // Hooks for write functions for the HatsSignerGateFactory contract
 
 const useDeployHSG = (args: {
-  _ownerHatId: bigint;
-  _signerHatId: bigint;
-  _minThreshold: bigint;
-  _targetThreshold: bigint;
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _safe: AbiTypeToPrimitiveType<'address'>;
-  _maxSigners: bigint;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }) =>
   usePrepareContractWrite({
     chainId,
@@ -34,17 +32,17 @@ const useDeployHSG = (args: {
   });
 
 const useDeployHSGwSafe = (args: {
-  _ownerHatId: bigint;
-  _signerHatId: bigint;
-  _minThreshold: bigint;
-  _targetThreshold: bigint;
-  _maxSigners: bigint;
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'deployHatsSignerGateWithSafe',
+    functionName: 'deployHatsSignerGateAndSafe',
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -55,12 +53,12 @@ const useDeployHSGwSafe = (args: {
   });
 
 const useDeployMultiHatSG = (args: {
-  _ownerHatId: bigint;
-  _signerHatId: bigint;
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
   _safe: AbiTypeToPrimitiveType<'address'>;
-  _minThreshold: bigint;
-  _targetThreshold: bigint;
-  _maxSigners: bigint;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }) =>
   usePrepareContractWrite({
     chainId,
@@ -77,11 +75,11 @@ const useDeployMultiHatSG = (args: {
   });
 
 const useDeployMultiHatSGwSafe = (args: {
-  _ownerHatId: bigint;
-  _signerHatId: bigint;
-  _minThreshold: bigint;
-  _targetThreshold: bigint;
-  _maxSigners: bigint;
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }) =>
   usePrepareContractWrite({
     chainId,
@@ -115,7 +113,7 @@ const useCanAttachHSG2Safe = (args: {
     },
   });
 
-const useCanAttachMHSG2Safe = (args: { _mhsg: bigint }) =>
+const useCanAttachMHSG2Safe = (args: { _mhsg: AbiTypeToPrimitiveType<'uint256'> }) =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
@@ -244,20 +242,17 @@ const useSafeSigleton = () =>
   });
 
 export {
+  // All the read function hooks are below
+  useCanAttachHSG2Safe,
+  useCanAttachMHSG2Safe,
   // All the write function hooks are below
   useDeployHSG,
   useDeployHSGwSafe,
   useDeployMultiHatSG,
-  useDeployMultiHatSGwSafe,
-  // All the read function hooks are below
-  useCanAttachHSG2Safe,
-  useCanAttachMHSG2Safe,
-  useGnosisFallbackLibrary,
-  useGnosisMultiSendLibrary,
-  useGnosisSafeProxyFactory,
-  useGnosisHasProxyFactory,
-  useHatsAddresses,
+  useDeployMultiHatSGwSafe, useGnosisFallbackLibrary, useGnosisHasProxyFactory, useGnosisMultiSendLibrary,
+  useGnosisSafeProxyFactory, useHatsAddresses,
   useHatsSignerGateSingleton,
   useMultiHatsSignerGateSingleton,
-  useSafeSigleton,
+  useSafeSigleton
 };
+
