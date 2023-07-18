@@ -46,7 +46,9 @@ const MainContent = () => {
         >
           <ContentOne />
         </GridItem>
-        <GridItem rowSpan={1} colSpan={1} background='#F0FCFD' />
+        <GridItem rowSpan={1} colSpan={1} background='#F0FCFD'>
+          {/* TODO: ContentTwo will be here -> will be responsible for the form itself */}
+        </GridItem>
         <GridItem rowSpan={1} colSpan={1} background='#FFFFFF' />
       </Grid>
       {!isConnected && <NonConnectedCard />}
