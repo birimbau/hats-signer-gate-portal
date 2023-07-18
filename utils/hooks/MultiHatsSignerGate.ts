@@ -1,9 +1,10 @@
 import { useContractRead, usePrepareContractWrite } from 'wagmi';
 import { MultiHatsSignerGateAbi } from '../abi/MultiHatsSignerGate/MultiHatsSignerGate';
 import { AbiTypeToPrimitiveType } from 'abitype';
+import { CONTRACTS } from '../constants';
 
 // Hooks for write functions for the HatsSignerGate contract
-const contract = '0xca9d698adb4052ac7751019d69582950b1e42b43';
+const contract = CONTRACTS.multiHatsSignerGate.contractAddress as AbiTypeToPrimitiveType<'address'>;
 const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 const useAddSignerHats = (args: {
