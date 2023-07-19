@@ -5,7 +5,6 @@ import { BiBlock } from 'react-icons/bi';
 import { CgUserRemove } from 'react-icons/cg';
 import { FiSettings } from 'react-icons/fi';
 import { LiaCopySolid } from 'react-icons/lia';
-import { useState } from 'react';
 import { useAccount } from 'wagmi';
 import Button from '../UI/CustomButton/CustomButton';
 import {

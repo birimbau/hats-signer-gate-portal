@@ -8,6 +8,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import { CacheProvider } from '@chakra-ui/next-js';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { SelectedActionProvider } from '../context/SelectedActionContext';
+import { DeployProvider } from '../context/DeployContext';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -56,7 +57,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
             <SelectedActionProvider>
-              <Component {...pageProps} />
+              <DeployProvider>
+                <Component {...pageProps} />
+              </DeployProvider>
             </SelectedActionProvider>
           </RainbowKitProvider>
         </WagmiConfig>

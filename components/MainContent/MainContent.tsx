@@ -1,10 +1,11 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { useAccount } from 'wagmi';
-import Content from '../Content/Content';
 import HeaderActions from '../HeaderActions/HeaderActions';
 import NonConnectedCard from '../NonConnectedCard/NonConnectedCard';
 import ContentOne from './components/ContentOne/ContentOne';
+import ContentTwo from './components/ContentTwo/ContentTwo';
 import HeaderOne from './components/HeaderOne/HeaderOne';
+import HeaderTwo from './components/HeaderTwo/HeaderTwo';
 import * as S from './MainContent.styled';
 
 const MainContent = () => {
@@ -33,7 +34,11 @@ const MainContent = () => {
           colSpan={1}
           background='#F9FFFF'
           padding='16px 24px'
-        />
+        >
+          <S.CellContent>
+            <HeaderTwo />
+          </S.CellContent>
+        </GridItem>
         <GridItem
           rowSpan={1}
           colSpan={1}
@@ -51,7 +56,9 @@ const MainContent = () => {
           </S.CellContent>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1} background='#F0FCFD'>
-          {/* TODO: ContentTwo will be here -> will be responsible for the form itself */}
+          <S.CellContent>
+            <ContentTwo />
+          </S.CellContent>
         </GridItem>
         <GridItem rowSpan={1} colSpan={1} background='#FFFFFF' />
       </Grid>

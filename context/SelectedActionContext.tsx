@@ -25,6 +25,7 @@ export const SelectedActionProvider: React.FC<{ children: React.ReactNode }> = (
   const [selected, setSelected] = useState<HEADER_ACTIONS | undefined>(
     undefined
   );
+
   return (
     <SelectedActionContext.Provider
       value={{
