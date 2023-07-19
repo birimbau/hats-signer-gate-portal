@@ -1,10 +1,11 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useSelectedActionContext } from './SelectedActionContext';
 
 export enum DEPLOY_ACTIONS {
-  DEPLOY_HSG = "Deploy HSG",
-  DEPLOY_HSG_W_S = "Deploy HSG with SAFE",
-  DEPLOY_MHSG = "Deploy MHSG",
-  DEPLOY_MHSG_W_S = "Deploy MHSG with SAFE",
+  DEPLOY_HSG = 'Deploy HSG',
+  DEPLOY_HSG_W_S = 'Deploy HSG with SAFE',
+  DEPLOY_MHSG = 'Deploy MHSG',
+  DEPLOY_MHSG_W_S = 'Deploy MHSG with SAFE',
 }
 
 type DeployType = {
@@ -21,6 +22,12 @@ export const DeployProvider: React.FC<{ children: React.ReactNode }> = (p) => {
   const [selectedDeployAction, setSelectedDeployAction] = useState<
     DEPLOY_ACTIONS | undefined
   >(undefined);
+
+  const { selected } = useSelectedActionContext();
+
+  useEffect(() => {
+    setSelectedDeployAction(undefined);
+  }, [selected]);
 
   return (
     <DeployContext.Provider
