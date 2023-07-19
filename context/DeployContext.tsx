@@ -1,10 +1,10 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 export enum DEPLOY_ACTIONS {
-  DEPLOY_HSG = 'Deploy HSG',
-  DEPLOY_HSG_W_S = 'Deploy HSG with SAFE',
-  DEPLOY_MHSG = 'Deploy MHSG',
-  DEPLOY_MHSG_W_S = 'Deploy MHSG with SAFE',
+  DEPLOY_HSG = "Deploy HSG",
+  DEPLOY_HSG_W_S = "Deploy HSG with SAFE",
+  DEPLOY_MHSG = "Deploy MHSG",
+  DEPLOY_MHSG_W_S = "Deploy MHSG with SAFE",
 }
 
 type DeployType = {

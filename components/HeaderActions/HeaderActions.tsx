@@ -1,23 +1,23 @@
-import { Flex } from '@chakra-ui/react';
-import { AiOutlineDeploymentUnit } from 'react-icons/ai';
-import { LuEdit } from 'react-icons/lu';
-import { BiBlock } from 'react-icons/bi';
-import { CgUserRemove } from 'react-icons/cg';
-import { FiSettings } from 'react-icons/fi';
-import { LiaCopySolid } from 'react-icons/lia';
-import { useAccount } from 'wagmi';
-import Button from '../UI/CustomButton/CustomButton';
+import { Flex } from "@chakra-ui/react";
+import { AiOutlineDeploymentUnit } from "react-icons/ai";
+import { LuEdit } from "react-icons/lu";
+import { BiBlock } from "react-icons/bi";
+import { CgUserRemove } from "react-icons/cg";
+import { FiSettings } from "react-icons/fi";
+import { LiaCopySolid } from "react-icons/lia";
+import { useAccount } from "wagmi";
+import Button from "../UI/CustomButton/CustomButton";
 import {
   HEADER_ACTIONS,
   useSelectedActionContext,
-} from '../../context/SelectedActionContext';
+} from "../../context/SelectedActionContext";
 
 const HeaderActions = () => {
   const { selected, setSelected } = useSelectedActionContext();
   const { isConnected } = useAccount();
 
   return (
-    <Flex alignItems='center' height='72px' padding='0 24px' gap='16px'>
+    <Flex alignItems="center" height="72px" padding="0 24px" gap="16px">
       <Button
         isDisabled={!isConnected}
         onClick={() => setSelected(HEADER_ACTIONS.DEPLOY)}

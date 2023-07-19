@@ -1,8 +1,8 @@
 import {
   HEADER_ACTIONS,
   useSelectedActionContext,
-} from '../../../../context/SelectedActionContext';
-import Deploy from './components/Deploy/Deploy';
+} from "../../../../context/SelectedActionContext";
+import Deploy from "./components/Deploy/Deploy";
 
 const ContentOne = () => {
   const { selected } = useSelectedActionContext();

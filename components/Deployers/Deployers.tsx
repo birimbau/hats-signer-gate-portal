@@ -7,32 +7,32 @@ import {
   Box,
   HStack,
   VStack,
-} from '@chakra-ui/react';
-import HatsSignerGateAndSafeForm from './forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm';
-import HatsSignerGateForm from './forms/HatsSignerGateForm/HatsSignerGateForm';
-import MultiHatsSignerGateForm from './forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
+} from "@chakra-ui/react";
+import HatsSignerGateAndSafeForm from "./forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm";
+import HatsSignerGateForm from "./forms/HatsSignerGateForm/HatsSignerGateForm";
+import MultiHatsSignerGateForm from "./forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm";
 
 export default function Deployers() {
   return (
     <HStack
-      justifyContent='space-evenly'
-      alignItems='flex-start'
-      className='py-2'
-      gap='24px'
+      justifyContent="space-evenly"
+      alignItems="flex-start"
+      className="py-2"
+      gap="24px"
     >
-      <VStack width='100%'>
+      <VStack width="100%">
         <h3>What to deploy?</h3>
-        <Accordion allowToggle width='100%'>
+        <Accordion allowToggle width="100%">
           <AccordionItem>
             <h2>
               <AccordionButton>
-                <Box as='span' flex='1' textAlign='left'>
+                <Box as="span" flex="1" textAlign="left">
                   Hats Signer Gate
                 </Box>
                 <AccordionIcon />
               </AccordionButton>
             </h2>
-            <AccordionPanel pb={4} width='100%'>
+            <AccordionPanel pb={4} width="100%">
               <HatsSignerGateForm />
             </AccordionPanel>
           </AccordionItem>
@@ -40,7 +40,7 @@ export default function Deployers() {
           <AccordionItem>
             <h2>
               <AccordionButton>
-                <Box as='span' flex='1' textAlign='left'>
+                <Box as="span" flex="1" textAlign="left">
                   Hats Signer Gate and Safe
                 </Box>
                 <AccordionIcon />
@@ -53,7 +53,7 @@ export default function Deployers() {
           <AccordionItem>
             <h2>
               <AccordionButton>
-                <Box as='span' flex='1' textAlign='left'>
+                <Box as="span" flex="1" textAlign="left">
                   Multi Hats Signer Gate
                 </Box>
                 <AccordionIcon />
@@ -66,7 +66,7 @@ export default function Deployers() {
           <AccordionItem>
             <h2>
               <AccordionButton>
-                <Box as='span' flex='1' textAlign='left'>
+                <Box as="span" flex="1" textAlign="left">
                   Multi Hats Signer Gate And Safe
                 </Box>
                 <AccordionIcon />
@@ -79,9 +79,9 @@ export default function Deployers() {
           </AccordionItem>
         </Accordion>
       </VStack>
-      <Box minW='250px'>
+      <Box minW="250px">
         <h3>Result</h3>
-        <div className='py-4'>
+        <div className="py-4">
           <pre>result here</pre>
         </div>
       </Box>

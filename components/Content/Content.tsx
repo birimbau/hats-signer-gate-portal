@@ -1,8 +1,8 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import All from '../All/All';
-import Deployers from '../Deployers/Deployers';
-import Owners from '../Owners/Owners';
-import Signers from '../Signers/Signers';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import All from "../All/All";
+import Deployers from "../Deployers/Deployers";
+import Owners from "../Owners/Owners";
+import Signers from "../Signers/Signers";
 
 const Content = () => {
   return (
