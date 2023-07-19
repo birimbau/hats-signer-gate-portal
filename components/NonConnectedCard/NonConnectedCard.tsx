@@ -1,17 +1,17 @@
-import { Card, CardBody, CardHeader, Text } from '@chakra-ui/react';
+import { Card, CardBody, CardHeader, Text } from "@chakra-ui/react";
 
 const NonConnectedCard = () => {
   return (
     <Card
-      maxW='3xl'
-      padding='16px 48px'
-      position='absolute'
-      top='50%'
-      left='50%'
-      transform='translate(-50%, -50%)'
+      maxW="3xl"
+      padding="16px 48px"
+      position="absolute"
+      top="50%"
+      left="50%"
+      transform="translate(-50%, -50%)"
     >
       <CardHeader>Connect Your Wallet</CardHeader>
-      <CardBody display='flex' gap={'12px'} flexDirection='column'>
+      <CardBody display="flex" gap={"12px"} flexDirection="column">
         <Text>
           You can leverage the capabilities of this dashboard for the following
           functions:

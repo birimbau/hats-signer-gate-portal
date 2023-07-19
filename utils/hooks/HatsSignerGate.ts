@@ -1,44 +1,43 @@
-import { Address, useContractRead, usePrepareContractWrite } from 'wagmi';
-import { HatsSignerGateAbi } from '../abi/HatsSignerGate/HatsSignerGate';
-import { AbiTypeToPrimitiveType } from 'abitype';
-import { CONTRACTS } from '../constants';
+import { Address, useContractRead, usePrepareContractWrite } from "wagmi";
+import { HatsSignerGateAbi } from "../abi/HatsSignerGate/HatsSignerGate";
+import { AbiTypeToPrimitiveType } from "abitype";
+import { CONTRACTS } from "../constants";
 
 // Hooks for write functions for the HatsSignerGate contract
-const contract =
-  (CONTRACTS.hatsSignerGate.contractAddress ||
-  '0x844b3c7781338d3308eb8d64727033893fce1432') as AbiTypeToPrimitiveType<'address'>;
-const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
+const contract = (CONTRACTS.hatsSignerGate.contractAddress ||
+  "0x844b3c7781338d3308eb8d64727033893fce1432") as AbiTypeToPrimitiveType<"address">;
+const chainId = process.env.ENVIROMENT === "production" ? 1 : 5;
 
 const useCheckAfterExecution = (args: {
-  bytes32: AbiTypeToPrimitiveType<'bytes32'>;
+  bytes32: AbiTypeToPrimitiveType<"bytes32">;
   bool: boolean;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'checkAfterExecution',
+    functionName: "checkAfterExecution",
     args: Array.from(Object.values(args)),
   });
 
 const useCheckTransaction = (args: {
-  to: AbiTypeToPrimitiveType<'address'>;
-  value: AbiTypeToPrimitiveType<'uint256'>;
-  data: AbiTypeToPrimitiveType<'bytes'>;
-  operation: AbiTypeToPrimitiveType<'uint8'>;
-  safeTxGas: AbiTypeToPrimitiveType<'uint256'>;
-  baseGas: AbiTypeToPrimitiveType<'uint256'>;
-  gasPrice: AbiTypeToPrimitiveType<'uint256'>;
-  gasToken: AbiTypeToPrimitiveType<'address'>;
-  refundReceiver: AbiTypeToPrimitiveType<'address'>;
-  signatures: AbiTypeToPrimitiveType<'bytes'>;
-  address: AbiTypeToPrimitiveType<'address'>;
+  to: AbiTypeToPrimitiveType<"address">;
+  value: AbiTypeToPrimitiveType<"uint256">;
+  data: AbiTypeToPrimitiveType<"bytes">;
+  operation: AbiTypeToPrimitiveType<"uint8">;
+  safeTxGas: AbiTypeToPrimitiveType<"uint256">;
+  baseGas: AbiTypeToPrimitiveType<"uint256">;
+  gasPrice: AbiTypeToPrimitiveType<"uint256">;
+  gasToken: AbiTypeToPrimitiveType<"address">;
+  refundReceiver: AbiTypeToPrimitiveType<"address">;
+  signatures: AbiTypeToPrimitiveType<"bytes">;
+  address: AbiTypeToPrimitiveType<"address">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'checkTransaction',
+    functionName: "checkTransaction",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -53,7 +52,7 @@ const useClaimSigner = () =>
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'claimSigner',
+    functionName: "claimSigner",
 
     onSuccess: (data) => {
       console.log(data);
@@ -68,7 +67,7 @@ const useReconsileSignerCount = () =>
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'reconsileSignerCount',
+    functionName: "reconsileSignerCount",
 
     onSuccess: (data) => {
       console.log(data);
@@ -79,13 +78,13 @@ const useReconsileSignerCount = () =>
   });
 
 const useRemoveSigner = (args: {
-  _signer: AbiTypeToPrimitiveType<'address'>;
+  _signer: AbiTypeToPrimitiveType<"address">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'removeSigner',
+    functionName: "removeSigner",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -96,13 +95,13 @@ const useRemoveSigner = (args: {
   });
 
 const useSetMinThreshold = (args: {
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _minThreshold: AbiTypeToPrimitiveType<"uint256">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'setMinThreshold',
+    functionName: "setMinThreshold",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -113,14 +112,14 @@ const useSetMinThreshold = (args: {
   });
 
 const useSetOwnerHat = (args: {
-  _ownerHat: AbiTypeToPrimitiveType<'uint256'>;
-  _hatsContract: AbiTypeToPrimitiveType<'address'>;
+  _ownerHat: AbiTypeToPrimitiveType<"uint256">;
+  _hatsContract: AbiTypeToPrimitiveType<"address">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'setOwnerHat',
+    functionName: "setOwnerHat",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -131,13 +130,13 @@ const useSetOwnerHat = (args: {
   });
 
 const useSetTargetThreshold = (args: {
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'setTargetThreshold',
+    functionName: "setTargetThreshold",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -149,13 +148,13 @@ const useSetTargetThreshold = (args: {
 
 const useSetup = (args: {
   setUp: bigint;
-  initializeParams: AbiTypeToPrimitiveType<'bytes'>;
+  initializeParams: AbiTypeToPrimitiveType<"bytes">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'setup',
+    functionName: "setup",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -168,14 +167,14 @@ const useSetup = (args: {
 // Hooks for read functions for the HatsSignerGate contract
 
 const useCountValidSignatures = (args: {
-  dataHash: AbiTypeToPrimitiveType<'bytes32'>;
-  signature: AbiTypeToPrimitiveType<'bytes'>;
-  sigCount: AbiTypeToPrimitiveType<'uint256'>;
+  dataHash: AbiTypeToPrimitiveType<"bytes32">;
+  signature: AbiTypeToPrimitiveType<"bytes">;
+  sigCount: AbiTypeToPrimitiveType<"uint256">;
 }) =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'countValidSignatures',
+    functionName: "countValidSignatures",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -189,7 +188,7 @@ const useGetHatsContract = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'getHatsContract',
+    functionName: "getHatsContract",
 
     onSuccess: (data) => {
       console.log(data);
@@ -200,12 +199,12 @@ const useGetHatsContract = () =>
   });
 
 const useIsValidSigner = (args: {
-  _account: AbiTypeToPrimitiveType<'address'>;
+  _account: AbiTypeToPrimitiveType<"address">;
 }) =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'isValidSigner',
+    functionName: "isValidSigner",
     args: Array.from(Object.values(args)),
   });
 
@@ -213,28 +212,28 @@ const useMaxSigners = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'maxSigners',
+    functionName: "maxSigners",
   });
 
 const useMinThreshold = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'minThreshold',
+    functionName: "minThreshold",
   });
 
 const useOwnerHat = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'ownerHat',
+    functionName: "ownerHat",
   });
 
 const useSafe = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'safe',
+    functionName: "safe",
 
     onSuccess: (data) => {
       console.log(data);
@@ -248,7 +247,7 @@ const useSignersHatId = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'signersHatId',
+    functionName: "signersHatId",
 
     onSuccess: (data) => {
       console.log(data);
@@ -259,12 +258,12 @@ const useSignersHatId = () =>
   });
 
 const useSupportsInterface = (args: {
-  interfaceId: AbiTypeToPrimitiveType<'bytes4'>;
+  interfaceId: AbiTypeToPrimitiveType<"bytes4">;
 }) =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'supportsInterface',
+    functionName: "supportsInterface",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -278,7 +277,7 @@ const useTargetThreshold = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'targetThreshold',
+    functionName: "targetThreshold",
 
     onSuccess: (data) => {
       console.log(data);
@@ -292,7 +291,7 @@ const useValidSignerCount = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'validSignerCount',
+    functionName: "validSignerCount",
 
     onSuccess: (data) => {
       console.log(data);
@@ -306,7 +305,7 @@ const useVersion = () =>
   useContractRead({
     abi: HatsSignerGateAbi,
     address: contract,
-    functionName: 'version',
+    functionName: "version",
 
     onSuccess: (data) => {
       console.log(data);

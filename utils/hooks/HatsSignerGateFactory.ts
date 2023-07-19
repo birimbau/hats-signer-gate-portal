@@ -1,27 +1,26 @@
-import { AbiTypeToPrimitiveType } from 'abitype';
-import { useContractRead, usePrepareContractWrite } from 'wagmi';
-import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { CONTRACTS } from '../constants';
-const contract =
-  (CONTRACTS.hatsSignerGateFactory.contractAddress  ||
-  '0x50dbb35b81c94b8d1a0ff0cb4aa218ff30166187') as AbiTypeToPrimitiveType<'address'>;
-const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
+import { AbiTypeToPrimitiveType } from "abitype";
+import { useContractRead, usePrepareContractWrite } from "wagmi";
+import { HatsSignerGateFactoryAbi } from "../abi/HatsSignerGateFactory/HatsSignerGateFactory";
+import { CONTRACTS } from "../constants";
+const contract = (CONTRACTS.hatsSignerGateFactory.contractAddress ||
+  "0x50dbb35b81c94b8d1a0ff0cb4aa218ff30166187") as AbiTypeToPrimitiveType<"address">;
+const chainId = process.env.ENVIROMENT === "production" ? 1 : 5;
 
 // Hooks for write functions for the HatsSignerGateFactory contract
 
 const useDeployHSG = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _safe: AbiTypeToPrimitiveType<'address'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+  _ownerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _signerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _minThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _safe: AbiTypeToPrimitiveType<"address">;
+  _maxSigners: AbiTypeToPrimitiveType<"uint256">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'deployHatsSignerGate',
+    functionName: "deployHatsSignerGate",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -32,17 +31,17 @@ const useDeployHSG = (args: {
   });
 
 const useDeployHSGwSafe = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+  _ownerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _signerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _minThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _maxSigners: AbiTypeToPrimitiveType<"uint256">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'deployHatsSignerGateAndSafe',
+    functionName: "deployHatsSignerGateAndSafe",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -53,18 +52,18 @@ const useDeployHSGwSafe = (args: {
   });
 
 const useDeployMultiHatSG = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _safe: AbiTypeToPrimitiveType<'address'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+  _ownerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _signerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _safe: AbiTypeToPrimitiveType<"address">;
+  _minThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _maxSigners: AbiTypeToPrimitiveType<"uint256">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'deployMultiHatsSignerGate',
+    functionName: "deployMultiHatsSignerGate",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -75,17 +74,17 @@ const useDeployMultiHatSG = (args: {
   });
 
 const useDeployMultiHatSGwSafe = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+  _ownerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _signerHatId: AbiTypeToPrimitiveType<"uint256">;
+  _minThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
+  _maxSigners: AbiTypeToPrimitiveType<"uint256">;
 }) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'deployMultiHatsSignerGateWithSafe',
+    functionName: "deployMultiHatsSignerGateWithSafe",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -98,12 +97,12 @@ const useDeployMultiHatSGwSafe = (args: {
 // Hooks for read functions for the HatsSignerGateFactory contract
 
 const useCanAttachHSG2Safe = (args: {
-  _hsg: AbiTypeToPrimitiveType<'address'>;
+  _hsg: AbiTypeToPrimitiveType<"address">;
 }) =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'canAttachHSGToSafe',
+    functionName: "canAttachHSGToSafe",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -113,11 +112,13 @@ const useCanAttachHSG2Safe = (args: {
     },
   });
 
-const useCanAttachMHSG2Safe = (args: { _mhsg: AbiTypeToPrimitiveType<'uint256'> }) =>
+const useCanAttachMHSG2Safe = (args: {
+  _mhsg: AbiTypeToPrimitiveType<"uint256">;
+}) =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'canAttachMHSGToSafe',
+    functionName: "canAttachMHSGToSafe",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
@@ -131,7 +132,7 @@ const useGnosisFallbackLibrary = () =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'gnosisFallbackLibrary',
+    functionName: "gnosisFallbackLibrary",
 
     onSuccess: (data) => {
       console.log(data);
@@ -145,7 +146,7 @@ const useGnosisMultiSendLibrary = () =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'gnosisMultiSendLibrary',
+    functionName: "gnosisMultiSendLibrary",
 
     onSuccess: (data) => {
       console.log(data);
@@ -159,7 +160,7 @@ const useGnosisSafeProxyFactory = () => {
   return useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'gnosisSafeProxyFactory',
+    functionName: "gnosisSafeProxyFactory",
 
     onSuccess: (data) => {
       console.log(data);
@@ -174,7 +175,7 @@ const useGnosisHasProxyFactory = () => {
   return useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'gnosisHasProxyFactory',
+    functionName: "gnosisHasProxyFactory",
 
     onSuccess: (data) => {
       console.log(data);
@@ -189,7 +190,7 @@ const useHatsAddresses = () =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'hatAddress',
+    functionName: "hatAddress",
 
     onSuccess: (data) => {
       console.log(data);
@@ -203,7 +204,7 @@ const useHatsSignerGateSingleton = () =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'hatsSignerGateSingleton',
+    functionName: "hatsSignerGateSingleton",
 
     onSuccess: (data) => {
       console.log(data);
@@ -217,7 +218,7 @@ const useMultiHatsSignerGateSingleton = () =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'multiHatsSignerGateSingleton',
+    functionName: "multiHatsSignerGateSingleton",
 
     onSuccess: (data) => {
       console.log(data);
@@ -231,7 +232,7 @@ const useSafeSigleton = () =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
     address: contract,
-    functionName: 'safe',
+    functionName: "safe",
 
     onSuccess: (data) => {
       console.log(data);
@@ -249,10 +250,13 @@ export {
   useDeployHSG,
   useDeployHSGwSafe,
   useDeployMultiHatSG,
-  useDeployMultiHatSGwSafe, useGnosisFallbackLibrary, useGnosisHasProxyFactory, useGnosisMultiSendLibrary,
-  useGnosisSafeProxyFactory, useHatsAddresses,
+  useDeployMultiHatSGwSafe,
+  useGnosisFallbackLibrary,
+  useGnosisHasProxyFactory,
+  useGnosisMultiSendLibrary,
+  useGnosisSafeProxyFactory,
+  useHatsAddresses,
   useHatsSignerGateSingleton,
   useMultiHatsSignerGateSingleton,
-  useSafeSigleton
+  useSafeSigleton,
 };
-

@@ -1,8 +1,8 @@
-import { Button, Input, VStack } from '@chakra-ui/react';
-import { AbiTypeToPrimitiveType } from 'abitype';
-import { useState } from 'react';
-import { useAccount, useContractWrite } from 'wagmi';
-import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
+import { Button, Input, VStack } from "@chakra-ui/react";
+import { AbiTypeToPrimitiveType } from "abitype";
+import { useState } from "react";
+import { useAccount, useContractWrite } from "wagmi";
+import { useDeployHSGwSafe } from "../../../../utils/hooks/HatsSignerGateFactory";
 
 interface useDeployHSGwSargs {
   _ownerHatId: bigint;
@@ -24,33 +24,33 @@ export default function HatsSignerGateAndSafeForm() {
     useContractWrite(config);
 
   return (
-    <VStack width='100%'>
+    <VStack width="100%">
       <Input
-        placeholder='Owner Hat ID'
+        placeholder="Owner Hat ID"
         onChange={(e) =>
           SetArgs({ ...args, _ownerHatId: BigInt(e.target.value) })
         }
       />
       <Input
-        placeholder='Signer Hat ID'
+        placeholder="Signer Hat ID"
         onChange={(e) =>
           SetArgs({ ...args, _signerHatId: BigInt(e.target.value) })
         }
       />
       <Input
-        placeholder='Minimum Threshold'
+        placeholder="Minimum Threshold"
         onChange={(e) =>
           SetArgs({ ...args, _minThreshold: BigInt(e.target.value) })
         }
       />
       <Input
-        placeholder='Target Threshold'
+        placeholder="Target Threshold"
         onChange={(e) =>
           SetArgs({ ...args, _targetThreshold: BigInt(e.target.value) })
         }
       />
       <Input
-        placeholder='Maximum Signers'
+        placeholder="Maximum Signers"
         onChange={(e) =>
           SetArgs({ ...args, _maxSigners: BigInt(e.target.value) })
         }
@@ -58,8 +58,8 @@ export default function HatsSignerGateAndSafeForm() {
       <Button
         disabled={!isConnected || !write}
         onClick={() => write?.()}
-        width={'100%'}
-        variant={'solid'}
+        width={"100%"}
+        variant={"solid"}
       >
         Deploy
       </Button>

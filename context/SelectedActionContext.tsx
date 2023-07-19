@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useDeployContext } from './DeployContext';
 
 export enum HEADER_ACTIONS {
   DEPLOY = 'Deploy',
@@ -25,6 +26,7 @@ export const SelectedActionProvider: React.FC<{ children: React.ReactNode }> = (
   const [selected, setSelected] = useState<HEADER_ACTIONS | undefined>(
     undefined
   );
+
   return (
     <SelectedActionContext.Provider
       value={{
