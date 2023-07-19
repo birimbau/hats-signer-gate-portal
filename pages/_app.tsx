@@ -6,7 +6,8 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { goerli, optimism } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { CacheProvider } from '@chakra-ui/next-js';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { SelectedActionProvider } from '../context/SelectedActionContext';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -24,20 +25,39 @@ const { connectors } = getDefaultWallets({
 });
 
 const wagmiConfig = createConfig({
-  
   autoConnect: true,
   connectors,
   publicClient,
   webSocketPublicClient,
 });
 
+const colors = {
+  cyan: {
+    100: '#C4F1F9',
+    700: '#0987A0',
+  },
+  gray: {
+    700: '#2D3748',
+  },
+  button: {
+    disabled: '#B3B3B3',
+    black: '#2D3748',
+  },
+};
+
+const styles = {};
+
+export const theme = extendTheme({ colors, styles });
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <CacheProvider>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
-            <Component {...pageProps} />
+            <SelectedActionProvider>
+              <Component {...pageProps} />
+            </SelectedActionProvider>
           </RainbowKitProvider>
         </WagmiConfig>
       </ChakraProvider>
