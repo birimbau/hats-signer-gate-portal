@@ -1,7 +1,8 @@
 import {
   useDeployContext,
   DEPLOY_ACTIONS,
-} from "../../../../context/DeployContext";
+} from '../../../../context/DeployContext';
+import DeployMHSG_W_S from './components/DeployMHSG_W_S/DeployMHSG_W_S';
 
 const ContentTwo = () => {
   const { selectedDeployAction } = useDeployContext();
@@ -14,7 +15,7 @@ const ContentTwo = () => {
     case DEPLOY_ACTIONS.DEPLOY_MHSG:
       return <>Deploy mhsg: To be developed</>;
     case DEPLOY_ACTIONS.DEPLOY_MHSG_W_S:
-      return <>Deploy mhsg with safe: To be developed</>;
+      return <DeployMHSG_W_S />;
     default:
       return <></>;
   }
