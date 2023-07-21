@@ -114,7 +114,7 @@ const useSetTargetThreshold = (args: {
   });
 
 const useSetup = (args: {
-  setup: bigint;
+  setup: AbiTypeToPrimitiveType<"uint256">;
   initializeParams: AbiTypeToPrimitiveType<"bytes">;
 }) =>
   usePrepareContractWrite({

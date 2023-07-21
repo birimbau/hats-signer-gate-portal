@@ -16,7 +16,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     optimism,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
   ],
-  [publicProvider()]
+  [publicProvider()],
 );
 
 const { connectors } = getDefaultWallets({

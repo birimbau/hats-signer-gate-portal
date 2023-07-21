@@ -2,24 +2,27 @@ import { Input, VStack, Text, Flex } from "@chakra-ui/react";
 import { AbiTypeToPrimitiveType } from "abitype";
 import { useState } from "react";
 import { useAccount, useContractWrite } from "wagmi";
-import { useDeployMultiHatSG } from "../../../../utils/hooks/HatsSignerGateFactory";
+import { useDeployMultiHatSGwSafe } from "../../../../utils/hooks/HatsSignerGateFactory";
 import Button from "../../../UI/CustomButton/CustomButton";
 
-interface useDeployMHSGargs {
+interface useDeployMultiHatSGwSafeArgs {
   _ownerHatId: AbiTypeToPrimitiveType<"uint256">;
   _signerHatId: AbiTypeToPrimitiveType<"uint256">;
-  _safe: AbiTypeToPrimitiveType<"address">;
   _minThreshold: AbiTypeToPrimitiveType<"uint256">;
   _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
   _maxSigners: AbiTypeToPrimitiveType<"uint256">;
 }
 
-export default function MultiHatsSignerGateForm() {
+export default function MultiHatsSignerGateAndSafeForm() {
   const { isConnected } = useAccount();
 
-  const [args, SetArgs] = useState<useDeployMHSGargs>({} as useDeployMHSGargs);
+  const [args, SetArgs] = useState<useDeployMultiHatSGwSafeArgs>(
+    {} as useDeployMultiHatSGwSafeArgs,
+  );
 
-  const { config } = useDeployMultiHatSG(args as useDeployMHSGargs);
+  const { config } = useDeployMultiHatSGwSafe(
+    args as useDeployMultiHatSGwSafeArgs,
+  );
   const { data, isLoading, isSuccess, isError, write } =
     useContractWrite(config);
 

@@ -8,6 +8,7 @@ const ContentOne = () => {
   const { selected } = useSelectedActionContext();
 
   switch (selected) {
+    default:
     case HEADER_ACTIONS.DEPLOY:
       return <Deploy />;
     case HEADER_ACTIONS.CLAIM:
@@ -20,8 +21,6 @@ const ContentOne = () => {
       return <>REVISE: To be developer</>;
     case HEADER_ACTIONS.VIEW:
       return <>VIEW: To be developer</>;
-    default:
-      return <></>;
   }
 };
 
