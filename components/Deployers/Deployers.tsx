@@ -20,7 +20,7 @@ export default function Deployers() {
       className="py-2"
       gap="24px"
     >
-      <VStack width="100%">
+      <VStack width="100%" py={10} pl={8} pr={24} alignItems={"flex-start"}>
         <h3>What to deploy?</h3>
         <Accordion allowToggle width="100%">
           <AccordionItem>
