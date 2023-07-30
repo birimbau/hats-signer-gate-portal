@@ -1,15 +1,16 @@
 import Button from '../../../../../UI/CustomButton/CustomButton';
 import { BsPen } from 'react-icons/bs';
 import Input from '../../../../../UI/CustomInput/CustomInput';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { VStack } from '@chakra-ui/react';
 import { useDeployMultiHatSGwSafe } from '../../../../../../utils/hooks/HatsSignerGateFactory';
 import { useContractWrite } from 'wagmi';
+import MultiInput from '../../../../../UI/MultiInput/MultiInput';
 
 const DeployMHSG_W_S = () => {
   const [formData, setFormData] = useState({
     _ownerHatId: 0,
-    _signersHatIds: [1],
+    _signersHatIds: [],
     _minThreshold: 0,
     _targetThreshold: 0,
     _maxSigners: 0,
@@ -28,40 +29,51 @@ const DeployMHSG_W_S = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
-    console.log('IS SUCCESS: ', isSuccess);
-    console.log('IS DATA: ', data);
-  }, [data, isSuccess]);
-  useEffect(() => {
-    console.log('IS ERROR: ', isError);
-    console.log('ERROR: ', error);
-  }, [error, isError]);
-
   return (
     <form onSubmit={onSubmit} noValidate>
       <VStack gap={'13px'} alignItems='flex-start'>
         <Input
           label='Owner Hat ID'
-          type={'number'}
           placeholder='_ownerHatId (uint256)'
           name='_ownerHatId'
           value={formData._ownerHatId}
           onChange={setValue}
           isDisabled={isLoading}
         />
-        {/* <Input
-          label='Signer Hat IDs [Id1]'
-          placeholder='_signersHatIds (uint256[])'
+        <MultiInput
+          values={formData._signersHatIds}
+          label='Signer Hat IDs'
           name='_signersHatIds'
-          value={formData._signersHatIds}
-          onChange={setValue}
-          isDisabled={isLoading}
-        /> */}
+          countLabel='Id'
+          setValues={() => {}}
+          placeholder='_signersHatIds (uint256)'
+          onChange={(value, index, e) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: formData._signersHatIds.map((v, i) =>
+                i === index ? e.target.value : v
+              ),
+            });
+          }}
+          onClickAdd={(value, _index) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: [...formData._signersHatIds, value],
+            });
+          }}
+          onClickRemove={(value, index) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: formData._signersHatIds.filter(
+                (v, i) => i !== index
+              ),
+            });
+          }}
+        />
         <Input
           label='Signers Minimum'
           placeholder='_minThreshold (uint256)'
           name='_minThreshold'
-          type={'number'}
           value={formData._minThreshold}
           onChange={setValue}
           isDisabled={isLoading}
@@ -70,7 +82,6 @@ const DeployMHSG_W_S = () => {
           label='Signers Target'
           placeholder='_targetThreshold (uint256)'
           name='_targetThreshold'
-          type={'number'}
           value={formData._targetThreshold}
           onChange={setValue}
           isDisabled={isLoading}
@@ -79,7 +90,6 @@ const DeployMHSG_W_S = () => {
           label='Signers Maximum'
           placeholder='_maxSigners (uint256)'
           name='_maxSigners'
-          type={'number'}
           value={formData._maxSigners}
           onChange={setValue}
           isDisabled={isLoading}

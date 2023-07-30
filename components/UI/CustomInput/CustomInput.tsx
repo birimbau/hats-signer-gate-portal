@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   HStack,
   Input as ChakraUiInput,
   InputProps,
@@ -12,12 +13,18 @@ type P = {
 } & InputProps;
 
 const Input: React.FC<P> = (p) => {
-  const { label, ...rest } = p;
+  const { label, width, ...rest } = p;
 
   return (
-    <Box display={'flex'} flexDirection='column'>
+    <Box display={'flex'} flexDirection='column' width={width || undefined}>
       {label && (
-        <Text as='label' id={p.name || undefined}>
+        <Text
+          fontStyle='normal'
+          fontWeight={500}
+          lineHeight='24px'
+          as='label'
+          id={p.name || undefined}
+        >
           {label}
         </Text>
       )}
@@ -28,6 +35,7 @@ const Input: React.FC<P> = (p) => {
           borderColor='button.black'
           padding='0 16px'
           placeholdercolor='button.gray'
+          background={'button.white'}
           height={'40px'}
         ></ChakraUiInput>
         {p.extra && <>{p.extra}</>}

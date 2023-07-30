@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from 'react';
 
 export enum HEADER_ACTIONS {
-  DEPLOY = "Deploy",
-  CLAIM = "Claim",
-  RENOUNCE = "Renounce",
-  REMOVE = "Remove",
-  REVISE = "Revise",
-  VIEW = "View",
+  DEPLOY = 'Deploy',
+  CLAIM = 'Claim',
+  RENOUNCE = 'Renounce',
+  REMOVE = 'Remove',
+  REVISE = 'Revise',
+  VIEW = 'View',
 }
 
 type SelectedActionType = {
@@ -20,15 +20,15 @@ const SelectedActionContext = createContext<SelectedActionType>({
 });
 
 export const SelectedActionProvider: React.FC<{ children: React.ReactNode }> = (
-  p,
+  p
 ) => {
   const [selected, setSelected] = useState<HEADER_ACTIONS | undefined>(
-    undefined,
+    HEADER_ACTIONS.DEPLOY
   );
 
   const contextValue = useMemo(
     () => ({ selected, setSelected }),
-    [selected, setSelected],
+    [selected, setSelected]
   );
 
   return (

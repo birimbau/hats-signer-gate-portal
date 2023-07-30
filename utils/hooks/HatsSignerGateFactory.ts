@@ -53,7 +53,7 @@ const useDeployHSGwSafe = (args: {
 
 const useDeployMultiHatSG = (args: {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
   _safe: AbiTypeToPrimitiveType<'address'>;
   _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
@@ -75,7 +75,7 @@ const useDeployMultiHatSG = (args: {
 
 const useDeployMultiHatSGwSafe = (args: {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
   _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;

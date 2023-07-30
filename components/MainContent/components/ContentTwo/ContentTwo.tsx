@@ -4,8 +4,8 @@ import {
 } from '../../../../context/DeployContext';
 import HatsSignerGateAndSafeForm from '../../../Deployers/forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm';
 import HatsSignerGateForm from '../../../Deployers/forms/HatsSignerGateForm/HatsSignerGateForm';
-import MultiHatsSignerGateForm from '../../../Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 import MultiHatsSignerGateAndSafeForm from '../../../Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm';
+import MultiHatsSignerGateForm from '../../../Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 
 const ContentTwo = () => {
   const { selectedDeployAction } = useDeployContext();
