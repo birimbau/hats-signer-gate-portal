@@ -39,7 +39,7 @@ export default function MultiHatsSignerGateForm() {
   const { data, isLoading, isSuccess, isError, write } =
     useContractWrite(config);
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     SetArgs({
       _ownerHatId: BigInt(formData._ownerHatId),
