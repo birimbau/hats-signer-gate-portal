@@ -1,120 +1,147 @@
-import { Input, VStack, Text, Flex } from "@chakra-ui/react";
-import { AbiTypeToPrimitiveType } from "abitype";
-import { useState } from "react";
-import { useAccount, useContractWrite } from "wagmi";
-import { useDeployMultiHatSG } from "../../../../utils/hooks/HatsSignerGateFactory";
-import Button from "../../../UI/CustomButton/CustomButton";
+import { VStack } from '@chakra-ui/react';
+import { AbiTypeToPrimitiveType } from 'abitype';
+import { useState } from 'react';
+import { BsPen } from 'react-icons/bs';
+import { useContractWrite } from 'wagmi';
+import { useDeployMultiHatSG } from '../../../../utils/hooks/HatsSignerGateFactory';
+import Button from '../../../UI/CustomButton/CustomButton';
+import Input from '../../../UI/CustomInput/CustomInput';
+import MultiInput from '../../../UI/MultiInput/MultiInput';
 
 interface useDeployMHSGargs {
-  _ownerHatId: AbiTypeToPrimitiveType<"uint256">;
-  _signerHatId: AbiTypeToPrimitiveType<"uint256">;
-  _safe: AbiTypeToPrimitiveType<"address">;
-  _minThreshold: AbiTypeToPrimitiveType<"uint256">;
-  _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
-  _maxSigners: AbiTypeToPrimitiveType<"uint256">;
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
+  _safe: AbiTypeToPrimitiveType<'address'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }
 
 export default function MultiHatsSignerGateForm() {
-  const { isConnected } = useAccount();
+  const [formData, setFormData] = useState({
+    _ownerHatId: '',
+    _signersHatIds: [''],
+    _safe: '',
+    _minThreshold: '',
+    _targetThreshold: '',
+    _maxSigners: '',
+  });
+  const [args, SetArgs] = useState<useDeployMHSGargs>({
+    _ownerHatId: BigInt(0),
+    _signersHatIds: [BigInt(0)],
+    _minThreshold: BigInt(0),
+    _targetThreshold: BigInt(0),
+    _maxSigners: BigInt(0),
+    _safe: '0x',
+  });
 
-  const [args, SetArgs] = useState<useDeployMHSGargs>({} as useDeployMHSGargs);
-
-  const { config } = useDeployMultiHatSG(args as useDeployMHSGargs);
+  const { config } = useDeployMultiHatSG(args);
   const { data, isLoading, isSuccess, isError, write } =
     useContractWrite(config);
 
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    SetArgs({
+      _ownerHatId: BigInt(formData._ownerHatId),
+      _signersHatIds: formData._signersHatIds.map((v) => BigInt(v)),
+      _minThreshold: BigInt(formData._minThreshold),
+      _targetThreshold: BigInt(formData._targetThreshold),
+      _maxSigners: BigInt(formData._maxSigners),
+      _safe: formData._safe as AbiTypeToPrimitiveType<'address'>,
+    });
+    write?.();
+  };
+
   return (
-    <VStack
-      width="100%"
-      py={10}
-      pl={8}
-      pr={24}
-      alignItems={"flex-start"}
-      fontSize={14}
-      gap={5}
-    >
-      <Flex flexDirection={"column"} gap={0} w={"80%"}>
-        {" "}
-        <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Owner Hat ID
-        </Text>
+    <form onSubmit={onSubmit} noValidate>
+      <VStack gap={'13px'} alignItems='flex-start' width='340px'>
         <Input
-          placeholder="_ownerHatId (uint256)"
-          borderRadius="0"
-          border="1px solid black"
-          bg="white"
+          label='Owner Hat ID'
+          placeholder='_ownerHatId (uint256)'
+          name='_ownerHatId'
+          value={formData._ownerHatId}
+          width='340px'
           onChange={(e) =>
-            SetArgs({ ...args, _ownerHatId: BigInt(e.target.value) })
+            setFormData({ ...formData, _ownerHatId: e.target.value })
           }
+          isDisabled={isLoading}
         />
-      </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"80%"}>
-        {" "}
-        <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signer Hat ID
-        </Text>
+        <MultiInput
+          values={formData._signersHatIds}
+          width='372px'
+          label='Signer Hat IDs'
+          name='_signersHatIds'
+          countLabel='Id'
+          placeholder='_signersHatIds (uint256)[]'
+          onChange={(_value, index, e) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: formData._signersHatIds.map((v, i) => {
+                return i === index ? e.target.value : v;
+              }),
+            });
+          }}
+          onClickAdd={(value, _index) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: [...formData._signersHatIds, ''],
+            });
+          }}
+          onClickRemove={(_value, index) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: formData._signersHatIds.filter(
+                (v, i) => i !== index
+              ),
+            });
+          }}
+        />
         <Input
-          placeholder="_signersHatId (uint256)"
-          borderRadius="0"
-          border="1px solid black"
-          bg="white"
-          onChange={(e) =>
-            SetArgs({ ...args, _signerHatId: BigInt(e.target.value) })
-          }
+          label='Safe'
+          placeholder='_safe (address)'
+          name='_safe'
+          value={formData._safe}
+          width='340px'
+          onChange={(e) => setFormData({ ...formData, _safe: e.target.value })}
+          isDisabled={isLoading}
         />
-      </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"60%"}>
-        {" "}
-        <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signers Minimum
-        </Text>
         <Input
-          placeholder="_minThreshold (uint256)"
-          borderRadius="0"
-          border="1px solid black"
-          bg="white"
+          label='Signers Minimum'
+          width='340px'
+          placeholder='_minThreshold (uint256)'
+          name='_minThreshold'
+          value={formData._minThreshold}
           onChange={(e) =>
-            SetArgs({ ...args, _minThreshold: BigInt(e.target.value) })
+            setFormData({ ...formData, _minThreshold: e.target.value })
           }
+          isDisabled={isLoading}
         />
-      </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"60%"}>
-        {" "}
-        <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signers Target
-        </Text>
         <Input
-          placeholder="_targetThreshold (uint256)"
-          borderRadius="0"
-          border="1px solid black"
-          bg="white"
+          label='Signers Target'
+          width='340px'
+          placeholder='_targetThreshold (uint256)'
+          name='_targetThreshold'
+          value={formData._targetThreshold}
           onChange={(e) =>
-            SetArgs({ ...args, _targetThreshold: BigInt(e.target.value) })
+            setFormData({ ...formData, _targetThreshold: e.target.value })
           }
+          isDisabled={isLoading}
         />
-      </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"60%"}>
-        {" "}
-        <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signers Maximum
-        </Text>
         <Input
-          placeholder="_maxSigners (uint256)"
-          borderRadius="0"
-          border="1px solid black"
-          bg="white"
+          label='Signers Maximum'
+          width='340px'
+          placeholder='_maxSigners (uint256)'
+          name='_maxSigners'
+          value={formData._maxSigners}
           onChange={(e) =>
-            SetArgs({ ...args, _maxSigners: BigInt(e.target.value) })
+            setFormData({ ...formData, _maxSigners: e.target.value })
           }
+          isDisabled={isLoading}
         />
-      </Flex>
-      <Button
-        disabled={!isConnected || !write}
-        onClick={() => write?.()}
-        width={"140px"}
-      >
-        Deploy
-      </Button>
-    </VStack>
+        <Button isDisabled={isLoading} type='submit' leftIcon={<BsPen />}>
+          Write
+        </Button>
+      </VStack>
+    </form>
   );
 }
