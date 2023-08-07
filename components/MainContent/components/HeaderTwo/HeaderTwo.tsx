@@ -8,7 +8,6 @@ const HeaderTwo = () => {
   const { selectedDeployAction } = useDeployContext();
 
   switch (selectedDeployAction) {
-    default:
     case DEPLOY_ACTIONS.DEPLOY_HSG:
       return (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
@@ -37,6 +36,8 @@ const HeaderTwo = () => {
           <Text>Enter inputs, click &apos;Write&apos;</Text>
         </VStack>
       );
+    default:
+      return <></>;
   }
 };
 
