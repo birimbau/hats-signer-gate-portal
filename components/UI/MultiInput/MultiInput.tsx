@@ -12,6 +12,7 @@ interface P {
   name: string;
   type?: string;
   width?: string;
+  isDisabled?: boolean;
   onChange: (
     value: string,
     index: number,
@@ -35,6 +36,7 @@ const MultiInput: React.FC<P> = (p) => {
             value={v.toString()}
             placeholder={p.placeholder}
             width={'100%'}
+            isDisabled={p.isDisabled}
             onChange={(e) => p.onChange(v, i, e)}
             extra={
               <>
@@ -44,6 +46,7 @@ const MultiInput: React.FC<P> = (p) => {
                       aria-label='remove value'
                       icon={<HiMinus />}
                       size='xs'
+                      isDisabled={p.isDisabled}
                       onClick={() => {
                         p.onClickRemove(v, i);
                       }}
@@ -53,7 +56,7 @@ const MultiInput: React.FC<P> = (p) => {
                     aria-label='Add value'
                     icon={<BsPlusLg />}
                     size='xs'
-                    isDisabled={!values[i]}
+                    isDisabled={!values[i] || p.isDisabled}
                     onClick={() => p.onClickAdd(v, i)}
                   />
                 </HStack>

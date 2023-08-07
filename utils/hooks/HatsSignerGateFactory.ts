@@ -88,9 +88,11 @@ const useDeployMultiHatSGwSafe = (args: {
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
       console.log(data);
+      return data;
     },
     onError: (error) => {
       console.log(error);
+      return error;
     },
   });
 
