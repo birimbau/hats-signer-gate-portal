@@ -3,20 +3,17 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import type { AppProps } from 'next/app';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { goerli, optimism } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { CacheProvider } from '@chakra-ui/next-js';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { SelectedActionProvider } from '../context/SelectedActionContext';
 import { DeployProvider } from '../context/DeployContext';
+import { SUPPORTED_NETWORKS } from '../utils/constants';
+import { WalletConnectionProvider } from '../context/WalletConnectionContext';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [
-    goerli,
-    optimism,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
-  ],
-  [publicProvider()],
+  Object.values(SUPPORTED_NETWORKS),
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
@@ -57,11 +54,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ChakraProvider theme={theme}>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
-            <SelectedActionProvider>
-              <DeployProvider>
-                <Component {...pageProps} />
-              </DeployProvider>
-            </SelectedActionProvider>
+            <WalletConnectionProvider>
+              <SelectedActionProvider>
+                <DeployProvider>
+                  <Component {...pageProps} />
+                </DeployProvider>
+              </SelectedActionProvider>
+            </WalletConnectionProvider>
           </RainbowKitProvider>
         </WagmiConfig>
       </ChakraProvider>

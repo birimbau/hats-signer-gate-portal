@@ -2,6 +2,7 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
 
 export enum HEADER_ACTIONS {
   DEPLOY = 'Deploy',
+  MODIFY = 'Modify',
   CLAIM = 'Claim',
   RENOUNCE = 'Renounce',
   REMOVE = 'Remove',
@@ -23,7 +24,7 @@ export const SelectedActionProvider: React.FC<{ children: React.ReactNode }> = (
   p
 ) => {
   const [selected, setSelected] = useState<HEADER_ACTIONS | undefined>(
-    HEADER_ACTIONS.DEPLOY
+    undefined
   );
 
   const contextValue = useMemo(
