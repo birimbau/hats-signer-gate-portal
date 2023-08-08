@@ -1,14 +1,15 @@
 import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BsPen } from 'react-icons/bs';
 import { useContractWrite, useWaitForTransaction } from 'wagmi';
 import { useDeployMultiHatSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import Button from '../../../UI/CustomButton/CustomButton';
 import Input from '../../../UI/CustomInput/CustomInput';
 import MultiInput from '../../../UI/MultiInput/MultiInput';
-import { decodeEventLog, hexToString, parseTransaction } from 'viem';
+import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
+import { useDeployContext } from '../../../../context/DeployContext';
 
 const decode = (hex = '') => {
   const result = [];
@@ -27,29 +28,19 @@ interface useDeployMultiHatSGwSafeArgs {
 }
 
 export default function MultiHatsSignerGateAndSafeForm() {
-  const [hash, setHash] = useState<`0x${string}`>('');
-  const { data: transactionData } = useWaitForTransaction({
-    hash,
-    onSuccess(data) {
-      debugger;
-      console.log('Success', data);
-      const topics = decodeEventLog({
-        abi: HatsSignerGateFactoryAbi,
-        data: data.logs[8].data,
-        topics: data.logs[8].topics,
-      });
-      debugger;
-    },
-  });
+  const { selectedDeployAction, isPending, setTransationResult, setIsPending } =
+    useDeployContext();
+  const [hash, setHash] = useState<`0x${string}` | ''>('');
+
   const [formData, setFormData] = useState({
     _ownerHatId: '',
-    _signersHatIds: [''],
+    _signersHatIds: ['', ''],
     _minThreshold: '',
     _targetThreshold: '',
     _maxSigners: '',
   });
 
-  const [args, SetArgs] = useState<useDeployMultiHatSGwSafeArgs>({
+  const args = useRef({
     _ownerHatId: BigInt(0),
     _signersHatIds: [BigInt(0)],
     _minThreshold: BigInt(0),
@@ -57,64 +48,63 @@ export default function MultiHatsSignerGateAndSafeForm() {
     _maxSigners: BigInt(0),
   });
 
-  const { config } = useDeployMultiHatSGwSafe(args);
+  const { config } = useDeployMultiHatSGwSafe(args.current);
 
-  const { data, isLoading, isSuccess, isError, write, writeAsync, variables } =
-    useContractWrite({
-      ...config,
-      onSuccess: (data, b, c, d, e) => {
-        debugger;
-      },
-      onSettled: (data, b, c, d, e) => {
-        debugger;
+  const { data, isLoading, write } = useContractWrite({
+    ...config,
+  });
+
+  const { data: transactionData, isLoading: transationPending } =
+    useWaitForTransaction({
+      hash,
+      onSuccess(data) {
+        const response = decodeEventLog({
+          abi: HatsSignerGateFactoryAbi,
+          data: data.logs[8].data,
+          topics: data.logs[8].topics,
+        });
+
+        setTransationResult(response.args);
       },
     });
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    SetArgs({
+    args.current = {
       _ownerHatId: BigInt(formData._ownerHatId),
       _signersHatIds: formData._signersHatIds.map((v) => BigInt(v)),
       _minThreshold: BigInt(formData._minThreshold),
       _targetThreshold: BigInt(formData._targetThreshold),
       _maxSigners: BigInt(formData._maxSigners),
-    });
-    const vari = variables;
-    const a = await write?.();
-    debugger;
+    };
+
+    write?.();
   };
 
   useEffect(() => {
     if (data) {
-      debugger;
       setHash(data.hash);
     }
   }, [data]);
 
   useEffect(() => {
-    if (transactionData) {
-      const test = parseTransaction;
-      debugger;
-      const heuheu = decode(transactionData.logs[8].data);
-      // const heuheu = hexToString(transactionData.logs[8].data);
-      debugger;
-    }
-  }, [transactionData]);
+    setIsPending((isLoading || transationPending) && hash !== '');
+  }, [isLoading, transationPending, setIsPending, hash]);
 
   return (
     <VStack gap='8px' alignItems={'flex-start'}>
       <form onSubmit={onSubmit} noValidate>
         <VStack gap={'13px'} alignItems='flex-start' width='340px'>
           <Input
-            label='Owner Hat ID'
-            placeholder='_ownerHatId (uint256)'
+            label='Owner Hat ID (integer)'
+            placeholder='269500000000000000000000000041967548934'
             name='_ownerHatId'
             value={formData._ownerHatId}
             width='340px'
             onChange={(e) =>
               setFormData({ ...formData, _ownerHatId: e.target.value })
             }
-            isDisabled={isLoading}
+            isDisabled={isPending}
           />
           <MultiInput
             values={formData._signersHatIds}
@@ -122,8 +112,9 @@ export default function MultiHatsSignerGateAndSafeForm() {
             label='Signer Hat IDs'
             name='_signersHatIds'
             countLabel='Id'
-            placeholder='_signersHatIds (uint256)[]'
-            isDisabled={isLoading}
+            placeholder='269500000000000000000000000041967548934'
+            isDisabled={isPending}
+            minAmountOfValues={2}
             onChange={(_value, index, e) => {
               setFormData({
                 ...formData,
@@ -148,48 +139,43 @@ export default function MultiHatsSignerGateAndSafeForm() {
             }}
           />
           <Input
-            label='Signers Minimum'
+            label='Min Threshold (integer)'
             width='340px'
-            placeholder='_minThreshold (uint256)'
+            placeholder='3'
             name='_minThreshold'
             value={formData._minThreshold}
             onChange={(e) =>
               setFormData({ ...formData, _minThreshold: e.target.value })
             }
-            isDisabled={isLoading}
+            isDisabled={isPending}
           />
           <Input
-            label='Signers Target'
+            label='Max Threshold (integer)'
             width='340px'
-            placeholder='_targetThreshold (uint256)'
+            placeholder='5'
             name='_targetThreshold'
             value={formData._targetThreshold}
             onChange={(e) =>
               setFormData({ ...formData, _targetThreshold: e.target.value })
             }
-            isDisabled={isLoading}
+            isDisabled={isPending}
           />
           <Input
-            label='Signers Maximum'
+            label='Max Signers (integer)'
             width='340px'
-            placeholder='_maxSigners (uint256)'
+            placeholder='9'
             name='_maxSigners'
             value={formData._maxSigners}
             onChange={(e) =>
               setFormData({ ...formData, _maxSigners: e.target.value })
             }
-            isDisabled={isLoading}
+            isDisabled={isPending}
           />
-          <Button isDisabled={isLoading} type='submit' leftIcon={<BsPen />}>
+          <Button isDisabled={isPending} type='submit' leftIcon={<BsPen />}>
             Write
           </Button>
         </VStack>
       </form>
-      {transactionData && (
-        <div>
-          <h4>Results: </h4>
-        </div>
-      )}
     </VStack>
   );
 }

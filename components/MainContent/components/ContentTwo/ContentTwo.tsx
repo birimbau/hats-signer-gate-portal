@@ -31,6 +31,10 @@ const ContentTwo = () => {
     case DEPLOY_ACTIONS.DEPLOY_MHSG_W_S:
       return <MultiHatsSignerGateAndSafeForm />;
     default:
+      if (selected) {
+        return <></>;
+      }
+
       return (
         <VStack gap='43px'>
           <Card minHeight='250px'>

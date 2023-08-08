@@ -37,6 +37,9 @@ const Input: React.FC<P> = (p) => {
           placeholdercolor='button.gray'
           background={'button.white'}
           height={'40px'}
+          _placeholderShown={{
+            textOverflow: 'ellipsis',
+          }}
         ></ChakraUiInput>
         {p.extra && <>{p.extra}</>}
       </HStack>
