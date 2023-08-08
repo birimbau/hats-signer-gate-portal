@@ -1,5 +1,4 @@
 import { Grid, GridItem } from '@chakra-ui/react';
-import HeaderActions from '../HeaderActions/HeaderActions';
 import ContentOne from './components/ContentOne/ContentOne';
 import ContentThree from './components/ContentThree/ContentThree';
 import ContentTwo from './components/ContentTwo/ContentTwo';
@@ -11,7 +10,6 @@ import * as S from './MainContent.styled';
 const MainContent = () => {
   return (
     <S.MainContentStyled direction={'column'} grow={1} position='relative'>
-      <HeaderActions />
       <Grid
         templateRows='161px 1fr'
         templateColumns='repeat(3, 1fr)'
