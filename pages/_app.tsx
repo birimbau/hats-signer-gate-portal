@@ -10,6 +10,7 @@ import { SelectedActionProvider } from '../context/SelectedActionContext';
 import { DeployProvider } from '../context/DeployContext';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
+import { Inter } from 'next/font/google';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   Object.values(SUPPORTED_NETWORKS),
@@ -46,7 +47,16 @@ const colors = {
 
 const styles = {};
 
-export const theme = extendTheme({ colors, styles });
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+});
+
+const fonts = {
+  inter: inter.style.fontFamily,
+};
+
+export const theme = extendTheme({ colors, styles, fonts });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -57,7 +67,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             <WalletConnectionProvider>
               <SelectedActionProvider>
                 <DeployProvider>
-                  <Component {...pageProps} />
+                  <div className={inter.className}>
+                    <Component {...pageProps} />
+                  </div>
                 </DeployProvider>
               </SelectedActionProvider>
             </WalletConnectionProvider>
