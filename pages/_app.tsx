@@ -10,6 +10,7 @@ import { SelectedActionProvider } from '../context/SelectedActionContext';
 import { DeployProvider } from '../context/DeployContext';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
+import Layout from '../components/Layout/Layout';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   Object.values(SUPPORTED_NETWORKS),
@@ -57,7 +58,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             <WalletConnectionProvider>
               <SelectedActionProvider>
                 <DeployProvider>
-                  <Component {...pageProps} />
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
                 </DeployProvider>
               </SelectedActionProvider>
             </WalletConnectionProvider>

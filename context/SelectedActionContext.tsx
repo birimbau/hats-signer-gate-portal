@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 
 export enum HEADER_ACTIONS {
-  DEPLOY = 'Deploy',
-  MODIFY = 'Modify',
-  CLAIM = 'Claim',
-  RENOUNCE = 'Renounce',
-  REMOVE = 'Remove',
-  REVISE = 'Revise',
-  VIEW = 'View',
+  DEPLOY = 'deploy',
+  MODIFY = 'modify',
+  CLAIM = 'claim',
+  RENOUNCE = 'renounce',
+  REMOVE = 'remove',
+  REVISE = 'revise',
+  VIEW = 'view',
 }
 
 type SelectedActionType = {
