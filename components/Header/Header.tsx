@@ -6,7 +6,7 @@ import * as S from './Header.styled';
 
 const Header = () => {
   return (
-    <S.Header className='py-1 px-6'>
+    <S.Header className='py-1 px-6 w-full'>
       <Flex justifyContent='space-between' alignItems='center'>
         <Flex alignItems='center' gap='94px'>
           <Image src='/logo.svg' width={56} height={56} alt='Hats logo' />

@@ -10,37 +10,45 @@ import {
   useSelectedActionContext,
 } from '../../context/SelectedActionContext';
 import { useWalletConnectionContext } from '../../context/WalletConnectionContext';
+import Link from 'next/link';
 
-const HeaderActions = () => {
-  const { selected, setSelected } = useSelectedActionContext();
+interface P {
+  selectedAction?: HEADER_ACTIONS;
+}
+const HeaderActions: React.FC<P> = (p) => {
   const { isReadyToUse } = useWalletConnectionContext();
 
   return (
     <Flex alignItems='center' height='72px' padding='16px 24px' gap='16px'>
-      <Button
-        isDisabled={!isReadyToUse}
-        onClick={() => setSelected(HEADER_ACTIONS.DEPLOY)}
-        isActive={selected === HEADER_ACTIONS.DEPLOY}
-        leftIcon={<AiOutlineDeploymentUnit />}
-      >
-        Deploy
-      </Button>
-      <Button
-        isDisabled={!isReadyToUse}
-        onClick={() => setSelected(HEADER_ACTIONS.MODIFY)}
-        isActive={selected === HEADER_ACTIONS.MODIFY}
-        leftIcon={<AiOutlineSetting />}
-      >
-        Modify
-      </Button>
-      <Button
-        isDisabled={!isReadyToUse}
-        onClick={() => setSelected(HEADER_ACTIONS.VIEW)}
-        isActive={selected === HEADER_ACTIONS.VIEW}
-        leftIcon={<LiaCopySolid />}
-      >
-        View
-      </Button>
+      <Link href='/deploy'>
+        <Button
+          isDisabled={!isReadyToUse}
+          // onClick={() => setSelected(HEADER_ACTIONS.DEPLOY)}
+          isActive={p.selectedAction === HEADER_ACTIONS.DEPLOY}
+          leftIcon={<AiOutlineDeploymentUnit />}
+        >
+          Deploy
+        </Button>
+      </Link>
+      <Link href='/modify'>
+        <Button
+          isDisabled={!isReadyToUse}
+          isActive={p.selectedAction === HEADER_ACTIONS.MODIFY}
+          leftIcon={<AiOutlineSetting />}
+        >
+          Modify
+        </Button>
+      </Link>
+      <Link href='/view'>
+        <Button
+          isDisabled={!isReadyToUse}
+          isActive={p.selectedAction === HEADER_ACTIONS.VIEW}
+          leftIcon={<LiaCopySolid />}
+        >
+          View
+        </Button>
+      </Link>
+
       <Divider
         orientation='vertical'
         opacity='1'
@@ -48,22 +56,27 @@ const HeaderActions = () => {
         backgroundColor='gray.700'
         width='1px'
       />
-      <Button
-        isDisabled={!isReadyToUse}
-        onClick={() => setSelected(HEADER_ACTIONS.CLAIM)}
-        isActive={selected === HEADER_ACTIONS.CLAIM}
-        leftIcon={<LuEdit />}
-      >
-        Claim
-      </Button>
-      <Button
-        isDisabled={!isReadyToUse}
-        onClick={() => setSelected(HEADER_ACTIONS.RENOUNCE)}
-        isActive={selected === HEADER_ACTIONS.RENOUNCE}
-        leftIcon={<BiBlock />}
-      >
-        Renounce
-      </Button>
+
+      <Link href='/claim'>
+        <Button
+          isDisabled={!isReadyToUse}
+          isActive={p.selectedAction === HEADER_ACTIONS.CLAIM}
+          leftIcon={<LuEdit />}
+        >
+          Claim
+        </Button>
+      </Link>
+
+      <Link href='/renounce'>
+        <Button
+          isDisabled={!isReadyToUse}
+          isActive={p.selectedAction === HEADER_ACTIONS.RENOUNCE}
+          leftIcon={<BiBlock />}
+        >
+          Renounce
+        </Button>
+      </Link>
+
       <Divider
         orientation='vertical'
         opacity='1'
@@ -71,14 +84,16 @@ const HeaderActions = () => {
         backgroundColor='gray.700'
         width='1px'
       />
-      <Button
-        isDisabled={!isReadyToUse}
-        onClick={() => setSelected(HEADER_ACTIONS.REMOVE)}
-        isActive={selected === HEADER_ACTIONS.REMOVE}
-        leftIcon={<CgUserRemove />}
-      >
-        Remove
-      </Button>
+
+      <Link href='/remove'>
+        <Button
+          isDisabled={!isReadyToUse}
+          isActive={p.selectedAction === HEADER_ACTIONS.REMOVE}
+          leftIcon={<CgUserRemove />}
+        >
+          Remove
+        </Button>
+      </Link>
     </Flex>
   );
 };

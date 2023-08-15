@@ -11,6 +11,7 @@ import { DeployProvider } from '../context/DeployContext';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
 import { Inter } from 'next/font/google';
+import Layout from '../components/Layout/Layout';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   Object.values(SUPPORTED_NETWORKS),
@@ -65,13 +66,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
             <WalletConnectionProvider>
-              <SelectedActionProvider>
-                <DeployProvider>
-                  <div className={inter.className}>
-                    <Component {...pageProps} />
-                  </div>
-                </DeployProvider>
-              </SelectedActionProvider>
+              <div className={inter.className}>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </div>
             </WalletConnectionProvider>
           </RainbowKitProvider>
         </WagmiConfig>
