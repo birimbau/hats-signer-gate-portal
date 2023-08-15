@@ -10,6 +10,7 @@ import { SelectedActionProvider } from '../context/SelectedActionContext';
 import { DeployProvider } from '../context/DeployContext';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
+import { Inter } from 'next/font/google';
 import Layout from '../components/Layout/Layout';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -47,7 +48,16 @@ const colors = {
 
 const styles = {};
 
-export const theme = extendTheme({ colors, styles });
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+});
+
+const fonts = {
+  inter: inter.style.fontFamily,
+};
+
+export const theme = extendTheme({ colors, styles, fonts });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -56,13 +66,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
             <WalletConnectionProvider>
-              <SelectedActionProvider>
-                <DeployProvider>
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
-                </DeployProvider>
-              </SelectedActionProvider>
+              <div className={inter.className}>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </div>
             </WalletConnectionProvider>
           </RainbowKitProvider>
         </WagmiConfig>
