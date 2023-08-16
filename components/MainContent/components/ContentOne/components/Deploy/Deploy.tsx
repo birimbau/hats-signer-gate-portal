@@ -1,17 +1,13 @@
 import { VStack } from '@chakra-ui/react';
-import Link from 'next/link';
 import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 import {
-  DEPLOY_ACTIONS,
-  useDeployContext,
+  DEPLOY_ACTIONS, useDeployContext
 } from '../../../../../../context/DeployContext';
 import Button from '../../../../../UI/CustomButton/CustomButton';
 
-interface P {
-  selectedDeployAction?: DEPLOY_ACTIONS;
-}
 
-const Deploy: React.FC<P> = (p) => {
+const Deploy: React.FC = () => {
+  const {selectedDeployAction, setSelectedDeployAction} = useDeployContext();
   return (
     <VStack
       justifyContent='flex-start'
@@ -20,42 +16,46 @@ const Deploy: React.FC<P> = (p) => {
       gap='36px'
       width={'340px'}
     >
-      <Link href='/deploy/hsg'>
+      
         <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_HSG}
+          isActive={selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_HSG}
           width={'100%'}
+          onClick={() => setSelectedDeployAction(DEPLOY_ACTIONS.DEPLOY_HSG)}
           leftIcon={<AiOutlineDeploymentUnit />}
         >
           Deploy Hats Signer Gate
         </Button>
-      </Link>
-      <Link href='/deploy/hsgws'>
+      
+      
         <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_HSG_W_S}
+          isActive={selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_HSG_W_S}
           width={'100%'}
+          onClick={() => setSelectedDeployAction(DEPLOY_ACTIONS.DEPLOY_HSG_W_S)}
           leftIcon={<AiOutlineDeploymentUnit />}
         >
           Deploy Hats Signer Gate + Safe
         </Button>
-      </Link>
-      <Link href='/deploy/mhsg'>
+      
+      
         <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_MHSG}
+          isActive={selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_MHSG}
           width={'100%'}
+          onClick={() => setSelectedDeployAction(DEPLOY_ACTIONS.DEPLOY_MHSG)}
           leftIcon={<AiOutlineDeploymentUnit />}
         >
           Deploy Multi Hats Signer Gate
         </Button>
-      </Link>
-      <Link href='/deploy/mhsgws'>
+      
+      
         <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_MHSG_W_S}
+          isActive={selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_MHSG_W_S}
           width={'100%'}
+          onClick={() =>  setSelectedDeployAction(DEPLOY_ACTIONS.DEPLOY_MHSG_W_S)}
           leftIcon={<AiOutlineDeploymentUnit />}
         >
           Deploy Multi Hats Signer Gate + Safe
         </Button>
-      </Link>
+      
     </VStack>
   );
 };

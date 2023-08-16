@@ -10,7 +10,7 @@ export enum HEADER_ACTIONS {
   VIEW = 'view',
 }
 
-type SelectedActionType = {
+export type SelectedActionType = {
   selected: HEADER_ACTIONS | undefined;
   setSelected: (action: HEADER_ACTIONS | undefined) => void;
 };
@@ -20,10 +20,12 @@ const SelectedActionContext = createContext<SelectedActionType>({
   setSelected: () => {},
 });
 
+export const useSelectedActionContext = () => useContext(SelectedActionContext);
+
 export const SelectedActionProvider: React.FC<{ children: React.ReactNode }> = (
   p
 ) => {
-  const [selected, setSelected] = useState<HEADER_ACTIONS | undefined>(
+  const [selected, setSelected] = useState<SelectedActionType['selected']>(
     undefined
   );
 
@@ -39,4 +41,4 @@ export const SelectedActionProvider: React.FC<{ children: React.ReactNode }> = (
   );
 };
 
-export const useSelectedActionContext = () => useContext(SelectedActionContext);
+

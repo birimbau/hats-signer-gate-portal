@@ -52,6 +52,7 @@ const HeaderOne = () => {
           <Text>Connect any wallet, click {`'Read'`}</Text>
         </VStack>
       );
+    case undefined:
     default:
       return (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>

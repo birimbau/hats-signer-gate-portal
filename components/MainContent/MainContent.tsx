@@ -1,22 +1,22 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import ContentOne from './components/ContentOne/ContentOne';
-import ContentThree from './components/ContentThree/ContentThree';
+import { ContentThree } from './components/ContentThree/ContentThree';
+
 import ContentTwo from './components/ContentTwo/ContentTwo';
 import HeaderOne from './components/HeaderOne/HeaderOne';
 import HeaderThree from './components/HeaderThree/HeaderThree';
 import HeaderTwo from './components/HeaderTwo/HeaderTwo';
 import * as S from './MainContent.styled';
+import { SelectedActionType, useSelectedActionContext } from '../../context/SelectedActionContext';
+import { useEffect } from 'react';
 
-interface P {
-  headerOne?: React.ReactNode;
-  headerTwo?: React.ReactNode;
-  headerThree?: React.ReactNode;
-  contentOne?: React.ReactNode;
-  contentTwo?: React.ReactNode;
-  contentThree?: React.ReactNode;
-}
 
-const MainContent: React.FC<P> = (p) => {
+const MainContent: React.FC<SelectedActionType['selected']> = (selected: SelectedActionType['selected']) => {
+  const {setSelected} = useSelectedActionContext();
+
+  useEffect(() => {
+    setSelected(selected);
+  })
   return (
     <S.MainContentStyled direction={'column'} grow={1} position='relative'>
       <Grid
@@ -30,7 +30,7 @@ const MainContent: React.FC<P> = (p) => {
           background='#EDF8FE'
           padding='16px 24px'
         >
-          <S.CellContent>{p.headerOne}</S.CellContent>
+          <S.CellContent><HeaderOne /></S.CellContent>
         </GridItem>
         <GridItem
           rowSpan={1}
@@ -38,7 +38,7 @@ const MainContent: React.FC<P> = (p) => {
           background='#F9FFFF'
           padding='16px 24px'
         >
-          <S.CellContent>{p.headerTwo}</S.CellContent>
+          <S.CellContent><HeaderTwo /></S.CellContent>
         </GridItem>
         <GridItem
           rowSpan={1}
@@ -46,7 +46,7 @@ const MainContent: React.FC<P> = (p) => {
           background='#FAFAFA'
           padding='16px 24px'
         >
-          <S.CellContent>{p.headerThree}</S.CellContent>
+          <S.CellContent><HeaderThree /></S.CellContent>
         </GridItem>
         <GridItem
           rowSpan={1}
@@ -54,7 +54,7 @@ const MainContent: React.FC<P> = (p) => {
           background='#F6FCFF'
           padding='24px 24px'
         >
-          <S.CellContent>{p.contentOne}</S.CellContent>
+          <S.CellContent><ContentOne  /></S.CellContent>
         </GridItem>
         <GridItem
           rowSpan={1}
@@ -62,7 +62,7 @@ const MainContent: React.FC<P> = (p) => {
           background='#F0FCFD'
           padding='24px 24px'
         >
-          <S.CellContent>{p.contentTwo}</S.CellContent>
+          <S.CellContent><ContentTwo/></S.CellContent>
         </GridItem>
         <GridItem
           rowSpan={1}
@@ -70,7 +70,7 @@ const MainContent: React.FC<P> = (p) => {
           background='#FFFFFF'
           padding='24px 24px'
         >
-          <S.CellContent>{p.contentThree}</S.CellContent>
+          <S.CellContent><ContentThree /></S.CellContent>
         </GridItem>
       </Grid>
     </S.MainContentStyled>

@@ -1,17 +1,17 @@
-import '../styles/globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import type { AppProps } from 'next/app';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
 import { CacheProvider } from '@chakra-ui/next-js';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import { SelectedActionProvider } from '../context/SelectedActionContext';
-import { DeployProvider } from '../context/DeployContext';
-import { SUPPORTED_NETWORKS } from '../utils/constants';
-import { WalletConnectionProvider } from '../context/WalletConnectionContext';
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
+import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { publicProvider } from 'wagmi/providers/public';
 import Layout from '../components/Layout/Layout';
+import { DeployProvider } from '../context/DeployContext';
+import { SelectedActionProvider } from '../context/SelectedActionContext';
+import { WalletConnectionProvider } from '../context/WalletConnectionContext';
+import '../styles/globals.css';
+import { SUPPORTED_NETWORKS } from '../utils/constants';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   Object.values(SUPPORTED_NETWORKS),
@@ -63,17 +63,21 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <CacheProvider>
       <ChakraProvider theme={theme}>
-        <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider chains={chains}>
-            <WalletConnectionProvider>
-              <div className={inter.className}>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </div>
-            </WalletConnectionProvider>
-          </RainbowKitProvider>
-        </WagmiConfig>
+        <SelectedActionProvider>
+          <DeployProvider>
+            <WagmiConfig config={wagmiConfig}>
+              <RainbowKitProvider chains={chains}>
+                <WalletConnectionProvider>
+                  <div className={inter.className}>
+                    <Layout>
+                      <Component {...pageProps} />
+                    </Layout>
+                  </div>
+                </WalletConnectionProvider>
+              </RainbowKitProvider>
+            </WagmiConfig>
+          </DeployProvider>
+        </SelectedActionProvider>
       </ChakraProvider>
     </CacheProvider>
   );
