@@ -8,14 +8,18 @@ import {
 import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { useDeployContext, DEPLOY_ACTIONS } from '../../../../context/DeployContext';
-import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 
 export const ContentThree = () => {
   const { selected, setSelected } = useSelectedActionContext();
   const { isReadyToUse } = useWalletConnectionContext();
   const { selectedDeployAction } = useDeployContext();
-
+  const router = useRouter();
+  const onClickHandler = (action: HEADER_ACTIONS) => {
+    setSelected(action);
+    router.replace(`/${action.toLowerCase()}`);
+  };
  
 
   switch (selected) {
@@ -57,7 +61,7 @@ export const ContentThree = () => {
               <VStack gap='25px' alignItems={'flex-start'}>
                 <Button
                   isDisabled={!isReadyToUse}
-                  onClick={() => setSelected(HEADER_ACTIONS.VIEW)}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.VIEW)}
                   leftIcon={<LiaCopySolid />}
                 >
                   View
@@ -79,7 +83,7 @@ export const ContentThree = () => {
               <VStack gap='25px' alignItems={'flex-start'}>
                 <Button
                   isDisabled={!isReadyToUse}
-                  onClick={() => setSelected(HEADER_ACTIONS.REMOVE)}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.REMOVE)}
                   leftIcon={<CgUserRemove />}
                 >
                   Remove

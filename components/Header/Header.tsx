@@ -9,11 +9,9 @@ import { useSelectedActionContext } from '../../context/SelectedActionContext';
 const Header = () => {
 
   const router = useRouter();
-  const {setSelected} = useSelectedActionContext()
   function clickHandler() 
     {
-      setSelected(undefined)
-      router.push('/')
+      router.replace('/')
     
   }
   return (
@@ -21,7 +19,7 @@ const Header = () => {
       <Flex justifyContent='space-between' alignItems='center'>
         <Flex alignItems='center' gap='94px'>
           
-          <Image src='/logo.svg' width={56} height={56} alt='Hats logo' onClick={() => clickHandler()}/>
+          <Image src='/logo.svg' width={56}  height={56} alt='Hats logo' onClick={() => clickHandler()}/>
           
           <Link
             href='https://docs.hatsprotocol.xyz'

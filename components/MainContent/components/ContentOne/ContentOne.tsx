@@ -8,11 +8,16 @@ import {
 import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
 import Button from '../../../UI/CustomButton/CustomButton';
 import Deploy from './components/Deploy/Deploy';
+import { useRouter } from 'next/router';
 
 const ContentOne = () => {
   const { selected, setSelected } = useSelectedActionContext();
   const { isReadyToUse } = useWalletConnectionContext();
-
+  const router = useRouter();
+  const onClickHandler = (action: HEADER_ACTIONS) => {
+    setSelected(action);
+    router.replace(`/${action.toLowerCase()}`);
+  };
   switch (selected) {
     case HEADER_ACTIONS.DEPLOY:
       return <Deploy />;
@@ -36,7 +41,7 @@ const ContentOne = () => {
               <VStack gap='25px' alignItems={'flex-start'}>
                 <Button
                   isDisabled={!isReadyToUse}
-                  onClick={() => setSelected(HEADER_ACTIONS.DEPLOY)}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.DEPLOY)}
                   leftIcon={<AiOutlineDeploymentUnit />}
                 >
                   Deploy
@@ -58,7 +63,7 @@ const ContentOne = () => {
               <VStack gap='25px' alignItems={'flex-start'}>
                 <Button
                   isDisabled={!isReadyToUse}
-                  onClick={() => setSelected(HEADER_ACTIONS.CLAIM)}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.CLAIM)}
                   leftIcon={<LuEdit />}
                 >
                   Claim

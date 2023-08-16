@@ -7,16 +7,14 @@ import HeaderOne from './components/HeaderOne/HeaderOne';
 import HeaderThree from './components/HeaderThree/HeaderThree';
 import HeaderTwo from './components/HeaderTwo/HeaderTwo';
 import * as S from './MainContent.styled';
-import { SelectedActionType, useSelectedActionContext } from '../../context/SelectedActionContext';
-import { useEffect } from 'react';
 
 
-const MainContent: React.FC<SelectedActionType['selected']> = (selected: SelectedActionType['selected']) => {
-  const {setSelected} = useSelectedActionContext();
 
-  useEffect(() => {
-    setSelected(selected);
-  })
+
+const MainContent: React.FC = () => {
+  
+
+  
   return (
     <S.MainContentStyled direction={'column'} grow={1} position='relative'>
       <Grid

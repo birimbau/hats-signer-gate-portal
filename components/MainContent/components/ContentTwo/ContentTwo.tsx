@@ -15,13 +15,17 @@ import HatsSignerGateForm from '../../../Deployers/forms/HatsSignerGateForm/Hats
 import MultiHatsSignerGateAndSafeForm from '../../../Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm';
 import MultiHatsSignerGateForm from '../../../Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 import Button from '../../../UI/CustomButton/CustomButton';
-import { use } from 'react';
+import { useRouter } from 'next/router';
 
 const ContentTwo = () => {
   const { selected, setSelected } = useSelectedActionContext();
   const {selectedDeployAction} = useDeployContext();
   const { isReadyToUse } = useWalletConnectionContext();
-    
+  const router = useRouter();
+  const onClickHandler = (action: HEADER_ACTIONS) => {
+    setSelected(action);
+    router.replace(`/${action.toLowerCase()}`);
+  };
   switch (selected) {
     case HEADER_ACTIONS.MODIFY:
           return <p>Modify</p>
@@ -58,7 +62,7 @@ const ContentTwo = () => {
                       <VStack gap='25px' alignItems={'flex-start'}>
                         <Button
                           isDisabled={!isReadyToUse}
-                          onClick={() => setSelected(HEADER_ACTIONS.MODIFY)}
+                          onClick={() => onClickHandler(HEADER_ACTIONS.MODIFY)}
                           leftIcon={<AiOutlineSetting />}
                         >
                           Modify
@@ -80,10 +84,10 @@ const ContentTwo = () => {
                       <VStack gap='25px' alignItems={'flex-start'}>
                         <Button
                           isDisabled={!isReadyToUse}
-                          onClick={() => setSelected(HEADER_ACTIONS.REMOVE)}
+                          onClick={() => onClickHandler(HEADER_ACTIONS.RENOUNCE)}
                           leftIcon={<CgUserRemove />}
                         >
-                          Remove
+                          Renounce
                         </Button>
                         <Text>
                           <Text as='b'>Renounce Signing Authority</Text> by giving up

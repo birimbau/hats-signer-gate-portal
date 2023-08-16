@@ -11,25 +11,21 @@ import {
 } from '../../context/SelectedActionContext';
 import { useWalletConnectionContext } from '../../context/WalletConnectionContext';
 import Button from '../UI/CustomButton/CustomButton';
-import { useEffect } from 'react';
+import { set } from 'zod';
 
 interface P {
   selectedAction: HEADER_ACTIONS | undefined;
 }
 const HeaderActions: React.FC<P> = (p) => {
   const { isReadyToUse } = useWalletConnectionContext();
-  const { setSelected } = useSelectedActionContext();
+  const { selected, setSelected } = useSelectedActionContext();
   const router = useRouter();
   const onClickHandler = (action: HEADER_ACTIONS) => {
     setSelected(action);
     router.replace(`/${action.toLowerCase()}`);
   };
 
-  useEffect(() => {
-    if (p.selectedAction) {
-      setSelected(p.selectedAction);
-    }
-  }, [p.selectedAction, setSelected]);
+  
 
   return (
     <Flex alignItems='center' height='72px' padding='16px 24px' gap='16px'>

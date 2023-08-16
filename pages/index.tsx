@@ -1,11 +1,15 @@
 import type { NextPage } from "next";
 import MainContent from "../components/MainContent/MainContent";
-import { SelectedActionType } from "../context/SelectedActionContext";
+import { SelectedActionType, useSelectedActionContext } from "../context/SelectedActionContext";
+import { useEffect } from 'react';
 
 const Home: NextPage = () => { //access state here through destructuring
-
-   
-        return (<MainContent selected={undefined as SelectedActionType['selected']} />)
+    
+    const { selected, setSelected } = useSelectedActionContext();
+    useEffect(() => {
+        setSelected(undefined);
+    }, [selected, setSelected]);
+        return (<MainContent />)
    
 };
 
