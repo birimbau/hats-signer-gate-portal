@@ -11,7 +11,6 @@ import {
 } from '../../context/SelectedActionContext';
 import { useWalletConnectionContext } from '../../context/WalletConnectionContext';
 import Button from '../UI/CustomButton/CustomButton';
-import { set } from 'zod';
 
 interface P {
   selectedAction: HEADER_ACTIONS | undefined;
@@ -25,39 +24,34 @@ const HeaderActions: React.FC<P> = (p) => {
     router.replace(`/${action.toLowerCase()}`);
   };
 
-  
-
   return (
     <Flex alignItems='center' height='72px' padding='16px 24px' gap='16px'>
-      
-        <Button
-          isDisabled={!isReadyToUse}
-          isActive={p.selectedAction === HEADER_ACTIONS.DEPLOY}
-          leftIcon={<AiOutlineDeploymentUnit />}
-          onClick={() => onClickHandler(HEADER_ACTIONS.DEPLOY)}
-        >
-          Deploy
-        </Button>
-      
-      
-        <Button
-          isDisabled={!isReadyToUse}
-          isActive={p.selectedAction === HEADER_ACTIONS.MODIFY}
-          leftIcon={<AiOutlineSetting />}
-          onClick={() => onClickHandler(HEADER_ACTIONS.MODIFY)}
-        >
-          Modify
-        </Button>
-      
-        <Button
-          isDisabled={!isReadyToUse}
-          isActive={p.selectedAction === HEADER_ACTIONS.VIEW}
-          leftIcon={<LiaCopySolid />}
-          onClick={() => onClickHandler(HEADER_ACTIONS.VIEW)}
-        >
-          View
-        </Button>
-      
+      <Button
+        isDisabled={!isReadyToUse}
+        isActive={p.selectedAction === HEADER_ACTIONS.DEPLOY}
+        leftIcon={<AiOutlineDeploymentUnit />}
+        onClick={() => onClickHandler(HEADER_ACTIONS.DEPLOY)}
+      >
+        Deploy
+      </Button>
+
+      <Button
+        isDisabled={!isReadyToUse}
+        isActive={p.selectedAction === HEADER_ACTIONS.MODIFY}
+        leftIcon={<AiOutlineSetting />}
+        onClick={() => onClickHandler(HEADER_ACTIONS.MODIFY)}
+      >
+        Modify
+      </Button>
+
+      <Button
+        isDisabled={!isReadyToUse}
+        isActive={p.selectedAction === HEADER_ACTIONS.VIEW}
+        leftIcon={<LiaCopySolid />}
+        onClick={() => onClickHandler(HEADER_ACTIONS.VIEW)}
+      >
+        View
+      </Button>
 
       <Divider
         orientation='vertical'
@@ -67,27 +61,23 @@ const HeaderActions: React.FC<P> = (p) => {
         width='1px'
       />
 
-      
-        <Button
-          isDisabled={!isReadyToUse}
-          isActive={p.selectedAction === HEADER_ACTIONS.CLAIM}
-          leftIcon={<LuEdit />}
-          onClick={() => onClickHandler(HEADER_ACTIONS.CLAIM)}
-        >
-          Claim
-        </Button>
-      
+      <Button
+        isDisabled={!isReadyToUse}
+        isActive={p.selectedAction === HEADER_ACTIONS.CLAIM}
+        leftIcon={<LuEdit />}
+        onClick={() => onClickHandler(HEADER_ACTIONS.CLAIM)}
+      >
+        Claim
+      </Button>
 
-      
-        <Button
-          isDisabled={!isReadyToUse}
-          isActive={p.selectedAction === HEADER_ACTIONS.RENOUNCE}
-          leftIcon={<BiBlock />}
-          onClick={() => onClickHandler(HEADER_ACTIONS.RENOUNCE)}
-        >
-          Renounce
-        </Button>
-      
+      <Button
+        isDisabled={!isReadyToUse}
+        isActive={p.selectedAction === HEADER_ACTIONS.RENOUNCE}
+        leftIcon={<BiBlock />}
+        onClick={() => onClickHandler(HEADER_ACTIONS.RENOUNCE)}
+      >
+        Renounce
+      </Button>
 
       <Divider
         orientation='vertical'
@@ -97,16 +87,14 @@ const HeaderActions: React.FC<P> = (p) => {
         width='1px'
       />
 
-      
-        <Button
-          isDisabled={!isReadyToUse}
-          isActive={p.selectedAction === HEADER_ACTIONS.REMOVE}
-          leftIcon={<CgUserRemove />}
-          onClick={() => onClickHandler(HEADER_ACTIONS.REMOVE)}
-        >
-          Remove
-        </Button>
-      
+      <Button
+        isDisabled={!isReadyToUse}
+        isActive={p.selectedAction === HEADER_ACTIONS.REMOVE}
+        leftIcon={<CgUserRemove />}
+        onClick={() => onClickHandler(HEADER_ACTIONS.REMOVE)}
+      >
+        Remove
+      </Button>
     </Flex>
   );
 };
