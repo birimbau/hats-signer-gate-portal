@@ -38,12 +38,16 @@ export default function HatsSignerGateAndSafeForm() {
       <Flex flexDirection={"column"} gap={0} w={"80%"}>
         {" "}
         <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Owner Hat ID
+          Owner Hat ID (integer)
         </Text>
         <Input
-          placeholder="_ownerHatId (uint256)"
+          placeholder="26950000000000000000000000004196..."
+          _placeholder={{
+            fontSize: "14px"
+          }}
           borderRadius="0"
-          border="1px solid black"
+          border="1px solid"
+          borderColor="gray.700"
           bg="white"
           onChange={(e) =>
             SetArgs({ ...args, _ownerHatId: BigInt(e.target.value) })
@@ -53,12 +57,16 @@ export default function HatsSignerGateAndSafeForm() {
       <Flex flexDirection={"column"} gap={0} w={"80%"}>
         {" "}
         <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signer Hat ID
+          Signer Hat ID (integer)
         </Text>
         <Input
-          placeholder="_signersHatId (uint256)"
+          placeholder="26960000000000000000000000003152..."
+          _placeholder={{
+            fontSize: "14px"
+          }}
           borderRadius="0"
-          border="1px solid black"
+          border="1px solid"
+          borderColor="gray.700"
           bg="white"
           onChange={(e) =>
             SetArgs({ ...args, _signerHatId: BigInt(e.target.value) })
@@ -68,12 +76,16 @@ export default function HatsSignerGateAndSafeForm() {
       <Flex flexDirection={"column"} gap={0} w={"60%"}>
         {" "}
         <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signers Minimum
+          Min Threshold (integer)
         </Text>
         <Input
-          placeholder="_minThreshold (uint256)"
+          placeholder="3"
+          _placeholder={{
+            fontSize: "14px"
+          }}
           borderRadius="0"
-          border="1px solid black"
+          border="1px solid"
+          borderColor="gray.700"
           bg="white"
           onChange={(e) =>
             SetArgs({ ...args, _minThreshold: BigInt(e.target.value) })
@@ -83,12 +95,16 @@ export default function HatsSignerGateAndSafeForm() {
       <Flex flexDirection={"column"} gap={0} w={"60%"}>
         {" "}
         <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signers Target
+          Max Threshold (integer)
         </Text>
         <Input
-          placeholder="_targetThreshold (uint256)"
+          placeholder="5"
+          _placeholder={{
+            fontSize: "14px"
+          }}
           borderRadius="0"
-          border="1px solid black"
+          border="1px solid"
+          borderColor="gray.700"
           bg="white"
           onChange={(e) =>
             SetArgs({ ...args, _targetThreshold: BigInt(e.target.value) })
@@ -98,12 +114,16 @@ export default function HatsSignerGateAndSafeForm() {
       <Flex flexDirection={"column"} gap={0} w={"60%"}>
         {" "}
         <Text fontStyle="normal" fontWeight={500} lineHeight="24px">
-          Signers Maximum
+          Max Signers (integer)
         </Text>
         <Input
-          placeholder="_maxSigners (uint256)"
+          placeholder="9"
+          _placeholder={{
+            fontSize: "14px"
+          }}
           borderRadius="0"
-          border="1px solid black"
+          border="1px solid"
+          borderColor="gray.700"
           bg="white"
           onChange={(e) =>
             SetArgs({ ...args, _maxSigners: BigInt(e.target.value) })

@@ -29,11 +29,14 @@ const MultiInput: React.FC<P> = (p) => {
         return (
           <Input
             key={i}
-            label={`${p.label} [${p.countLabel} ${i + 1}]`}
+            label={`${p.label} [${p.countLabel} ${i + 1}] (integer)`}
             type={p.type || 'text'}
             name={`${p.name}[${i}]`}
             value={v.toString()}
             placeholder={p.placeholder}
+            _placeholder={{
+              fontSize: "14px"
+            }}
             width={'100%'}
             onChange={(e) => p.onChange(v, i, e)}
             extra={

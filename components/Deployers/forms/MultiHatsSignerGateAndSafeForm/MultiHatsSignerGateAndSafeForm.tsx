@@ -52,10 +52,18 @@ export default function MultiHatsSignerGateAndSafeForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate>
-      <VStack gap={'13px'} alignItems='flex-start' width='340px'>
+      <VStack 
+        gap={'13px'} 
+        alignItems='flex-start' 
+        width='340px'
+        fontSize={14}
+      >
         <Input
-          label='Owner Hat ID'
-          placeholder='_ownerHatId (uint256)'
+          label='Owner Hat ID (integer)'
+          placeholder='26950000000000000000000000004196...'
+          _placeholder={{
+            fontSize: "14px"
+          }}
           name='_ownerHatId'
           value={formData._ownerHatId}
           width='340px'
@@ -70,7 +78,7 @@ export default function MultiHatsSignerGateAndSafeForm() {
           label='Signer Hat IDs'
           name='_signersHatIds'
           countLabel='Id'
-          placeholder='_signersHatIds (uint256)[]'
+          placeholder='26960000000000000000000000003152...'
           onChange={(_value, index, e) => {
             setFormData({
               ...formData,
@@ -95,9 +103,12 @@ export default function MultiHatsSignerGateAndSafeForm() {
           }}
         />
         <Input
-          label='Signers Minimum'
+          label='Min Threshold (integer)'
           width='340px'
-          placeholder='_minThreshold (uint256)'
+          placeholder='3'
+          _placeholder={{
+            fontSize: "14px"
+          }}
           name='_minThreshold'
           value={formData._minThreshold}
           onChange={(e) =>
@@ -106,9 +117,12 @@ export default function MultiHatsSignerGateAndSafeForm() {
           isDisabled={isLoading}
         />
         <Input
-          label='Signers Target'
+          label='Max Threshold (integer)'
           width='340px'
-          placeholder='_targetThreshold (uint256)'
+          placeholder='5'
+          _placeholder={{
+            fontSize: "14px"
+          }}
           name='_targetThreshold'
           value={formData._targetThreshold}
           onChange={(e) =>
@@ -117,9 +131,12 @@ export default function MultiHatsSignerGateAndSafeForm() {
           isDisabled={isLoading}
         />
         <Input
-          label='Signers Maximum'
+          label='Max Signers (integer)'
           width='340px'
-          placeholder='_maxSigners (uint256)'
+          placeholder='9'
+          _placeholder={{
+            fontSize: "14px"
+          }}
           name='_maxSigners'
           value={formData._maxSigners}
           onChange={(e) =>
