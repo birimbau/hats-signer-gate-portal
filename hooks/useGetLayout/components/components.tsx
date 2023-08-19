@@ -4,9 +4,12 @@ import HatsSignerGateForm from '../../../components/Deployers/forms/HatsSignerGa
 import MultiHatsSignerGateAndSafeForm from '../../../components/Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm';
 import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 import Deploy from '../../../components/MainContent/components/ContentOne/components/Deploy/Deploy';
+import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
+import { HEADER_ACTIONS } from '../../../context/SelectedActionContext';
+import { ComponentsP } from '../types';
 
-export const components = {
-  deploy: {
+export const components: ComponentsP = {
+  [HEADER_ACTIONS.DEPLOY]: {
     headerOne: () => (
       <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
         <Text as='b'>Hats Signer Gate Factory</Text>
@@ -14,7 +17,7 @@ export const components = {
       </VStack>
     ),
     contentOne: () => <Deploy />,
-    hsg: {
+    [DEPLOY_ACTIONS.DEPLOY_HSG]: {
       headerOne: () => () =>
         (
           <VStack
@@ -32,7 +35,7 @@ export const components = {
       contentOne: () => <Deploy />,
       contentTwo: () => <HatsSignerGateForm />,
     },
-    hsgws: {
+    [DEPLOY_ACTIONS.DEPLOY_HSG_W_S]: {
       headerOnde: () => (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
           <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
@@ -45,7 +48,7 @@ export const components = {
       contentOne: () => <Deploy />,
       contentTwo: () => <HatsSignerGateAndSafeForm />,
     },
-    mhsg: {
+    [DEPLOY_ACTIONS.DEPLOY_MHSG]: {
       headerOne: () => (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
           <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
@@ -58,7 +61,7 @@ export const components = {
       contentOne: () => <Deploy />,
       contentTwo: () => <MultiHatsSignerGateForm />,
     },
-    mhsgws: {
+    [DEPLOY_ACTIONS.DEPLOY_MHSG_W_S]: {
       headerOne: () => (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
           <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
@@ -72,9 +75,9 @@ export const components = {
       contentTwo: () => <MultiHatsSignerGateAndSafeForm />,
     },
   },
-  modify: {},
-  view: {},
-  claim: {},
-  renounce: {},
-  remove: {},
+  [HEADER_ACTIONS.MODIFY]: {},
+  [HEADER_ACTIONS.VIEW]: {},
+  [HEADER_ACTIONS.CLAIM]: {},
+  [HEADER_ACTIONS.RENOUNCE]: {},
+  [HEADER_ACTIONS.REMOVE]: {},
 };
