@@ -5,8 +5,12 @@ import Header from '../Header/Header';
 import HeaderActions from '../HeaderActions/HeaderActions';
 import { HEADER_ACTIONS } from '../../context/SelectedActionContext';
 import { findAction } from '../../utils/utils';
+import React from 'react';
 
-const Layout = ({ children }: any) => {
+interface P {
+  children: React.ReactNode;
+}
+const Layout: React.FC<P> = (p) => {
   const router = useRouter();
   const { slug } = router.query;
   const result = findAction(slug);
@@ -27,7 +31,7 @@ const Layout = ({ children }: any) => {
         <Box alignSelf='flex-start'>
           <HeaderActions selectedAction={result as HEADER_ACTIONS} />
         </Box>
-        {children}
+        {p.children}
       </VStack>
     </div>
   );
