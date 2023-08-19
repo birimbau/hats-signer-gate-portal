@@ -8,10 +8,10 @@ import React, {
 import { useSelectedActionContext } from './SelectedActionContext';
 
 export enum DEPLOY_ACTIONS {
-  DEPLOY_HSG = 'Deploy HSG',
-  DEPLOY_HSG_W_S = 'Deploy HSG with SAFE',
-  DEPLOY_MHSG = 'Deploy MHSG',
-  DEPLOY_MHSG_W_S = 'Deploy MHSG with SAFE',
+  DEPLOY_HSG = 'hsg',
+  DEPLOY_HSG_W_S = 'hsgws',
+  DEPLOY_MHSG = 'mhsg',
+  DEPLOY_MHSG_W_S = 'mhsgws',
 }
 
 type DeployType = {

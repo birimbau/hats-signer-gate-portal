@@ -3,7 +3,7 @@ import { components } from './components/components';
 
 const useGetLayout = ({ slug1, slug2 }) => {
   const component = slug2 ? components[slug1][slug2] : components[slug1];
-
+  debugger;
   return {
     headerOne: component?.headerOne,
     headerTwo: component?.headerTwo,

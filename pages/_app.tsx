@@ -63,21 +63,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <CacheProvider>
       <ChakraProvider theme={theme}>
-        <SelectedActionProvider>
-          <DeployProvider>
-            <WagmiConfig config={wagmiConfig}>
-              <RainbowKitProvider chains={chains}>
-                <WalletConnectionProvider>
-                  <div className={inter.className}>
-                    <Layout>
-                      <Component {...pageProps} />
-                    </Layout>
-                  </div>
-                </WalletConnectionProvider>
-              </RainbowKitProvider>
-            </WagmiConfig>
-          </DeployProvider>
-        </SelectedActionProvider>
+        <WagmiConfig config={wagmiConfig}>
+          <RainbowKitProvider chains={chains}>
+            <WalletConnectionProvider>
+              <div className={inter.className}>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </div>
+            </WalletConnectionProvider>
+          </RainbowKitProvider>
+        </WagmiConfig>
       </ChakraProvider>
     </CacheProvider>
   );

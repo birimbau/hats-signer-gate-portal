@@ -5,10 +5,7 @@ import { BiBlock } from 'react-icons/bi';
 import { CgUserRemove } from 'react-icons/cg';
 import { LiaCopySolid } from 'react-icons/lia';
 import { LuEdit } from 'react-icons/lu';
-import {
-  HEADER_ACTIONS,
-  useSelectedActionContext,
-} from '../../context/SelectedActionContext';
+import { HEADER_ACTIONS } from '../../context/SelectedActionContext';
 import { useWalletConnectionContext } from '../../context/WalletConnectionContext';
 import Button from '../UI/CustomButton/CustomButton';
 
@@ -17,10 +14,8 @@ interface P {
 }
 const HeaderActions: React.FC<P> = (p) => {
   const { isReadyToUse } = useWalletConnectionContext();
-  const { selected, setSelected } = useSelectedActionContext();
   const router = useRouter();
   const onClickHandler = (action: HEADER_ACTIONS) => {
-    setSelected(action);
     router.replace(`/${action.toLowerCase()}`);
   };
 

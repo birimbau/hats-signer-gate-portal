@@ -2,9 +2,11 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import MainContent from '../../components/MainContent/MainContent';
 import useGetLayout from '../../hooks/useGetLayout/useGetLayout';
+import { findAction } from '../../utils/utils';
 
 const X: NextPage = () => {
-  const route = useRouter();
+  const router = useRouter();
+  const { slug } = router.query;
   const {
     headerOne,
     headerTwo,
@@ -13,8 +15,8 @@ const X: NextPage = () => {
     contentTwo,
     contentThree,
   } = useGetLayout({
-    slug1: route.query?.slug?.[0],
-    slug2: route.query?.slug?.[1],
+    slug1: findAction(slug, 0),
+    slug2: findAction(slug, 1),
   });
 
   return (
