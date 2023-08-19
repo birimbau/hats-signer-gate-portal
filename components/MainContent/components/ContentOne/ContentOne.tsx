@@ -27,12 +27,10 @@ const ContentOne = () => {
       return <>Renounce: To be developer</>;
     case HEADER_ACTIONS.REMOVE:
       return <>Remove: To be developer</>;
-    case HEADER_ACTIONS.REVISE:
-      return <>REVISE: To be developer</>;
     case HEADER_ACTIONS.VIEW:
       return <>VIEW: To be developer</>;
     case HEADER_ACTIONS.MODIFY:
-        return <>Modify: To be developer</>;
+      return <>Modify: To be developer</>;
     default:
       return (
         <VStack gap='43px'>
