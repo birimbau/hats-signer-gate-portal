@@ -1,6 +1,7 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import ContentOne from './components/ContentOne/ContentOne';
-import ContentThree from './components/ContentThree/ContentThree';
+import { ContentThree } from './components/ContentThree/ContentThree';
+
 import ContentTwo from './components/ContentTwo/ContentTwo';
 import HeaderOne from './components/HeaderOne/HeaderOne';
 import HeaderThree from './components/HeaderThree/HeaderThree';
@@ -18,7 +19,12 @@ interface P {
 
 const MainContent: React.FC<P> = (p) => {
   return (
-    <S.MainContentStyled direction={'column'} grow={1} position='relative'>
+    <S.MainContentStyled
+      direction={'column'}
+      grow={1}
+      position='relative'
+      width='100%'
+    >
       <Grid
         templateRows='161px 1fr'
         templateColumns='repeat(3, 1fr)'

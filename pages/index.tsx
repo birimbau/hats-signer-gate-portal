@@ -1,17 +1,23 @@
-import { VStack, Text, Card, CardBody } from '@chakra-ui/react';
 import type { NextPage } from 'next';
-import Link from 'next/link';
+import MainContent from '../components/MainContent/MainContent';
+import { VStack, Text, Card, CardBody } from '@chakra-ui/react';
+import { useWalletConnectionContext } from '../context/WalletConnectionContext';
 import { AiOutlineDeploymentUnit, AiOutlineSetting } from 'react-icons/ai';
+import { LuEdit } from 'react-icons/lu';
 import { CgUserRemove } from 'react-icons/cg';
 import { LiaCopySolid } from 'react-icons/lia';
-import { LuEdit } from 'react-icons/lu';
-import MainContent from '../components/MainContent/MainContent';
 import Button from '../components/UI/CustomButton/CustomButton';
-import { useWalletConnectionContext } from '../context/WalletConnectionContext';
+import { HEADER_ACTIONS } from '../context/SelectedActionContext';
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
   const { isConnected, isWrongNetwork, isReadyToUse } =
     useWalletConnectionContext();
+  const router = useRouter();
+
+  const onClickHandler = (action: HEADER_ACTIONS) => {
+    router.replace(`/${action.toLowerCase()}`);
+  };
 
   return (
     <MainContent
@@ -24,6 +30,7 @@ const Home: NextPage = () => {
           </Text>
         </VStack>
       }
+      headerTwo={<></>}
       headerThree={
         <>
           {!isConnected && (
@@ -35,7 +42,7 @@ const Home: NextPage = () => {
               <Text as='b'>Please Connect Your Wallet</Text>
             </VStack>
           )}
-          {isConnected && isWrongNetwork && (
+          {isWrongNetwork && (
             <VStack
               justifyContent='flex-end'
               height='100%'
@@ -44,7 +51,7 @@ const Home: NextPage = () => {
               <Text as='b'>Wrong Network</Text>
             </VStack>
           )}
-          {isConnected && !isWrongNetwork && (
+          {isReadyToUse && (
             <VStack
               justifyContent='flex-end'
               height='100%'
@@ -60,15 +67,13 @@ const Home: NextPage = () => {
           <Card minHeight='250px'>
             <CardBody>
               <VStack gap='25px' alignItems={'flex-start'}>
-                <Link href='/deploy'>
-                  <Button
-                    isDisabled={!isReadyToUse}
-                    leftIcon={<AiOutlineDeploymentUnit />}
-                  >
-                    Deploy
-                  </Button>
-                </Link>
-
+                <Button
+                  isDisabled={!isReadyToUse}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.DEPLOY)}
+                  leftIcon={<AiOutlineDeploymentUnit />}
+                >
+                  Deploy
+                </Button>
                 <Text>
                   <Text as='b'>Deploy a Hats Signer Gate</Text> (HSG), or
                   Multiple Hats Signer Gate (MHSG) smart contract via the Hats
@@ -84,11 +89,13 @@ const Home: NextPage = () => {
           <Card minHeight='250px'>
             <CardBody>
               <VStack gap='25px' alignItems={'flex-start'}>
-                <Link href='/claim'>
-                  <Button isDisabled={!isReadyToUse} leftIcon={<LuEdit />}>
-                    Claim
-                  </Button>
-                </Link>
+                <Button
+                  isDisabled={!isReadyToUse}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.CLAIM)}
+                  leftIcon={<LuEdit />}
+                >
+                  Claim
+                </Button>
                 <Text>
                   <Text as='b'>Claim Signing Authority</Text> on a multisig safe
                   that is controlled by an HSG or MSHG for which you wear the
@@ -108,14 +115,13 @@ const Home: NextPage = () => {
           <Card minHeight='250px'>
             <CardBody>
               <VStack gap='25px' alignItems={'flex-start'}>
-                <Link href='/modify'>
-                  <Button
-                    isDisabled={!isReadyToUse}
-                    leftIcon={<AiOutlineSetting />}
-                  >
-                    Modify
-                  </Button>
-                </Link>
+                <Button
+                  isDisabled={!isReadyToUse}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.MODIFY)}
+                  leftIcon={<AiOutlineSetting />}
+                >
+                  Modify
+                </Button>
 
                 <Text>
                   <Text as='b'>Modify Parameters</Text> of a multisig safe
@@ -131,15 +137,13 @@ const Home: NextPage = () => {
           <Card minHeight='250px'>
             <CardBody>
               <VStack gap='25px' alignItems={'flex-start'}>
-                <Link href='/remove'>
-                  <Button
-                    isDisabled={!isReadyToUse}
-                    leftIcon={<CgUserRemove />}
-                  >
-                    Remove
-                  </Button>
-                </Link>
-
+                <Button
+                  isDisabled={!isReadyToUse}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.RENOUNCE)}
+                  leftIcon={<CgUserRemove />}
+                >
+                  Renounce
+                </Button>
                 <Text>
                   <Text as='b'>Renounce Signing Authority</Text> by giving up
                   the signer hat on the Hats app.
@@ -159,14 +163,13 @@ const Home: NextPage = () => {
           <Card minHeight='250px'>
             <CardBody>
               <VStack gap='25px' alignItems={'flex-start'}>
-                <Link href='/view'>
-                  <Button
-                    isDisabled={!isReadyToUse}
-                    leftIcon={<LiaCopySolid />}
-                  >
-                    View
-                  </Button>
-                </Link>
+                <Button
+                  isDisabled={!isReadyToUse}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.VIEW)}
+                  leftIcon={<LiaCopySolid />}
+                >
+                  View
+                </Button>
 
                 <Text>
                   <Text as='b'>View Parameters</Text> of a multisig safe
@@ -182,15 +185,13 @@ const Home: NextPage = () => {
           <Card minHeight='250px'>
             <CardBody>
               <VStack gap='25px' alignItems={'flex-start'}>
-                <Link href='/remove'>
-                  <Button
-                    isDisabled={!isReadyToUse}
-                    leftIcon={<CgUserRemove />}
-                  >
-                    Remove
-                  </Button>
-                </Link>
-
+                <Button
+                  isDisabled={!isReadyToUse}
+                  onClick={() => onClickHandler(HEADER_ACTIONS.REMOVE)}
+                  leftIcon={<CgUserRemove />}
+                >
+                  Remove
+                </Button>
                 <Text>
                   <Text as='b'>Remove an Inactive Signer</Text> that is no
                   longer wearing the signer hat.
