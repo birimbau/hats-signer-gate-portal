@@ -38,13 +38,6 @@ const HeaderOne = () => {
           <Text>Connect any wallet, Click {`'Fetch'`}</Text>
         </VStack>
       );
-    case HEADER_ACTIONS.REVISE:
-      return (
-        <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-          <Text as='b'>Revise Hats Signer Gate Contract</Text>
-          <Text>Connect owner wallet, click {`'Fetch'`}</Text>
-        </VStack>
-      );
     case HEADER_ACTIONS.VIEW:
       return (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
@@ -52,6 +45,7 @@ const HeaderOne = () => {
           <Text>Connect any wallet, click {`'Read'`}</Text>
         </VStack>
       );
+    case undefined:
     default:
       return (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>

@@ -11,8 +11,13 @@ import {
 } from '../../../../context/SelectedActionContext';
 import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
 import Button from '../../../UI/CustomButton/CustomButton';
+import {
+  useDeployContext,
+  DEPLOY_ACTIONS,
+} from '../../../../context/DeployContext';
+import { useRouter } from 'next/router';
 
-const ContentThree = () => {
+export const ContentThree = () => {
   const { selected, setSelected } = useSelectedActionContext();
   const { isReadyToUse } = useWalletConnectionContext();
   const { selectedDeployAction, isPending, transationResult } =
@@ -96,5 +101,3 @@ const ContentThree = () => {
       );
   }
 };
-
-export default ContentThree;
