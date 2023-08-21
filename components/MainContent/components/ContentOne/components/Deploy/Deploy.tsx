@@ -1,17 +1,18 @@
 import { VStack } from '@chakra-ui/react';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { AiOutlineDeploymentUnit } from 'react-icons/ai';
-import {
-  DEPLOY_ACTIONS,
-  useDeployContext,
-} from '../../../../../../context/DeployContext';
+import { DEPLOY_ACTIONS } from '../../../../../../context/DeployContext';
+import { findAction } from '../../../../../../utils/utils';
 import Button from '../../../../../UI/CustomButton/CustomButton';
 
-interface P {
-  selectedDeployAction?: DEPLOY_ACTIONS;
-}
+const Deploy: React.FC = () => {
+  const router = useRouter();
+  const { slug } = router.query;
+  const slug2 = findAction(slug, 1);
 
-const Deploy: React.FC<P> = (p) => {
+  const onClickHandler = (action: DEPLOY_ACTIONS) => {
+    router.replace(encodeURI(`/deploy/${action.toLowerCase()}`));
+  };
   return (
     <VStack
       justifyContent='flex-start'
@@ -20,42 +21,41 @@ const Deploy: React.FC<P> = (p) => {
       gap='36px'
       width={'340px'}
     >
-      <Link href='/deploy/hsg'>
-        <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_HSG}
-          width={'100%'}
-          leftIcon={<AiOutlineDeploymentUnit />}
-        >
-          Deploy Hats Signer Gate
-        </Button>
-      </Link>
-      <Link href='/deploy/hsgws'>
-        <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_HSG_W_S}
-          width={'100%'}
-          leftIcon={<AiOutlineDeploymentUnit />}
-        >
-          Deploy Hats Signer Gate + Safe
-        </Button>
-      </Link>
-      <Link href='/deploy/mhsg'>
-        <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_MHSG}
-          width={'100%'}
-          leftIcon={<AiOutlineDeploymentUnit />}
-        >
-          Deploy Multi Hats Signer Gate
-        </Button>
-      </Link>
-      <Link href='/deploy/mhsgws'>
-        <Button
-          isActive={p.selectedDeployAction === DEPLOY_ACTIONS.DEPLOY_MHSG_W_S}
-          width={'100%'}
-          leftIcon={<AiOutlineDeploymentUnit />}
-        >
-          Deploy Multi Hats Signer Gate + Safe
-        </Button>
-      </Link>
+      <Button
+        isActive={slug2 === DEPLOY_ACTIONS.DEPLOY_HSG}
+        width={'100%'}
+        onClick={() => onClickHandler(DEPLOY_ACTIONS.DEPLOY_HSG)}
+        leftIcon={<AiOutlineDeploymentUnit />}
+      >
+        Deploy Hats Signer Gate
+      </Button>
+
+      <Button
+        isActive={slug2 === DEPLOY_ACTIONS.DEPLOY_HSG_W_S}
+        width={'100%'}
+        onClick={() => onClickHandler(DEPLOY_ACTIONS.DEPLOY_HSG_W_S)}
+        leftIcon={<AiOutlineDeploymentUnit />}
+      >
+        Deploy Hats Signer Gate + Safe
+      </Button>
+
+      <Button
+        isActive={slug2 === DEPLOY_ACTIONS.DEPLOY_MHSG}
+        width={'100%'}
+        onClick={() => onClickHandler(DEPLOY_ACTIONS.DEPLOY_MHSG)}
+        leftIcon={<AiOutlineDeploymentUnit />}
+      >
+        Deploy Multi Hats Signer Gate
+      </Button>
+
+      <Button
+        isActive={slug2 === DEPLOY_ACTIONS.DEPLOY_MHSG_W_S}
+        width={'100%'}
+        onClick={() => onClickHandler(DEPLOY_ACTIONS.DEPLOY_MHSG_W_S)}
+        leftIcon={<AiOutlineDeploymentUnit />}
+      >
+        Deploy Multi Hats Signer Gate + Safe
+      </Button>
     </VStack>
   );
 };

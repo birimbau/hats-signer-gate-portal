@@ -31,8 +31,6 @@ export default function HatsSignerGateForm() {
     <VStack
       width="100%"
       py={10}
-      pl={8}
-      pr={24}
       alignItems={"flex-start"}
       fontSize={14}
       gap={5}

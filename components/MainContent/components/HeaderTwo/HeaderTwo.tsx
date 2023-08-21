@@ -32,10 +32,11 @@ const HeaderTwo = () => {
     case DEPLOY_ACTIONS.DEPLOY_MHSG_W_S:
       return (
         <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-          <Text as='b'>Deploy Hats Signer Gate + Safe</Text>
+          <Text as='b'>{`Deploy Hats Signer Gate + Safe`}</Text>
           <Text>Enter inputs, click &apos;Write&apos;</Text>
         </VStack>
       );
+    case undefined:
     default:
       return <></>;
   }

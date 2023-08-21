@@ -3,10 +3,17 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Header from '../Header/Header';
 import HeaderActions from '../HeaderActions/HeaderActions';
+import { HEADER_ACTIONS } from '../../context/SelectedActionContext';
+import { findAction } from '../../utils/utils';
+import React from 'react';
 
-const Layout = ({ children }) => {
-  const { route } = useRouter();
-  const selectedAction = route.split('/')[1].toLowerCase();
+interface P {
+  children: React.ReactNode;
+}
+const Layout: React.FC<P> = (p) => {
+  const router = useRouter();
+  const { slug } = router.query;
+  const result = findAction(slug);
 
   return (
     <div>
@@ -22,9 +29,9 @@ const Layout = ({ children }) => {
       <VStack minH='100vh'>
         <Header />
         <Box alignSelf='flex-start'>
-          <HeaderActions selectedAction={selectedAction} />
+          <HeaderActions selectedAction={result as HEADER_ACTIONS} />
         </Box>
-        {children}
+        {p.children}
       </VStack>
     </div>
   );
