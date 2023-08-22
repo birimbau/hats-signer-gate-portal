@@ -37,7 +37,7 @@ const Input: React.FC<P> = (p) => {
           borderColor='button.black'
           padding='0 16px'
           placeholdercolor='button.gray'
-          background={'button.white'}
+          background={'gray.50'}
           height={'40px'}
         ></ChakraUiInput>
         {p.extra && <>{p.extra}</>}

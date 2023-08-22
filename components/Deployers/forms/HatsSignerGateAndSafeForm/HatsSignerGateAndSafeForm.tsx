@@ -1,9 +1,8 @@
 import { VStack, Text, Flex } from '@chakra-ui/react';
-import { useState } from 'react';
-import { useAccount, useContractWrite } from 'wagmi';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { AbiTypeToPrimitiveType } from 'abitype';
-
+import { useState } from 'react';
+import { useAccount, useContractWrite } from 'wagmi';
 import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import Input from '../../../UI/CustomInput/CustomInput';
 
@@ -29,25 +28,15 @@ export default function HatsSignerGateAndSafeForm() {
   return (
     <VStack
       width='100%'
-      py={10}
       alignItems={'flex-start'}
       fontSize={14}
       gap={5}
     >
       <Flex flexDirection={'column'} gap={0} w={'80%'}>
         {' '}
-        <Text fontStyle='normal' fontWeight={500} lineHeight='24px'>
-          Owner Hat ID (integer)
-        </Text>
         <Input
+          label='Owner Hat ID (integer)'
           placeholder='26950000000000000000000000004196...'
-          _placeholder={{
-            fontSize: '14px',
-          }}
-          borderRadius='0'
-          border='1px solid'
-          borderColor='gray.700'
-          bg='white'
           onChange={(e) =>
             SetArgs({ ...args, _ownerHatId: BigInt(e.target.value) })
           }
@@ -75,18 +64,9 @@ export default function HatsSignerGateAndSafeForm() {
       </Flex>
       <Flex flexDirection={'column'} gap={0} w={'60%'}>
         {' '}
-        <Text fontStyle='normal' fontWeight={500} lineHeight='24px'>
-          Max Threshold (integer)
-        </Text>
         <Input
+          label='Max Threshold (integer)'
           placeholder='5'
-          _placeholder={{
-            fontSize: '14px',
-          }}
-          borderRadius='0'
-          border='1px solid'
-          borderColor='gray.700'
-          bg='white'
           onChange={(e) =>
             SetArgs({ ...args, _targetThreshold: BigInt(e.target.value) })
           }
@@ -94,18 +74,9 @@ export default function HatsSignerGateAndSafeForm() {
       </Flex>
       <Flex flexDirection={'column'} gap={0} w={'60%'}>
         {' '}
-        <Text fontStyle='normal' fontWeight={500} lineHeight='24px'>
-          Max Signers (integer)
-        </Text>
         <Input
+          label='Max Signers (integer)'
           placeholder='9'
-          _placeholder={{
-            fontSize: '14px',
-          }}
-          borderRadius='0'
-          border='1px solid'
-          borderColor='gray.700'
-          bg='white'
           onChange={(e) =>
             SetArgs({ ...args, _maxSigners: BigInt(e.target.value) })
           }

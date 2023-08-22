@@ -55,17 +55,14 @@ export default function MultiHatsSignerGateForm() {
   return (
     <form onSubmit={onSubmit} noValidate>
       <VStack 
-        gap={'13px'} 
-        alignItems='flex-start' 
-        width='340px'
+        width='100%'
+        alignItems={'flex-start'}
         fontSize={14}
+        gap={5}
       >
         <Input
           label='Owner Hat ID (integer)'
           placeholder='26950000000000000000000000004196...'
-          _placeholder={{
-            fontSize: "14px"
-          }}
           name='_ownerHatId'
           value={formData._ownerHatId}
           width='340px'
@@ -107,9 +104,6 @@ export default function MultiHatsSignerGateForm() {
         <Input
           label='Existing Safe (address)'
           placeholder='0xC8ac0000000000000000000000000000000047fe'
-          _placeholder={{
-            fontSize: "14px"
-          }}
           name='_safe'
           value={formData._safe}
           width='340px'
@@ -120,9 +114,6 @@ export default function MultiHatsSignerGateForm() {
           label='Min Threshold (integer)'
           width='340px'
           placeholder='3'
-          _placeholder={{
-            fontSize: "14px"
-          }}
           name='_minThreshold'
           value={formData._minThreshold}
           onChange={(e) =>
@@ -134,9 +125,6 @@ export default function MultiHatsSignerGateForm() {
           label='Max Threshold (integer)'
           width='340px'
           placeholder='5'
-          _placeholder={{
-            fontSize: "14px"
-          }}
           name='_targetThreshold'
           value={formData._targetThreshold}
           onChange={(e) =>
@@ -148,9 +136,6 @@ export default function MultiHatsSignerGateForm() {
           label='Max Signers (integer)'
           width='340px'
           placeholder='9'
-          _placeholder={{
-            fontSize: "14px"
-          }}
           name='_maxSigners'
           value={formData._maxSigners}
           onChange={(e) =>
