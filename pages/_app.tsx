@@ -43,6 +43,7 @@ const colors = {
     disabled: '#B3B3B3',
     black: '#2D3748',
     gray: '#B3B3B3',
+    white: '#FFFFFF',
   },
 };
 

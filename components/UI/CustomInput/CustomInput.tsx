@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   HStack,
   Input as ChakraUiInput,
   InputProps,
@@ -31,6 +30,9 @@ const Input: React.FC<P> = (p) => {
       <HStack gap='8px'>
         <ChakraUiInput
           {...rest}
+          _placeholder={{
+            fontSize: '14px',
+          }}
           borderRadius='0px'
           borderColor='button.black'
           padding='0 16px'
