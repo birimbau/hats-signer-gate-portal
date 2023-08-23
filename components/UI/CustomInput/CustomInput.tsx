@@ -33,6 +33,7 @@ const Input: React.FC<P> = (p) => {
           _placeholder={{
             fontSize: '14px',
           }}
+          fontSize='14px'
           borderRadius='0px'
           borderColor='button.black'
           padding='0 16px'
