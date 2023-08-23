@@ -1,4 +1,4 @@
-import { Flex, Link } from '@chakra-ui/react';
+import { Box, Flex, Link } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 import { TfiMenuAlt } from 'react-icons/tfi';
@@ -7,20 +7,30 @@ import { useRouter } from 'next/router';
 import { useSelectedActionContext } from '../../context/SelectedActionContext';
 
 const Header = () => {
-
   const router = useRouter();
-  function clickHandler() 
-    {
-      router.replace('/')
-    
+  function clickHandler() {
+    router.replace('/');
   }
   return (
-    <S.Header className='py-1 px-6 w-full'>
+    <Box
+      padding='8px 16px'
+      width='100%'
+      background='button.white'
+      boxShadow='0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 3px 0px rgba(0, 0, 0, 0.10)'
+      zIndex='1'
+      position='sticky'
+      top='0'
+    >
       <Flex justifyContent='space-between' alignItems='center'>
         <Flex alignItems='center' gap='94px'>
-          
-          <Image src='/logo.svg' width={56}  height={56} alt='Hats logo' onClick={() => clickHandler()}/>
-          
+          <Image
+            src='/logo.svg'
+            width={56}
+            height={56}
+            alt='Hats logo'
+            onClick={() => clickHandler()}
+          />
+
           <Link
             href='https://docs.hatsprotocol.xyz'
             isExternal
@@ -43,7 +53,7 @@ const Header = () => {
         </Flex>
         <ConnectButton />
       </Flex>
-    </S.Header>
+    </Box>
   );
 };
 

@@ -7,8 +7,6 @@ import { Inter } from 'next/font/google';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '../components/Layout/Layout';
-import { DeployProvider } from '../context/DeployContext';
-import { SelectedActionProvider } from '../context/SelectedActionContext';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
 import '../styles/globals.css';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
