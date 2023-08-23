@@ -3,6 +3,6 @@ import styled from 'styled-components';
 
 export const IconButtonStyled = styled(IconButton)`
   background-color: #ffffff;
-  border: 1px solid #b3b3b3;
+  border: 1px solid #2D3748;
   border-radius: 4px;
 `;

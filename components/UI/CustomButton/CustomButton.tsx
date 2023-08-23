@@ -6,17 +6,23 @@ const Button: React.FC<ButtonProps> = (p) => {
       {...p}
       height="40px"
       borderRadius="6px"
+      backgroundColor="button.white"
       fontSize="16px"
       fontWeight="500"
       borderWidth="1px"
       borderStyle="solid"
-      borderColor={"button.black"}
+      borderColor="button.black"
       color="button.black"
+      _hover={{
+        backgroundColor: "gray.50",
+      }}
       _active={{
         backgroundColor: "cyan.100",
-        borderColor: "cyan.700",
+        borderColor: "cyan.900",
+        color: "cyan.900",
       }}
       _disabled={{
+        backgroundColor: "white",
         color: "button.disabled",
         cursor: "not-allowed",
         borderColor: "button.disabled",

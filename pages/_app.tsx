@@ -35,6 +35,7 @@ const colors = {
   cyan: {
     100: '#C4F1F9',
     700: '#0987A0',
+    900: '#065666',
   },
   gray: {
     700: '#2D3748',
@@ -43,6 +44,7 @@ const colors = {
     disabled: '#B3B3B3',
     black: '#2D3748',
     gray: '#B3B3B3',
+    white: '#FFFFFF',
   },
 };
 

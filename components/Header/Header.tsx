@@ -29,6 +29,7 @@ const Header = () => {
             border='1px solid'
             borderColor='gray.700'
             borderRadius='6px'
+            backgroundColor='white'
             fontSize='16px'
             fontWeight='500'
             _hover={{
