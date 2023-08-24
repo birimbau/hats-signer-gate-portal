@@ -136,12 +136,19 @@ export const components: ComponentsP = {
   },
   renounce: () => {
     return {
-      headerOne: () => <Text as='b'>Renounce</Text>,
+      headerOne: () => <Text as='b'>Renounce Hat, and Signer Authority on Hats App</Text>,
+      // <Text>
+      //   Click "Go to Hats" to be redirected, and to connect your wallet
+      // </Text>
       headerTwo: () => <Text as='b'>Renounce</Text>,
       headerThree: () => <Text as='b'>Renounce</Text>,
       contentOne: () => <Text as='b'>Renounce</Text>,
       contentTwo: () => <Text as='b'>Renounce</Text>,
-      contentThree: () => <Text as='b'>Renounce</Text>,
+      contentThree: () => <Text as='b'>Renounce Signing Authority</Text>
+      // <Text> by giving up the signer hat on the Hats app.
+      // If you decide that you no longer wish to be a signer on the safe, you have the option to relinquish your signing authority.
+      // After Renouncing your signer Hat come back to this dashboard and Remove your address from the Safe to complete the process.
+      // </Text>
     };
   },
   remove: () => {
