@@ -4,6 +4,8 @@ import HatsSignerGateForm from '../../../components/Deployers/forms/HatsSignerGa
 import MultiHatsSignerGateAndSafeForm from '../../../components/Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm';
 import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 import Deploy from '../../../components/MainContent/components/ContentOne/components/Deploy/Deploy';
+import Button from '../../../components/UI/CustomButton/CustomButton';
+import { DoubleRightOutlined } from '@ant-design/icons';
 
 interface ComponentsP {
   [index: string]: () => {
@@ -136,19 +138,34 @@ export const components: ComponentsP = {
   },
   renounce: () => {
     return {
-      headerOne: () => <Text as='b'>Renounce Hat, and Signer Authority on Hats App</Text>,
-      // <Text>
-      //   Click "Go to Hats" to be redirected, and to connect your wallet
-      // </Text>
-      headerTwo: () => <Text as='b'>Renounce</Text>,
-      headerThree: () => <Text as='b'>Renounce</Text>,
-      contentOne: () => <Text as='b'>Renounce</Text>,
-      contentTwo: () => <Text as='b'>Renounce</Text>,
-      contentThree: () => <Text as='b'>Renounce Signing Authority</Text>
-      // <Text> by giving up the signer hat on the Hats app.
-      // If you decide that you no longer wish to be a signer on the safe, you have the option to relinquish your signing authority.
-      // After Renouncing your signer Hat come back to this dashboard and Remove your address from the Safe to complete the process.
-      // </Text>
+    headerOne: () => (
+      <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
+        <Text  as='b'>Renounce Hat, and Signer Authority on Hats App</Text>
+        <Text>
+          Click "Go to Hats" to be redirected, and to connect your wallet
+        </Text>
+      </VStack>
+    ),
+      contentOne: () => 
+        <Button
+          leftIcon={<DoubleRightOutlined />}
+          onClick={() => window.open('https://app.hatsprotocol.xyz/', '_blank')}
+          >
+          Go to Hats App
+        </Button>,
+      contentThree: () => (
+        <>
+          <Text>
+            <b>Renounce Signing Authority</b> by giving up the signer hat on the Hats app.
+          </Text>
+          <Text mt={4}>
+            If you decide that you no longer wish to be a signer on the safe, you have the option to relinquish your signing authority.
+          </Text>
+          <Text mt={4}>
+            After Renouncing your signer Hat come back to this dashboard and Remove your address from the Safe to complete the process.
+          </Text>
+        </>
+      ),
     };
   },
   remove: () => {

@@ -46,7 +46,14 @@ const colors = {
   },
 };
 
-const styles = {};
+const styles = {
+  global: {
+    body: {
+      fontFamily: "inter",
+      fontWeight: 500,
+    },
+  },
+};
 
 const inter = Inter({
   subsets: ['latin'],
