@@ -140,7 +140,7 @@ export const components: ComponentsP = {
     return {
     headerOne: () => (
       <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-        <Text  as='b'>Renounce Hat, and Signer Authority on Hats App</Text>
+        <Text as='b'>Renounce Hat, and Signer Authority on Hats App</Text>
         <Text>
           Click "Go to Hats" to be redirected, and to connect your wallet
         </Text>
