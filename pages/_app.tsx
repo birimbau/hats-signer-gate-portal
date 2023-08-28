@@ -7,8 +7,6 @@ import { Inter } from 'next/font/google';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '../components/Layout/Layout';
-import { DeployProvider } from '../context/DeployContext';
-import { SelectedActionProvider } from '../context/SelectedActionContext';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
 import '../styles/globals.css';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
@@ -35,6 +33,7 @@ const colors = {
   cyan: {
     100: '#C4F1F9',
     700: '#0987A0',
+    900: '#065666',
   },
   gray: {
     700: '#2D3748',
@@ -43,10 +42,18 @@ const colors = {
     disabled: '#B3B3B3',
     black: '#2D3748',
     gray: '#B3B3B3',
+    white: '#FFFFFF',
   },
 };
 
-const styles = {};
+const styles = {
+  global: {
+    body: {
+      fontFamily: "inter",
+      fontWeight: 500,
+    },
+  },
+};
 
 const inter = Inter({
   subsets: ['latin'],

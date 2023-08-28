@@ -38,6 +38,9 @@ const MultiInput: React.FC<P> = (p) => {
             name={`${p.name}[${i}]`}
             value={v.toString()}
             placeholder={p.placeholder}
+            _placeholder={{
+              fontSize: '14px',
+            }}
             width={'100%'}
             isDisabled={p.isDisabled}
             onChange={(e) => p.onChange(v, i, e)}

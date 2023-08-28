@@ -92,90 +92,86 @@ export default function MultiHatsSignerGateAndSafeForm() {
   }, [isLoading, transationPending, setIsPending, hash]);
 
   return (
-    <VStack gap='8px' alignItems={'flex-start'}>
-      <form onSubmit={onSubmit} noValidate>
-        <VStack gap={'13px'} alignItems='flex-start' width='340px'>
-          <Input
-            label='Owner Hat ID (integer)'
-            placeholder='269500000000000000000000000041967548934'
-            name='_ownerHatId'
-            value={formData._ownerHatId}
-            width='340px'
-            onChange={(e) =>
-              setFormData({ ...formData, _ownerHatId: e.target.value })
-            }
-            isDisabled={isPending}
-          />
-          <MultiInput
-            values={formData._signersHatIds}
-            width='372px'
-            label='Signer Hat IDs'
-            name='_signersHatIds'
-            countLabel='Id'
-            placeholder='269500000000000000000000000041967548934'
-            isDisabled={isPending}
-            minAmountOfValues={2}
-            onChange={(_value, index, e) => {
-              setFormData({
-                ...formData,
-                _signersHatIds: formData._signersHatIds.map((v, i) => {
-                  return i === index ? e.target.value : v;
-                }),
-              });
-            }}
-            onClickAdd={(value, _index) => {
-              setFormData({
-                ...formData,
-                _signersHatIds: [...formData._signersHatIds, ''],
-              });
-            }}
-            onClickRemove={(_value, index) => {
-              setFormData({
-                ...formData,
-                _signersHatIds: formData._signersHatIds.filter(
-                  (v, i) => i !== index
-                ),
-              });
-            }}
-          />
-          <Input
-            label='Min Threshold (integer)'
-            width='340px'
-            placeholder='3'
-            name='_minThreshold'
-            value={formData._minThreshold}
-            onChange={(e) =>
-              setFormData({ ...formData, _minThreshold: e.target.value })
-            }
-            isDisabled={isPending}
-          />
-          <Input
-            label='Max Threshold (integer)'
-            width='340px'
-            placeholder='5'
-            name='_targetThreshold'
-            value={formData._targetThreshold}
-            onChange={(e) =>
-              setFormData({ ...formData, _targetThreshold: e.target.value })
-            }
-            isDisabled={isPending}
-          />
-          <Input
-            label='Max Signers (integer)'
-            width='340px'
-            placeholder='9'
-            name='_maxSigners'
-            value={formData._maxSigners}
-            onChange={(e) =>
-              setFormData({ ...formData, _maxSigners: e.target.value })
-            }
-            isDisabled={isPending}
-          />
-          <Button isDisabled={isPending} type='submit' leftIcon={<BsPen />}>
-            Write
-          </Button>
-        </VStack>
-      </form>
-    </VStack>
+    <form onSubmit={onSubmit} noValidate>
+      <VStack width='100%' alignItems={'flex-start'} fontSize={14} gap={5}>
+        <Input
+          label='Owner Hat ID (integer)'
+          placeholder='26950000000000000000000000004196...'
+          name='_ownerHatId'
+          value={formData._ownerHatId}
+          width='340px'
+          onChange={(e) =>
+            setFormData({ ...formData, _ownerHatId: e.target.value })
+          }
+          isDisabled={isLoading}
+        />
+        <MultiInput
+          values={formData._signersHatIds}
+          width='372px'
+          label='Signer Hat IDs'
+          name='_signersHatIds'
+          countLabel='Id'
+          placeholder='26960000000000000000000000003152...'
+          onChange={(_value, index, e) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: formData._signersHatIds.map((v, i) => {
+                return i === index ? e.target.value : v;
+              }),
+            });
+          }}
+          onClickAdd={(value, _index) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: [...formData._signersHatIds, ''],
+            });
+          }}
+          onClickRemove={(_value, index) => {
+            setFormData({
+              ...formData,
+              _signersHatIds: formData._signersHatIds.filter(
+                (v, i) => i !== index
+              ),
+            });
+          }}
+        />
+        <Input
+          label='Min Threshold (integer)'
+          width='340px'
+          placeholder='3'
+          name='_minThreshold'
+          value={formData._minThreshold}
+          onChange={(e) =>
+            setFormData({ ...formData, _minThreshold: e.target.value })
+          }
+          isDisabled={isLoading}
+        />
+        <Input
+          label='Max Threshold (integer)'
+          width='340px'
+          placeholder='5'
+          name='_targetThreshold'
+          value={formData._targetThreshold}
+          onChange={(e) =>
+            setFormData({ ...formData, _targetThreshold: e.target.value })
+          }
+          isDisabled={isLoading}
+        />
+        <Input
+          label='Max Signers (integer)'
+          width='340px'
+          placeholder='9'
+          name='_maxSigners'
+          value={formData._maxSigners}
+          onChange={(e) =>
+            setFormData({ ...formData, _maxSigners: e.target.value })
+          }
+          isDisabled={isLoading}
+        />
+        <Button isDisabled={isLoading} type='submit' leftIcon={<BsPen />}>
+          Write
+        </Button>
+      </VStack>
+    </form>
   );
 }
