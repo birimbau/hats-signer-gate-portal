@@ -2,20 +2,12 @@ import { Card, VStack, Text, CardBody } from '@chakra-ui/react';
 import { CgUserRemove } from 'react-icons/cg';
 import { LiaCopySolid } from 'react-icons/lia';
 import {
-  DEPLOY_ACTIONS,
-  useDeployContext,
-} from '../../../../context/DeployContext';
-import {
   HEADER_ACTIONS,
   useSelectedActionContext,
 } from '../../../../context/SelectedActionContext';
 import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
 import Button from '../../../UI/CustomButton/CustomButton';
-import {
-  useDeployContext,
-  DEPLOY_ACTIONS,
-} from '../../../../context/DeployContext';
-import { useRouter } from 'next/router';
+import { useDeployContext } from '../../../../context/DeployContext';
 
 export const ContentThree = () => {
   const { selected, setSelected } = useSelectedActionContext();
