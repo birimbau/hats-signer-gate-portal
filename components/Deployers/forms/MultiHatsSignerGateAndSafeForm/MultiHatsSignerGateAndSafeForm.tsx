@@ -54,7 +54,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
 
     args.current = {
       _ownerHatId: BigInt(p.formData._ownerHatId),
-      _signersHatIds: p.formData._signersHatIds.map((v) => BigInt(v)),
+      _signersHatIds: p.formData._signersHatIds.map((v: string) => BigInt(v)),
       _minThreshold: BigInt(p.formData._minThreshold),
       _targetThreshold: BigInt(p.formData._targetThreshold),
       _maxSigners: BigInt(p.formData._maxSigners),
@@ -71,7 +71,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
 
   useEffect(() => {
     p.setIsPending((isLoading || transationPending) && hash !== '');
-  }, [isLoading, transationPending, hash]);
+  }, [isLoading, transationPending, hash, p]);
 
   return (
     <form onSubmit={onSubmit} noValidate>
@@ -97,9 +97,11 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
           onChange={(_value, index, e) => {
             p.setFormData({
               ...p.formData,
-              _signersHatIds: p.formData._signersHatIds.map((v, i) => {
-                return i === index ? e.target.value : v;
-              }),
+              _signersHatIds: p.formData._signersHatIds.map(
+                (v: string, i: number) => {
+                  return i === index ? e.target.value : v;
+                }
+              ),
             });
           }}
           onClickAdd={(value, _index) => {
@@ -112,7 +114,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
             p.setFormData({
               ...p.formData,
               _signersHatIds: p.formData._signersHatIds.filter(
-                (v, i) => i !== index
+                (_v: string, i: number) => i !== index
               ),
             });
           }}
