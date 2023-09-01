@@ -36,7 +36,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
 
   const { data: transactionData, isLoading: transationPending } =
     useWaitForTransaction({
-      hash,
+      hash: hash as AbiTypeToPrimitiveType<'address'>,
       onSuccess(data) {
         const response = decodeEventLog({
           abi: HatsSignerGateFactoryAbi,
