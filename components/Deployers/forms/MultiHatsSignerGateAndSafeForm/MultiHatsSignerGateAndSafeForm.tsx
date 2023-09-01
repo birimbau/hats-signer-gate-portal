@@ -9,36 +9,16 @@ import Input from '../../../UI/CustomInput/CustomInput';
 import MultiInput from '../../../UI/MultiInput/MultiInput';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { useDeployContext } from '../../../../context/DeployContext';
-
-const decode = (hex = '') => {
-  const result = [];
-  for (let i = 0; i < hex.length; i += 2) {
-    result.push(String.fromCharCode(parseInt(hex.substr(i, 2), 16)));
-  }
-  return result.join('');
-};
-
-interface useDeployMultiHatSGwSafeArgs {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+interface P {
+  setData: (data: any) => void;
+  setTransactionData: (data: any) => void;
+  setFormData: (data: any) => void;
+  formData: any;
+  setIsPending: (isPending: boolean) => void;
 }
 
-export default function MultiHatsSignerGateAndSafeForm() {
-  const { selectedDeployAction, isPending, setTransationResult, setIsPending } =
-    useDeployContext();
+const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
   const [hash, setHash] = useState<`0x${string}` | ''>('');
-
-  const [formData, setFormData] = useState({
-    _ownerHatId: '',
-    _signersHatIds: ['', ''],
-    _minThreshold: '',
-    _targetThreshold: '',
-    _maxSigners: '',
-  });
 
   const args = useRef({
     _ownerHatId: BigInt(0),
@@ -64,18 +44,20 @@ export default function MultiHatsSignerGateAndSafeForm() {
           topics: data.logs[8].topics,
         });
 
-        setTransationResult(response.args);
+        p.setTransactionData(data);
+        p.setData(response.args);
       },
     });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     args.current = {
-      _ownerHatId: BigInt(formData._ownerHatId),
-      _signersHatIds: formData._signersHatIds.map((v) => BigInt(v)),
-      _minThreshold: BigInt(formData._minThreshold),
-      _targetThreshold: BigInt(formData._targetThreshold),
-      _maxSigners: BigInt(formData._maxSigners),
+      _ownerHatId: BigInt(p.formData._ownerHatId),
+      _signersHatIds: p.formData._signersHatIds.map((v) => BigInt(v)),
+      _minThreshold: BigInt(p.formData._minThreshold),
+      _targetThreshold: BigInt(p.formData._targetThreshold),
+      _maxSigners: BigInt(p.formData._maxSigners),
     };
 
     write?.();
@@ -88,8 +70,8 @@ export default function MultiHatsSignerGateAndSafeForm() {
   }, [data]);
 
   useEffect(() => {
-    setIsPending((isLoading || transationPending) && hash !== '');
-  }, [isLoading, transationPending, setIsPending, hash]);
+    p.setIsPending((isLoading || transationPending) && hash !== '');
+  }, [isLoading, transationPending, hash]);
 
   return (
     <form onSubmit={onSubmit} noValidate>
@@ -98,38 +80,38 @@ export default function MultiHatsSignerGateAndSafeForm() {
           label='Owner Hat ID (integer)'
           placeholder='26950000000000000000000000004196...'
           name='_ownerHatId'
-          value={formData._ownerHatId}
+          value={p.formData._ownerHatId}
           width='340px'
           onChange={(e) =>
-            setFormData({ ...formData, _ownerHatId: e.target.value })
+            p.setFormData({ ...p.formData, _ownerHatId: e.target.value })
           }
           isDisabled={isLoading}
         />
         <MultiInput
-          values={formData._signersHatIds}
+          values={p.formData._signersHatIds}
           width='372px'
           label='Signer Hat IDs'
           name='_signersHatIds'
           countLabel='Id'
           placeholder='26960000000000000000000000003152...'
           onChange={(_value, index, e) => {
-            setFormData({
-              ...formData,
-              _signersHatIds: formData._signersHatIds.map((v, i) => {
+            p.setFormData({
+              ...p.formData,
+              _signersHatIds: p.formData._signersHatIds.map((v, i) => {
                 return i === index ? e.target.value : v;
               }),
             });
           }}
           onClickAdd={(value, _index) => {
-            setFormData({
-              ...formData,
-              _signersHatIds: [...formData._signersHatIds, ''],
+            p.setFormData({
+              ...p.formData,
+              _signersHatIds: [...p.formData._signersHatIds, ''],
             });
           }}
           onClickRemove={(_value, index) => {
-            setFormData({
-              ...formData,
-              _signersHatIds: formData._signersHatIds.filter(
+            p.setFormData({
+              ...p.formData,
+              _signersHatIds: p.formData._signersHatIds.filter(
                 (v, i) => i !== index
               ),
             });
@@ -140,9 +122,9 @@ export default function MultiHatsSignerGateAndSafeForm() {
           width='340px'
           placeholder='3'
           name='_minThreshold'
-          value={formData._minThreshold}
+          value={p.formData._minThreshold}
           onChange={(e) =>
-            setFormData({ ...formData, _minThreshold: e.target.value })
+            p.setFormData({ ...p.formData, _minThreshold: e.target.value })
           }
           isDisabled={isLoading}
         />
@@ -151,9 +133,9 @@ export default function MultiHatsSignerGateAndSafeForm() {
           width='340px'
           placeholder='5'
           name='_targetThreshold'
-          value={formData._targetThreshold}
+          value={p.formData._targetThreshold}
           onChange={(e) =>
-            setFormData({ ...formData, _targetThreshold: e.target.value })
+            p.setFormData({ ...p.formData, _targetThreshold: e.target.value })
           }
           isDisabled={isLoading}
         />
@@ -162,9 +144,9 @@ export default function MultiHatsSignerGateAndSafeForm() {
           width='340px'
           placeholder='9'
           name='_maxSigners'
-          value={formData._maxSigners}
+          value={p.formData._maxSigners}
           onChange={(e) =>
-            setFormData({ ...formData, _maxSigners: e.target.value })
+            p.setFormData({ ...p.formData, _maxSigners: e.target.value })
           }
           isDisabled={isLoading}
         />
@@ -174,4 +156,6 @@ export default function MultiHatsSignerGateAndSafeForm() {
       </VStack>
     </form>
   );
-}
+};
+
+export default MultiHatsSignerGateAndSafeForm;

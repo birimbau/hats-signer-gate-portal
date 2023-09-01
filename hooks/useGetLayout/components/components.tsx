@@ -88,24 +88,6 @@ export const components: ComponentsP = {
       contentTwo,
     };
   },
-  deploy_mhsgws: () => {
-    const headerOne = () => (
-      <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-        <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
-        <Text>
-          You can leverage the capabilities of this dashboard for the following
-          functions:
-        </Text>
-      </VStack>
-    );
-    const contentOne = () => <Deploy />;
-    const contentTwo = () => <MultiHatsSignerGateAndSafeForm />;
-    return {
-      headerOne,
-      contentOne,
-      contentTwo,
-    };
-  },
   modify: () => {
     return {
       headerOne: () => <Text as='b'>Modify</Text>,
@@ -138,31 +120,35 @@ export const components: ComponentsP = {
   },
   renounce: () => {
     return {
-    headerOne: () => (
-      <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-        <Text as='b'>Renounce Hat, and Signer Authority on Hats App</Text>
-        <Text>
-          Click "Go to Hats" to be redirected, and to connect your wallet
-        </Text>
-      </VStack>
-    ),
-      contentOne: () => 
+      headerOne: () => (
+        <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
+          <Text as='b'>Renounce Hat, and Signer Authority on Hats App</Text>
+          <Text>
+            Click "Go to Hats" to be redirected, and to connect your wallet
+          </Text>
+        </VStack>
+      ),
+      contentOne: () => (
         <Button
           leftIcon={<DoubleRightOutlined />}
           onClick={() => window.open('https://app.hatsprotocol.xyz/', '_blank')}
-          >
+        >
           Go to Hats App
-        </Button>,
+        </Button>
+      ),
       contentThree: () => (
         <>
           <Text>
-            <b>Renounce Signing Authority</b> by giving up the signer hat on the Hats app.
+            <b>Renounce Signing Authority</b> by giving up the signer hat on the
+            Hats app.
           </Text>
           <Text mt={4}>
-            If you decide that you no longer wish to be a signer on the safe, you have the option to relinquish your signing authority.
+            If you decide that you no longer wish to be a signer on the safe,
+            you have the option to relinquish your signing authority.
           </Text>
           <Text mt={4}>
-            After Renouncing your signer Hat come back to this dashboard and Remove your address from the Safe to complete the process.
+            After Renouncing your signer Hat come back to this dashboard and
+            Remove your address from the Safe to complete the process.
           </Text>
         </>
       ),

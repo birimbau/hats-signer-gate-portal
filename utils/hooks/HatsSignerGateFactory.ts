@@ -79,15 +79,14 @@ const useDeployMultiHatSGwSafe = (args: {
   _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}) =>
-  usePrepareContractWrite({
+}) => {
+  return usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
     functionName: 'deployMultiHatsSignerGateAndSafe',
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
-      console.log(data);
       return data;
     },
     onError: (error) => {
@@ -95,6 +94,7 @@ const useDeployMultiHatSGwSafe = (args: {
       return error;
     },
   });
+};
 
 // Hooks for read functions for the HatsSignerGateFactory contract
 
