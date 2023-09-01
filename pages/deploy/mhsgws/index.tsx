@@ -100,7 +100,8 @@ const MHSGWF = () => {
             onClick={() => {
               window.open(
                 `${getBlockExplorerUrl(chain?.id || 1)}/tx/${
-                  transactionData.transactionHash
+                  (transactionData as unknown as { transactionHash: string })
+                    .transactionHash
                 }`
               );
             }}
@@ -112,7 +113,8 @@ const MHSGWF = () => {
             onClick={() => {
               window.open(
                 `${getBlockExplorerUrl(chain?.id || 1)}/address/${
-                  data._hatsSignerGate
+                  (data as unknown as { _hatsSignerGate: string })
+                    ._hatsSignerGate
                 }#writeContract`
               );
             }}
@@ -123,7 +125,9 @@ const MHSGWF = () => {
             leftIcon={<BsSafe />}
             onClick={() => {
               window.open(
-                `https://app.safe.global/home?safe=gor:${data._safe}`
+                `https://app.safe.global/home?safe=gor:${(
+                  data as unknown as { _safe: string }
+                )._safe!}`
               );
             }}
           >
