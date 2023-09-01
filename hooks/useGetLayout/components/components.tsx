@@ -3,7 +3,7 @@ import HatsSignerGateAndSafeForm from '../../../components/Deployers/forms/HatsS
 import HatsSignerGateForm from '../../../components/Deployers/forms/HatsSignerGateForm/HatsSignerGateForm';
 import MultiHatsSignerGateAndSafeForm from '../../../components/Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm';
 import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
-import Deploy from '../../../components/MainContent/components/ContentOne/components/Deploy/Deploy';
+import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
 import Button from '../../../components/UI/CustomButton/CustomButton';
 import { DoubleRightOutlined } from '@ant-design/icons';
 

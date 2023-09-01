@@ -1,9 +1,9 @@
 import { VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { AiOutlineDeploymentUnit } from 'react-icons/ai';
-import { DEPLOY_ACTIONS } from '../../../../../../context/DeployContext';
-import { findAction } from '../../../../../../utils/utils';
-import Button from '../../../../../UI/CustomButton/CustomButton';
+import { DEPLOY_ACTIONS } from '../../../../context/DeployContext';
+import { findAction } from '../../../../utils/utils';
+import Button from '../../../UI/CustomButton/CustomButton';
 
 interface P {
   active?: DEPLOY_ACTIONS;

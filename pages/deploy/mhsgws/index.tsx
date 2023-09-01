@@ -1,7 +1,7 @@
 import { VStack, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import MultiHatsSignerGateAndSafeForm from '../../../components/Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm';
-import Deploy from '../../../components/MainContent/components/ContentOne/components/Deploy/Deploy';
+import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
 import MainContent from '../../../components/MainContent/MainContent';
 import Button from '../../../components/UI/CustomButton/CustomButton';
 import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
