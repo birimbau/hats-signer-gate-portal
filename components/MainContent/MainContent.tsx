@@ -1,11 +1,4 @@
 import { Grid, GridItem } from '@chakra-ui/react';
-import ContentOne from './components/ContentOne/ContentOne';
-import { ContentThree } from './components/ContentThree/ContentThree';
-
-import ContentTwo from './components/ContentTwo/ContentTwo';
-import HeaderOne from './components/HeaderOne/HeaderOne';
-import HeaderThree from './components/HeaderThree/HeaderThree';
-import HeaderTwo from './components/HeaderTwo/HeaderTwo';
 import * as S from './MainContent.styled';
 
 interface P {

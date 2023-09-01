@@ -12,6 +12,8 @@ interface P {
   name: string;
   type?: string;
   width?: string;
+  isDisabled?: boolean;
+  minAmountOfValues?: number;
   onChange: (
     value: string,
     index: number,
@@ -23,21 +25,24 @@ interface P {
 
 const MultiInput: React.FC<P> = (p) => {
   const values = (p.values || []).length === 0 ? [''] : p.values;
+  const minAmountOfValues = p.minAmountOfValues || 0;
+
   return (
     <VStack gap={'13px'} alignItems='flex-start' width={p.width}>
       {values.map((v, i) => {
         return (
           <Input
             key={i}
-            label={`${p.label} [${p.countLabel} ${i + 1}] (integer)`}
+            label={`${p.label} [${p.countLabel}${i + 1}] (integer)`}
             type={p.type || 'text'}
             name={`${p.name}[${i}]`}
             value={v.toString()}
             placeholder={p.placeholder}
             _placeholder={{
-              fontSize: "14px"
+              fontSize: '14px',
             }}
             width={'100%'}
+            isDisabled={p.isDisabled}
             onChange={(e) => p.onChange(v, i, e)}
             extra={
               <>
@@ -47,18 +52,23 @@ const MultiInput: React.FC<P> = (p) => {
                       aria-label='remove value'
                       icon={<HiMinus />}
                       size='xs'
+                      isDisabled={
+                        values.length >= minAmountOfValues || p.isDisabled
+                      }
                       onClick={() => {
                         p.onClickRemove(v, i);
                       }}
                     />
                   )}
-                  <S.IconButtonStyled
-                    aria-label='Add value'
-                    icon={<BsPlusLg />}
-                    size='xs'
-                    isDisabled={!values[i]}
-                    onClick={() => p.onClickAdd(v, i)}
-                  />
+                  {i === values.length - 1 && (
+                    <S.IconButtonStyled
+                      aria-label='Add value'
+                      icon={<BsPlusLg />}
+                      size='xs'
+                      isDisabled={!values[i] || p.isDisabled}
+                      onClick={() => p.onClickAdd(v, i)}
+                    />
+                  )}
                 </HStack>
               </>
             }

@@ -4788,6 +4788,11 @@ hash.js@^1.1.7:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
+hex-encode-decode@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/hex-encode-decode/-/hex-encode-decode-1.0.0.tgz#469109e285846250cd7859f6a5edb9bfc25c7659"
+  integrity sha512-/tV6SFsFwHbBtGcfTeoZCxPcGBc+Cbvd4pXpNcUk+i+Hak7mDrHFnH40t7YMG80bjrXWj70chuQt7/iWWu5beg==
+
 hey-listen@^1.0.8:
   version "1.0.8"
   resolved "https://registry.npmjs.org/hey-listen/-/hey-listen-1.0.8.tgz"

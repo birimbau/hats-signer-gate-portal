@@ -2,6 +2,7 @@ import { Box, Flex, Link } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 import { TfiMenuAlt } from 'react-icons/tfi';
+import HeaderActions from '../HeaderActions/HeaderActions';
 import * as S from './Header.styled';
 import { useRouter } from 'next/router';
 import { useSelectedActionContext } from '../../context/SelectedActionContext';
