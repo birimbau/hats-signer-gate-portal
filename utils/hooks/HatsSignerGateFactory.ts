@@ -85,7 +85,6 @@ const useDeployMultiHatSGwSafe = (args: {
     address: contract,
     functionName: 'deployMultiHatsSignerGateAndSafe',
     args: Array.from(Object.values(args)),
-    enabled: false,
     onSuccess: (data) => {
       return data;
     },
@@ -149,7 +148,6 @@ const useGnosisMultiSendLibrary = () =>
     abi: HatsSignerGateFactoryAbi,
     address: contract,
     functionName: 'gnosisMultiSendLibrary',
-
     onSuccess: (data) => {
       console.log(data);
     },
@@ -163,7 +161,6 @@ const useGnosisSafeProxyFactory = () => {
     abi: HatsSignerGateFactoryAbi,
     address: contract,
     functionName: 'gnosisSafeProxyFactory',
-
     onSuccess: (data) => {
       console.log(data);
     },
