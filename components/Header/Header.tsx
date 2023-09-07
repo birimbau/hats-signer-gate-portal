@@ -18,7 +18,7 @@ const Header = () => {
       width='100%'
       background='button.white'
       boxShadow='0px 1px 2px 0px rgba(0, 0, 0, 0.06), 0px 1px 3px 0px rgba(0, 0, 0, 0.10)'
-      zIndex='1'
+      zIndex='2'
       position='sticky'
       top='0'
     >

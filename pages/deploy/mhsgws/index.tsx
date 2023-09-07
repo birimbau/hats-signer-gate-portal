@@ -24,11 +24,8 @@ const MHSGWF = () => {
   const [transactionData, setTransactionData] = useState(undefined);
   const headerOne = () => (
     <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-      <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
-      <Text>
-        You can leverage the capabilities of this dashboard for the following
-        functions:
-      </Text>
+      <Text as='b'>Hats Signer Gate Factory</Text>
+      <Text>Select the type of Hats Signer Gate to deploy</Text>
     </VStack>
   );
   const headerTwo = () => (

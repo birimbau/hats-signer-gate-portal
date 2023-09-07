@@ -70,24 +70,6 @@ export const components: ComponentsP = {
       contentTwo,
     };
   },
-  deploy_mhsg: () => {
-    const headerOne = () => (
-      <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-        <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
-        <Text>
-          You can leverage the capabilities of this dashboard for the following
-          functions:
-        </Text>
-      </VStack>
-    );
-    const contentOne = () => <Deploy />;
-    const contentTwo = () => <MultiHatsSignerGateForm />;
-    return {
-      headerOne,
-      contentOne,
-      contentTwo,
-    };
-  },
   modify: () => {
     return {
       headerOne: () => <Text as='b'>Modify</Text>,
