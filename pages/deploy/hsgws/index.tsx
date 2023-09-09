@@ -1,6 +1,6 @@
 import { VStack, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import MultiHatsSignerGateAndSafeForm from "../../../components/Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm";
+import HatsSignerGateAndSafeForm from "../../../components/Deployers/forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm";
 import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
 import MainContent from "../../../components/MainContent/MainContent";
 import Button from "../../../components/UI/CustomButton/CustomButton";
@@ -16,7 +16,7 @@ const HSGWF = () => {
   const [data, setData] = useState(undefined);
   const [formData, setFormData] = useState({
     _ownerHatId: "",
-    _signersHatIds: ["", ""],
+    _signersHatId: "",
     _minThreshold: "",
     _targetThreshold: "",
     _maxSigners: "",
@@ -42,7 +42,7 @@ const HSGWF = () => {
   );
   const contentOne = () => <Deploy active={DEPLOY_ACTIONS.DEPLOY_HSG_W_S} />;
   const contentTwo = () => (
-    <MultiHatsSignerGateAndSafeForm
+    <HatsSignerGateAndSafeForm
       setIsPending={setIsPending}
       setData={setData}
       setTransactionData={setTransactionData}
