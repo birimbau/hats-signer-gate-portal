@@ -8,7 +8,6 @@ import Input from '../../../UI/CustomInput/CustomInput';
 import { useDeployMultiHatSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { Contract } from 'ethers';
 
 interface useDeployHSGwSargs {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
@@ -97,7 +96,8 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     setIsPending(isLoading && hash !== '');
   }, [isLoading, hash, setIsPending]);
 
-  // TODO - Test Connection
+  // TODO - Remove un-necessary input values and give defaults
+  // TODO - Test Connection using my beautiful HAT :)
   // TODO - Add Validation
 
   return (
