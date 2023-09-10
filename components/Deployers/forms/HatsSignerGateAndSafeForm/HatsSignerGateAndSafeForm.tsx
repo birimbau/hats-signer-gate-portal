@@ -1,18 +1,20 @@
-import { VStack, Text, Flex } from "@chakra-ui/react";
-import Button from "../../../UI/CustomButton/CustomButton";
-import { AbiTypeToPrimitiveType } from "abitype";
-import { useState, useRef } from "react";
-import { useAccount, useContractWrite } from "wagmi";
-import { useDeployHSGwSafe } from "../../../../utils/hooks/HatsSignerGateFactory";
-import Input from "../../../UI/CustomInput/CustomInput";
-import { useDeployMultiHatSGwSafe } from "../../../../utils/hooks/HatsSignerGateFactory";
+import { VStack, Text, Flex } from '@chakra-ui/react';
+import Button from '../../../UI/CustomButton/CustomButton';
+import { AbiTypeToPrimitiveType } from 'abitype';
+import { useState, useRef, useEffect } from 'react';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
+import Input from '../../../UI/CustomInput/CustomInput';
+import { useDeployMultiHatSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
+import { decodeEventLog } from 'viem';
+import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
 
 interface useDeployHSGwSargs {
-  _ownerHatId: AbiTypeToPrimitiveType<"uint256">;
-  _signerHatId: AbiTypeToPrimitiveType<"uint256">;
-  _minThreshold: AbiTypeToPrimitiveType<"uint256">;
-  _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
-  _maxSigners: AbiTypeToPrimitiveType<"uint256">;
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }
 
 interface Props {
@@ -27,6 +29,8 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   // Destructure Props for ease of use & visibility within this function
   const { setIsPending, setData, setTransactionData, formData, setFormData } =
     props;
+
+  const [hash, setHash] = useState<string | ''>('');
 
   // Used to prevent the user Deploying
   const { isConnected } = useAccount();
@@ -46,62 +50,109 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     useContractWrite(config);
   // No need to spread config ^^, it's an object
 
+  // Only runs if # HASH is defined
+  // Use this to detect isLoading/isError state in transaction
+  const { data: transactionData, isLoading: transationPending } =
+    useWaitForTransaction({
+      hash: hash as AbiTypeToPrimitiveType<'address'>,
+      onSuccess(data) {
+        const response = decodeEventLog({
+          abi: HatsSignerGateFactoryAbi,
+          data: data.logs[8].data,
+          topics: data.logs[8].topics,
+        });
+
+        setTransactionData(data);
+        setData(response.args);
+      },
+    });
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Reach into props and update the args readey
+    args.current = {
+      _ownerHatId: BigInt(formData._ownerHatId),
+      _signerHatId: BigInt(formData._signerHatId),
+      _minThreshold: BigInt(formData._minThreshold),
+      _targetThreshold: BigInt(formData._targetThreshold),
+      _maxSigners: BigInt(formData._maxSigners),
+    };
+
+    // TODO - is the correct version of write available, how is it even possible to have a valid write function if the args.current are updated inside of onSubmit.
+    // The write function will be undefined if the config has not been prepared (still in-flight or errored), or the end-user is not connected to a wallet.
+    write?.();
+  };
+
+  // Why is this being used to re-render the app?
+  useEffect(() => {
+    if (data) {
+      setHash(data.hash);
+    }
+  }, [data]);
+
+  // TODO - Continue with useEffect for Pending status
+  // TODO - Test Connection
+  // TODO - Add Validation
+
   return (
-    <VStack width="100%" alignItems={"flex-start"} fontSize={14} gap={5}>
-      <Flex flexDirection={"column"} gap={0} w={"80%"}>
-        {" "}
+    <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
+      <Flex flexDirection={'column'} gap={0} w={'80%'}>
         <Input
           label="Owner Hat ID (integer)"
           placeholder="26950000000000000000000000004196..."
           onChange={(e) =>
-            SetArgs({ ...args, _ownerHatId: BigInt(e.target.value) })
+            setFormData({
+              ...formData,
+              _ownerHatId: e.target.value,
+            })
           }
         />
       </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"80%"}>
-        {" "}
+      <Flex flexDirection={'column'} gap={0} w={'80%'}>
         <Input
           label="Signer Hat ID (integer)"
           placeholder="26960000000000000000000000003152..."
           onChange={(e) =>
-            SetArgs({ ...args, _signerHatId: BigInt(e.target.value) })
+            setFormData({ ...formData, _signerHatId: e.target.value })
           }
         />
       </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"60%"}>
-        {" "}
+      <Flex flexDirection={'column'} gap={0} w={'60%'}>
+        {' '}
         <Input
           label="Min Threshold (integer)"
           placeholder="3"
           onChange={(e) =>
-            SetArgs({ ...args, _minThreshold: BigInt(e.target.value) })
+            setFormData({ ...formData, _minThreshold: e.target.value })
           }
         />
       </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"60%"}>
-        {" "}
+      <Flex flexDirection={'column'} gap={0} w={'60%'}>
         <Input
           label="Max Threshold (integer)"
           placeholder="5"
           onChange={(e) =>
-            SetArgs({ ...args, _targetThreshold: BigInt(e.target.value) })
+            setFormData({
+              ...formData,
+              _targetThreshold: e.target.value,
+            })
           }
         />
       </Flex>
-      <Flex flexDirection={"column"} gap={0} w={"60%"}>
-        {" "}
+      <Flex flexDirection={'column'} gap={0} w={'60%'}>
         <Input
           label="Max Signers (integer)"
           placeholder="9"
           onChange={(e) =>
-            SetArgs({ ...args, _maxSigners: BigInt(e.target.value) })
+            setFormData({ ...formData, _maxSigners: e.target.value })
           }
         />
       </Flex>
       <Button
-        disabled={!isConnected || isLoading || !write}
-        onClick={() => write?.()}
-        width={"140px"}
+        disabled={!isConnected || isLoading}
+        onClick={onSubmit}
+        width={'140px'}
       >
         Deploy
       </Button>

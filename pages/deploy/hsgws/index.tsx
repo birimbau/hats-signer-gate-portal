@@ -1,25 +1,25 @@
-import { VStack, Text } from "@chakra-ui/react";
-import { useState } from "react";
-import HatsSignerGateAndSafeForm from "../../../components/Deployers/forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm";
-import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
-import MainContent from "../../../components/MainContent/MainContent";
-import Button from "../../../components/UI/CustomButton/CustomButton";
-import { DEPLOY_ACTIONS } from "../../../context/DeployContext";
-import { FiCopy } from "react-icons/fi";
-import { BsCardList, BsSafe } from "react-icons/bs";
-import { getBlockExplorerUrl } from "../../../utils/utils";
-import { useNetwork } from "wagmi";
+import { VStack, Text } from '@chakra-ui/react';
+import { useState } from 'react';
+import HatsSignerGateAndSafeForm from '../../../components/Deployers/forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm';
+import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
+import MainContent from '../../../components/MainContent/MainContent';
+import Button from '../../../components/UI/CustomButton/CustomButton';
+import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
+import { FiCopy } from 'react-icons/fi';
+import { BsCardList, BsSafe } from 'react-icons/bs';
+import { getBlockExplorerUrl } from '../../../utils/utils';
+import { useNetwork } from 'wagmi';
 
 const HSGWF = () => {
   const { chain } = useNetwork();
   const [isPending, setIsPending] = useState(false);
   const [data, setData] = useState(undefined);
   const [formData, setFormData] = useState({
-    _ownerHatId: "",
-    _signersHatId: "",
-    _minThreshold: "",
-    _targetThreshold: "",
-    _maxSigners: "",
+    _ownerHatId: '',
+    _signerHatId: '',
+    _minThreshold: '',
+    _targetThreshold: '',
+    _maxSigners: '',
   });
   const [transactionData, setTransactionData] = useState(undefined);
   const headerOne = () => (
@@ -54,7 +54,7 @@ const HSGWF = () => {
   const contentThree = () => (
     <>
       {!isPending && !data && (
-        <VStack height="100%" alignItems="flex-start" gap={"8px"}>
+        <VStack height="100%" alignItems="flex-start" gap={'8px'}>
           <Text>
             <b>Owner Hat</b> can transfer ownership to a new Hat ID, set
             multisig parameters, and for a MHSG, add other Hats as valid
@@ -91,7 +91,7 @@ const HSGWF = () => {
         </VStack>
       )}
       {data && !isPending && (
-        <VStack height="100%" alignItems="flex-start" gap={"24px"}>
+        <VStack height="100%" alignItems="flex-start" gap={'24px'}>
           <Button
             leftIcon={<FiCopy />}
             onClick={() => {
