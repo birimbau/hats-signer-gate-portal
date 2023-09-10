@@ -45,6 +45,8 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   });
 
   // The args are passed into "usePrepareContractWrite" returning a "prepared configuration" to be sent through to useContractWrite.
+  // args.current is passed in - IT USES CLOSURE, SO THE WRITE FUNCTION HOLDS THE REFERENCES TO args.current...
+  // This means that "write()" onSubmit has access to args.current.
   const { config } = useDeployHSGwSafe(args.current);
   const { data, isLoading, isSuccess, isError, write } =
     useContractWrite(config);
@@ -79,8 +81,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
       _maxSigners: BigInt(formData._maxSigners),
     };
 
-    // TODO - is the correct version of write available, how is it even possible to have a valid write function if the args.current are updated inside of onSubmit.
-    // The write function will be undefined if the config has not been prepared (still in-flight or errored), or the end-user is not connected to a wallet.
+    // write has access to args.current, so the updated values take effect
     write?.();
   };
 
