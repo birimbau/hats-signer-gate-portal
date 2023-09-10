@@ -95,9 +95,8 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   // Used for conditional rendering
   useEffect(() => {
     setIsPending(isLoading && hash !== '');
-  }, [isLoading, hash, props]);
+  }, [isLoading, hash, setIsPending]);
 
-  // TODO - Continue with useEffect for Pending status
   // TODO - Test Connection
   // TODO - Add Validation
 
