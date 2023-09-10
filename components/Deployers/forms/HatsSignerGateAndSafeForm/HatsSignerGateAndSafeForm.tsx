@@ -8,6 +8,7 @@ import Input from '../../../UI/CustomInput/CustomInput';
 import { useDeployMultiHatSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
+import { Contract } from 'ethers';
 
 interface useDeployHSGwSargs {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
@@ -48,31 +49,29 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   // args.current is passed in - IT USES CLOSURE, SO THE WRITE FUNCTION HOLDS THE REFERENCES TO args.current...
   // This means that "write()" onSubmit has access to args.current.
   const { config } = useDeployHSGwSafe(args.current);
-  const { data, isLoading, isSuccess, isError, write } =
-    useContractWrite(config);
+  const { data: contractData, write } = useContractWrite(config);
   // No need to spread config ^^, it's an object
+  // IMPROVE
 
-  // Only runs if # HASH is defined
+  // This only runs if "hash" is defined
   // Use this to detect isLoading/isError state in transaction
-  const { data: transactionData, isLoading: transationPending } =
-    useWaitForTransaction({
-      hash: hash as AbiTypeToPrimitiveType<'address'>,
-      onSuccess(data) {
-        const response = decodeEventLog({
-          abi: HatsSignerGateFactoryAbi,
-          data: data.logs[8].data,
-          topics: data.logs[8].topics,
-        });
+  const { data: transactionData, isLoading } = useWaitForTransaction({
+    hash: hash as AbiTypeToPrimitiveType<'address'>,
+    onSuccess(data) {
+      const response = decodeEventLog({
+        abi: HatsSignerGateFactoryAbi,
+        data: data.logs[8].data,
+        topics: data.logs[8].topics,
+      });
 
-        setTransactionData(data);
-        setData(response.args);
-      },
-    });
+      setTransactionData(data);
+      setData(response.args);
+    },
+  });
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Reach into props and update the args readey
     args.current = {
       _ownerHatId: BigInt(formData._ownerHatId),
       _signerHatId: BigInt(formData._signerHatId),
@@ -86,11 +85,17 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   };
 
   // Why is this being used to re-render the app?
+  // Improve - data to contractData
   useEffect(() => {
-    if (data) {
-      setHash(data.hash);
+    if (contractData) {
+      setHash(contractData.hash);
     }
-  }, [data]);
+  }, [contractData]);
+
+  // Used for conditional rendering
+  useEffect(() => {
+    setIsPending(isLoading && hash !== '');
+  }, [isLoading, hash, props]);
 
   // TODO - Continue with useEffect for Pending status
   // TODO - Test Connection
