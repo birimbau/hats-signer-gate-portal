@@ -11,24 +11,31 @@ import { getBlockExplorerUrl } from '../../../utils/utils';
 import { useNetwork } from 'wagmi';
 import { AbiTypeToPrimitiveType } from 'abitype';
 
-export interface CustomFormData {
+export interface DeployConfigHSG_BigInt {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
   _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
   _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }
+export interface DeployConfigHSG_String {
+  _ownerHatId: string;
+  _signerHatId: string;
+  _minThreshold: string;
+  _targetThreshold: string;
+  _maxSigners: string;
+}
 
 const HSGWF = () => {
   const { chain } = useNetwork();
   const [isPending, setIsPending] = useState<boolean>(false);
   const [data, setData] = useState(undefined);
-  const [formData, setFormData] = useState<CustomFormData>({
-    _ownerHatId: BigInt(0),
-    _signerHatId: BigInt(0),
-    _minThreshold: BigInt(0),
-    _targetThreshold: BigInt(0),
-    _maxSigners: BigInt(0),
+  const [formData, setFormData] = useState<DeployConfigHSG_String>({
+    _ownerHatId: '',
+    _signerHatId: '',
+    _minThreshold: '',
+    _targetThreshold: '',
+    _maxSigners: '',
   });
   const [transactionData, setTransactionData] = useState(undefined);
   const headerOne = () => (
