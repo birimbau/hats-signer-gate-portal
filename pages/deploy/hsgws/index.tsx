@@ -9,17 +9,26 @@ import { FiCopy } from 'react-icons/fi';
 import { BsCardList, BsSafe } from 'react-icons/bs';
 import { getBlockExplorerUrl } from '../../../utils/utils';
 import { useNetwork } from 'wagmi';
+import { AbiTypeToPrimitiveType } from 'abitype';
+
+export interface CustomFormData {
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+}
 
 const HSGWF = () => {
   const { chain } = useNetwork();
-  const [isPending, setIsPending] = useState(false);
+  const [isPending, setIsPending] = useState<boolean>(false);
   const [data, setData] = useState(undefined);
-  const [formData, setFormData] = useState({
-    _ownerHatId: '',
-    _signerHatId: '',
-    _minThreshold: '',
-    _targetThreshold: '',
-    _maxSigners: '',
+  const [formData, setFormData] = useState<CustomFormData>({
+    _ownerHatId: BigInt(0),
+    _signerHatId: BigInt(0),
+    _minThreshold: BigInt(0),
+    _targetThreshold: BigInt(0),
+    _maxSigners: BigInt(0),
   });
   const [transactionData, setTransactionData] = useState(undefined);
   const headerOne = () => (
@@ -48,6 +57,7 @@ const HSGWF = () => {
       setTransactionData={setTransactionData}
       formData={formData}
       setFormData={setFormData}
+      isPending={isPending}
     />
   );
 
@@ -131,11 +141,11 @@ const HSGWF = () => {
             View Safe
           </Button>
           <Text>
-            Min Threshold = {formData._minThreshold}
+            Min Threshold = {formData._minThreshold.toString()}
             <br />
-            Max Threshold = {formData._minThreshold}
+            Max Threshold = {formData._minThreshold.toString()}
             <br />
-            Max Signers = {formData._maxSigners}
+            Max Signers = {formData._maxSigners.toString()}
           </Text>
           <Text>
             The Safe owner you see listed at app.safe.global is the new Hats
