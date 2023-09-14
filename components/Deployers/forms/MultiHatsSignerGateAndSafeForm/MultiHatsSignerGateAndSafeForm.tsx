@@ -46,6 +46,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
 
         p.setTransactionData(data);
         p.setData(response.args);
+        console.log('inside Success');
       },
     });
 

@@ -1,27 +1,34 @@
 import { VStack, Text, Flex } from '@chakra-ui/react';
 import Button from '../../../UI/CustomButton/CustomButton';
-import { AbiTypeToPrimitiveType } from 'abitype';
 import { useState, useRef, useEffect } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
-import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import Input from '../../../UI/CustomInput/CustomInput';
-import { useDeployMultiHatSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
+import { AbiTypeToPrimitiveType } from 'abitype';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { Formik, Form, FormikProps, useFormik } from 'formik';
-import * as Yup from 'yup';
-import {
-  DeployConfigHSG_BigInt,
-  DeployConfigHSG_String,
-} from '../../../../pages/deploy/hsgws';
-import HsgOnSubmit from './HsgOnSubmit';
+import { DeployConfigHSG_String } from '../../../../pages/deploy/hsgws';
 
-// This type declaration is used to validate bigInt
+// TODO - Add grey out once submitted once... do not allow re-submission with the same values.
+// TODO - Create new files for Form Error message
+// TODO - Abstract away the validation into another file
+// TODO - CHECK  if the hash needs to have "0x" at the front of it
+// TODO - Investigate if we want to use isError for any special handling
+// TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
+
 declare module 'yup' {
   interface StringSchema {
     bigInt(message?: string): StringSchema;
   }
 }
+
+interface FormErrorMessageProps {
+  touched: boolean | undefined;
+  error?: string | null;
+}
+
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
@@ -42,16 +49,38 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     isPending,
   } = props;
 
-  const [hash, setHash] = useState<string>('');
-  const [submitted, setSubmitted] = useState(false);
+  const [hash, setHash] = useState<`0x${string}` | ''>('');
 
-  // Use a ref for submitted
-  const submittedRef = useRef<number>(0);
-  // State to decide whether to render HsgOnSubmit
-  const [renderHsg, setRenderHsg] = useState<boolean>(false);
+  const args = useRef({
+    _ownerHatId: BigInt(0),
+    _signerHatId: BigInt(0),
+    _minThreshold: BigInt(0),
+    _targetThreshold: BigInt(0),
+    _maxSigners: BigInt(0),
+  });
 
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
+
+  const { config } = useDeployHSGwSafe(args.current);
+  const { data: contractData, isLoading, write } = useContractWrite(config);
+
+  // This only runs if "hash" is defined
+  // Use this to detect isLoading state in transaction
+  const { isLoading: transationPending } = useWaitForTransaction({
+    hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
+    onSuccess(data) {
+      const response = decodeEventLog({
+        abi: HatsSignerGateFactoryAbi,
+        data: data.logs[8].data,
+        topics: data.logs[8].topics,
+      });
+
+      setTransactionData(data);
+      setData(response.args);
+      console.log('Transaction Success');
+    },
+  });
 
   function isBigInt(value?: string): boolean {
     if (!value) return false;
@@ -97,24 +126,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
       .bigInt(),
   });
 
-  const safeSetFormData = (data: DeployConfigHSG_String) => {
-    const safeData: DeployConfigHSG_String = { ...data };
-    for (let key in safeData) {
-      const value = safeData[key as keyof DeployConfigHSG_String];
-      if (!isBigInt(value)) {
-        safeData[key as keyof DeployConfigHSG_String] = '';
-      }
-    }
-    setFormData(safeData);
-  };
-
-  // Formik is going to automagically keeps the state of our Form for us
-  // The desgin of this dashboard requires us to make the data available one layer above the scope of this function.
-  // You will
+  // Formik is going to automagically keep the state of our Form for us
   const formik = useFormik<DeployConfigHSG_String>({
     initialValues: formData,
     validationSchema,
     onSubmit: (values: DeployConfigHSG_String, actions) => {
+      // e.preventDefault(); - This line is now handled by Formik
+
+      // Update the data for use in the parent file -> index.jsx
       setFormData({
         _ownerHatId: values._ownerHatId,
         _signerHatId: values._signerHatId,
@@ -123,19 +142,37 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
         _maxSigners: values._maxSigners,
       });
 
-      // Increment submittedRef each time form is submitted
-      submittedRef.current = submittedRef.current + 1;
-      setRenderHsg(true); // Set to render HsgOnSubmit
+      args.current = {
+        _ownerHatId: BigInt(values._ownerHatId),
+        _signerHatId: BigInt(values._signerHatId),
+        _minThreshold: BigInt(values._minThreshold),
+        _targetThreshold: BigInt(values._targetThreshold),
+        _maxSigners: BigInt(values._maxSigners),
+      };
 
-      console.log('InsideFormikSubmit');
-      // e.preventDefault(); - This line is now handled by Formik
-      // write() has access to values passed in from props
+      // write has access to the args.current
+      write?.();
     },
   });
 
-  // TODO ADD FORMIK RED TEXT UNDER ALL
+  // This is used to update the parent's display status
+  useEffect(() => {
+    setIsPending((isLoading || transationPending) && hash !== '');
+  }, [isLoading, transationPending, setIsPending, hash]);
 
-  // TODO LOOK AT RENDER KEY IN GPT, THIS WILL ALLOW THE HSGONSUBMIT TO RERENDER EACH TIME ONSUBMIT IS CLICKED.
+  // The hash changes when the user clicks submit.
+  // This triggers the "Transaction is progress" status
+  useEffect(() => {
+    if (contractData) {
+      setHash(contractData.hash);
+    }
+  }, [contractData]);
+
+  const FormErrorMessage = ({ touched, error }: FormErrorMessageProps) => {
+    if (!touched || !error) return null;
+
+    return <Text color="red">{error}</Text>;
+  };
 
   return (
     // You could also use formik's default wrapper: <Formik>
@@ -148,17 +185,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               placeholder="26950000000000000000000000004196..."
               onChange={(e) => {
                 formik.handleChange(e); // This updates formik
-                // safeSetFormData({
-                //   ...formData,
-                //   _ownerHatId: e.target.value,
-                // }); // This updates state stored outside of this function. (index.tsx)
               }}
               name="_ownerHatId"
               value={formik.values._ownerHatId}
             />
-            {formik.touched._ownerHatId && formik.errors._ownerHatId ? (
-              <Text color="red">{formik.errors._ownerHatId}</Text>
-            ) : null}
+            <FormErrorMessage
+              touched={formik.touched._ownerHatId}
+              error={formik.errors._ownerHatId}
+            />
           </Flex>
           <Flex flexDirection={'column'} gap={0} w={'80%'}>
             <Input
@@ -166,16 +200,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               placeholder="26960000000000000000000000003152..."
               onChange={(e) => {
                 formik.handleChange(e); // This updates formik
-                // safeSetFormData(
-                //   { ...formData, _signerHatId: e.target.value } || ''
-                // );
               }}
               name="_signerHatId"
               value={formik.values._signerHatId}
             />
-            {formik.touched._signerHatId && formik.errors._signerHatId ? (
-              <Text color="red">{formik.errors._signerHatId}</Text>
-            ) : null}
+            <FormErrorMessage
+              touched={formik.touched._signerHatId}
+              error={formik.errors._signerHatId}
+            />
           </Flex>
           <Flex flexDirection={'column'} gap={0} w={'60%'}>
             <Input
@@ -183,16 +215,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               placeholder="3"
               onChange={(e) => {
                 formik.handleChange(e); // This updates formik
-                // safeSetFormData(
-                //   { ...formData, _minThreshold: e.target.value } || ''
-                // );
               }}
               name="_minThreshold"
               value={formik.values._minThreshold}
             />
-            {formik.touched._minThreshold && formik.errors._minThreshold ? (
-              <Text color="red">{formik.errors._minThreshold}</Text>
-            ) : null}
+            <FormErrorMessage
+              touched={formik.touched._minThreshold}
+              error={formik.errors._minThreshold}
+            />
           </Flex>
           <Flex flexDirection={'column'} gap={0} w={'60%'}>
             <Input
@@ -200,18 +230,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               placeholder="5"
               onChange={(e) => {
                 formik.handleChange(e); // This updates formik
-                safeSetFormData({
-                  ...formData,
-                  _targetThreshold: e.target.value,
-                });
               }}
               name="_targetThreshold"
               value={formik.values._targetThreshold}
             />
-            {formik.touched._targetThreshold &&
-            formik.errors._targetThreshold ? (
-              <Text color="red">{formik.errors._targetThreshold}</Text>
-            ) : null}
+            <FormErrorMessage
+              touched={formik.touched._targetThreshold}
+              error={formik.errors._targetThreshold}
+            />
           </Flex>
           <Flex flexDirection={'column'} gap={0} w={'60%'}>
             <Input
@@ -219,14 +245,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               placeholder="9"
               onChange={(e) => {
                 formik.handleChange(e); // This updates formik
-                safeSetFormData({ ...formData, _maxSigners: e.target.value });
               }}
               name="_maxSigners"
-              value={Number(formik.values._maxSigners)}
+              value={formik.values._maxSigners}
             />
-            {formik.touched._maxSigners && formik.errors._maxSigners ? (
-              <Text color="red">{formik.errors._maxSigners}</Text>
-            ) : null}
+            <FormErrorMessage
+              touched={formik.touched._maxSigners}
+              error={formik.errors._maxSigners}
+            />
           </Flex>
           <Button
             type="submit"
@@ -237,76 +263,6 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
           </Button>
         </VStack>
       </form>
-      {/* Separate the HSG to only run once user submits */}
-      {renderHsg && (
-        <HsgOnSubmit
-          key={submittedRef.current}
-          setData={setData}
-          setTransactionData={setTransactionData}
-          formData={formData}
-        />
-      )}
     </>
   );
 }
-
-// I have left the values in string format to be used consistently,
-// then when we need them as BigInts, I have transformed them.
-// const toBigint = (value: string): bigint => {
-//   if (value === '') {
-//     return BigInt(0);
-//   }
-//   return BigInt(value);
-// };
-
-// const transformFormDataToBigInt = (
-//   formData: DeployConfigHSG_String
-// ): DeployConfigHSG_BigInt => {
-//   return {
-//     _ownerHatId: toBigint(formData._ownerHatId),
-//     _signerHatId: toBigint(formData._signerHatId),
-//     _minThreshold: toBigint(formData._minThreshold),
-//     _targetThreshold: toBigint(formData._targetThreshold),
-//     _maxSigners: toBigint(formData._maxSigners),
-//   };
-// };
-
-// The args are passed into "usePrepareContractWrite" returning a "prepared configuration" to be sent through to useContractWrite.
-// args.current is passed in - IT USES CLOSURE, SO THE WRITE FUNCTION HOLDS THE REFERENCES TO args.current...
-// This means that "write()" onSubmit has access to args.current.
-// const { config } = useDeployHSGwSafe(formData);
-// const { data: contractData, write } = useContractWrite(config);
-// No need to spread config ^^, it's an object
-// IMPROVE
-
-// This only runs if "hash" is defined
-// Use this to detect isLoading/isError state in transaction
-// const { data: transactionData, isLoading } = useWaitForTransaction({
-//   hash: hash as AbiTypeToPrimitiveType<'address'>,
-//   onSuccess(data) {
-//     const response = decodeEventLog({
-//       abi: HatsSignerGateFactoryAbi,
-//       data: data.logs[8].data,
-//       topics: data.logs[8].topics,
-//     });
-
-//     setTransactionData(data);
-//     setData(response.args);
-//   },
-// });
-
-// Why is this being used to re-render the app?
-// Improve - data to contractData
-// useEffect(() => {
-//   if (contractData) {
-//     setHash(contractData.hash);
-//   }
-// }, [contractData]);
-
-// Used for conditional rendering
-// useEffect(() => {
-//   setIsPending(isLoading && hash !== '');
-// }, [isLoading, hash, setIsPending]);
-
-// TODO - Add Validation
-// Grey out button on submit.
