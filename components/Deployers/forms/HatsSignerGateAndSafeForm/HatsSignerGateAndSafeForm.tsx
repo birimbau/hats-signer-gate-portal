@@ -45,6 +45,11 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   const [hash, setHash] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
 
+  // Use a ref for submitted
+  const submittedRef = useRef<number>(0);
+  // State to decide whether to render HsgOnSubmit
+  const [renderHsg, setRenderHsg] = useState<boolean>(false);
+
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
@@ -117,7 +122,10 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
         _targetThreshold: values._targetThreshold,
         _maxSigners: values._maxSigners,
       });
-      setSubmitted(true);
+
+      // Increment submittedRef each time form is submitted
+      submittedRef.current = submittedRef.current + 1;
+      setRenderHsg(true); // Set to render HsgOnSubmit
 
       console.log('InsideFormikSubmit');
       // e.preventDefault(); - This line is now handled by Formik
@@ -165,9 +173,11 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               name="_signerHatId"
               value={formik.values._signerHatId}
             />
+            {formik.touched._signerHatId && formik.errors._signerHatId ? (
+              <Text color="red">{formik.errors._signerHatId}</Text>
+            ) : null}
           </Flex>
           <Flex flexDirection={'column'} gap={0} w={'60%'}>
-            {' '}
             <Input
               label="Min Threshold (integer)"
               placeholder="3"
@@ -180,6 +190,9 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               name="_minThreshold"
               value={formik.values._minThreshold}
             />
+            {formik.touched._minThreshold && formik.errors._minThreshold ? (
+              <Text color="red">{formik.errors._minThreshold}</Text>
+            ) : null}
           </Flex>
           <Flex flexDirection={'column'} gap={0} w={'60%'}>
             <Input
@@ -195,6 +208,10 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               name="_targetThreshold"
               value={formik.values._targetThreshold}
             />
+            {formik.touched._targetThreshold &&
+            formik.errors._targetThreshold ? (
+              <Text color="red">{formik.errors._targetThreshold}</Text>
+            ) : null}
           </Flex>
           <Flex flexDirection={'column'} gap={0} w={'60%'}>
             <Input
@@ -207,6 +224,9 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               name="_maxSigners"
               value={Number(formik.values._maxSigners)}
             />
+            {formik.touched._maxSigners && formik.errors._maxSigners ? (
+              <Text color="red">{formik.errors._maxSigners}</Text>
+            ) : null}
           </Flex>
           <Button
             type="submit"
@@ -218,8 +238,9 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
         </VStack>
       </form>
       {/* Separate the HSG to only run once user submits */}
-      {submitted && (
+      {renderHsg && (
         <HsgOnSubmit
+          key={submittedRef.current}
           setData={setData}
           setTransactionData={setTransactionData}
           formData={formData}
