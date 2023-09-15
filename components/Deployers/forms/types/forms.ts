@@ -7,6 +7,8 @@ export interface DeployConfigHSG_BigInt {
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }
+
+// used to allow the FE to have strings, this is converted
 export interface DeployConfigHSG_String {
   _ownerHatId: string;
   _signerHatId: string;
