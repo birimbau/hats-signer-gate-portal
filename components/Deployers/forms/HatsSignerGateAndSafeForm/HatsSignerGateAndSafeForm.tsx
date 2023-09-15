@@ -4,12 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import Input from '../../../UI/CustomInput/CustomInput';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { DeployConfigHSG_String } from '../../../../pages/deploy/hsgws';
+import { DeployConfigHSG_String } from '../types/forms';
+import * as Yup from 'yup';
 
 // TODO - Add grey out once submitted once... do not allow re-submission with the same values.
 // TODO - Create new files for Form Error message
@@ -17,12 +17,6 @@ import { DeployConfigHSG_String } from '../../../../pages/deploy/hsgws';
 // TODO - CHECK  if the hash needs to have "0x" at the front of it
 // TODO - Investigate if we want to use isError for any special handling
 // TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
-
-declare module 'yup' {
-  interface StringSchema {
-    bigInt(message?: string): StringSchema;
-  }
-}
 
 interface FormErrorMessageProps {
   touched: boolean | undefined;
@@ -81,25 +75,6 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
       console.log('Transaction Success');
     },
   });
-
-  function isBigInt(value?: string): boolean {
-    if (!value) return false;
-
-    try {
-      BigInt(value);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  Yup.addMethod(
-    Yup.string,
-    'bigInt',
-    function (errorMessage = 'Must be a valid BigInt!') {
-      return this.test('isBigInt', errorMessage, (val) => isBigInt(val));
-    }
-  );
 
   // Yup Validation Schema is already used in this project.
   // It's usual to use Yup with Formik

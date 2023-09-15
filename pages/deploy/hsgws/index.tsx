@@ -9,22 +9,7 @@ import { FiCopy } from 'react-icons/fi';
 import { BsCardList, BsSafe } from 'react-icons/bs';
 import { getBlockExplorerUrl } from '../../../utils/utils';
 import { useNetwork } from 'wagmi';
-import { AbiTypeToPrimitiveType } from 'abitype';
-
-export interface DeployConfigHSG_BigInt {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}
-export interface DeployConfigHSG_String {
-  _ownerHatId: string;
-  _signerHatId: string;
-  _minThreshold: string;
-  _targetThreshold: string;
-  _maxSigners: string;
-}
+import { DeployConfigHSG_String } from '../../../components/Deployers/forms/types/forms';
 
 const HSGWF = () => {
   const { chain } = useNetwork();
