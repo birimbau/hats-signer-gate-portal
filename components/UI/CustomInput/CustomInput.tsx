@@ -6,38 +6,48 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { FieldProps } from 'formik';
+
+// This is here temporarily to allow the old implementation of <Input/> to...
+// work at the same time as the Formik compatible <CustomInputWrapper />
+type OptionalFieldProps = {
+  [K in keyof FieldProps<any, any>]?: FieldProps<any, any>[K];
+};
+
 type P = {
   label?: string;
   extra?: React.ReactNode;
-} & InputProps;
+} & InputProps &
+  OptionalFieldProps;
 
 const Input: React.FC<P> = (p) => {
-  const { label, width, ...rest } = p;
+  const { label, width, field, ...rest } = p;
 
   return (
-    <Box display={'flex'} flexDirection='column' width={width || undefined}>
+    <Box display={'flex'} flexDirection="column" width={width || undefined}>
       {label && (
         <Text
-          fontStyle='normal'
+          fontStyle="normal"
           fontWeight={500}
-          lineHeight='24px'
-          as='label'
+          lineHeight="24px"
+          as="label"
           id={p.name || undefined}
         >
           {label}
         </Text>
       )}
-      <HStack gap='8px'>
+      <HStack gap="8px">
         <ChakraUiInput
+          {...field} // Spread field props from Formik here
           {...rest}
           _placeholder={{
             fontSize: '14px',
           }}
-          fontSize='14px'
-          borderRadius='0px'
-          borderColor='button.black'
-          padding='0 16px'
-          placeholdercolor='button.gray'
+          fontSize="14px"
+          borderRadius="0px"
+          borderColor="button.black"
+          padding="0 16px"
+          placeholdercolor="button.gray"
           background={'gray.50'}
           height={'40px'}
           _placeholderShown={{

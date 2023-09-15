@@ -1,15 +1,25 @@
-import { VStack, Text, Flex } from '@chakra-ui/react';
+import {
+  VStack,
+  Flex,
+  FormErrorMessage,
+  FormControl,
+  FormLabel,
+} from '@chakra-ui/react';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { useState, useRef, useEffect } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import Input from '../../../UI/CustomInput/CustomInput';
-import { useFormik } from 'formik';
+import { Field, Form, Formik, useFormik } from 'formik';
 import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
 import { DeployConfigHSG_String } from '../types/forms';
 import * as Yup from 'yup';
+import '../utils/validation'; // Adjust the path to where yupExtensions.ts is located.
+import CustomInputWrapper from '../utils/CustomInputWrapper';
+
+// import FormErrorMessage from '../utils/FormErrorMessage';
 
 // TODO - Add grey out once submitted once... do not allow re-submission with the same values.
 // TODO - Create new files for Form Error message
@@ -17,11 +27,6 @@ import * as Yup from 'yup';
 // TODO - CHECK  if the hash needs to have "0x" at the front of it
 // TODO - Investigate if we want to use isError for any special handling
 // TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
-
-interface FormErrorMessageProps {
-  touched: boolean | undefined;
-  error?: string | null;
-}
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -101,35 +106,6 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
       .bigInt(),
   });
 
-  // Formik is going to automagically keep the state of our Form for us
-  const formik = useFormik<DeployConfigHSG_String>({
-    initialValues: formData,
-    validationSchema,
-    onSubmit: (values: DeployConfigHSG_String, actions) => {
-      // e.preventDefault(); - This line is now handled by Formik
-
-      // Update the data for use in the parent file -> index.jsx
-      setFormData({
-        _ownerHatId: values._ownerHatId,
-        _signerHatId: values._signerHatId,
-        _minThreshold: values._minThreshold,
-        _targetThreshold: values._targetThreshold,
-        _maxSigners: values._maxSigners,
-      });
-
-      args.current = {
-        _ownerHatId: BigInt(values._ownerHatId),
-        _signerHatId: BigInt(values._signerHatId),
-        _minThreshold: BigInt(values._minThreshold),
-        _targetThreshold: BigInt(values._targetThreshold),
-        _maxSigners: BigInt(values._maxSigners),
-      };
-
-      // write has access to the args.current
-      write?.();
-    },
-  });
-
   // This is used to update the parent's display status
   useEffect(() => {
     setIsPending((isLoading || transationPending) && hash !== '');
@@ -142,102 +118,191 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
       setHash(contractData.hash);
     }
   }, [contractData]);
+  return (
+    // Note: Have to use <Formik> wrapper for error handling
+    // You could also use formik's default wrapper: <Formik>
+    // ** Be aware that <Field>, <FastField>, <ErrorMessage>, connect(), and <FieldArray> will NOT work with useFormik() as they all require React Context.    <>
 
-  const FormErrorMessage = ({ touched, error }: FormErrorMessageProps) => {
-    if (!touched || !error) return null;
+    // Formik is going to automagically keep the state of our Form for us
+    <Formik
+      initialValues={formData}
+      validationSchema={validationSchema}
+      onSubmit={(values: DeployConfigHSG_String, actions) => {
+        // e.preventDefault(); - This line is now handled by Formik
 
-    return <Text color="red">{error}</Text>;
-  };
+        // Update the data for use in the parent file -> index.jsx
+        setFormData({
+          _ownerHatId: values._ownerHatId,
+          _signerHatId: values._signerHatId,
+          _minThreshold: values._minThreshold,
+          _targetThreshold: values._targetThreshold,
+          _maxSigners: values._maxSigners,
+        });
+
+        args.current = {
+          _ownerHatId: BigInt(values._ownerHatId),
+          _signerHatId: BigInt(values._signerHatId),
+          _minThreshold: BigInt(values._minThreshold),
+          _targetThreshold: BigInt(values._targetThreshold),
+          _maxSigners: BigInt(values._maxSigners),
+        };
+
+        // write has access to the args.current
+        write?.();
+      }}
+    >
+      {(props) => (
+        <Form>
+          <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
+            <Flex flexDirection={'column'} gap={0} w={'80%'}>
+              <CustomInputWrapper
+                name="_ownerHatId"
+                label="Owner Hat ID (integer)"
+                placeholder="26950000000000000000000000004196..."
+              />
+            </Flex>
+
+            <Flex flexDirection={'column'} gap={0} w={'80%'}>
+              <CustomInputWrapper
+                name="_signerHatId"
+                label="Signer Hat ID (integer)"
+                placeholder="26960000000000000000000000003152..."
+              />
+            </Flex>
+
+            <Flex flexDirection={'column'} gap={0} w={'80%'}>
+              <CustomInputWrapper
+                name="_minThreshold"
+                label="Min Threshold (integer)"
+                placeholder="3"
+              />
+            </Flex>
+
+            <Flex flexDirection={'column'} gap={0} w={'60%'}>
+              <CustomInputWrapper
+                name="_targetThreshold"
+                label="Max Threshold (integer)"
+                placeholder="5"
+              />
+            </Flex>
+
+            <Flex flexDirection={'column'} gap={0} w={'60%'}>
+              <CustomInputWrapper
+                name="_maxSigners"
+                label="Max Signers (integer)"
+                placeholder="9"
+              />
+            </Flex>
+
+            <Button
+              type="submit"
+              disabled={!isConnected || isPending}
+              width={'140px'}
+              isLoading={props.isSubmitting}
+            >
+              Deploy
+            </Button>
+          </VStack>
+        </Form>
+      )}
+    </Formik>
+  );
 
   return (
     // You could also use formik's default wrapper: <Formik>
-    <>
-      <form onSubmit={formik.handleSubmit}>
-        <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
-          <Flex flexDirection={'column'} gap={0} w={'80%'}>
-            <Input
-              label="Owner Hat ID (integer)"
-              placeholder="26950000000000000000000000004196..."
-              onChange={(e) => {
-                formik.handleChange(e); // This updates formik
-              }}
-              name="_ownerHatId"
-              value={formik.values._ownerHatId}
-            />
-            <FormErrorMessage
+    // ** Be aware that <Field>, <FastField>, <ErrorMessage>, connect(), and <FieldArray> will NOT work with useFormik() as they all require React Context.    <>
+    <form onSubmit={formik.handleSubmit}>
+      <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
+        <Flex flexDirection={'column'} gap={0} w={'80%'}>
+          <Input
+            label="Owner Hat ID (integer)"
+            placeholder="26950000000000000000000000004196..."
+            onChange={(e) => {
+              formik.handleChange(e); // This updates formik
+            }}
+            name="_ownerHatId"
+            value={formik.values._ownerHatId}
+          />
+
+          {/* <FormError
               touched={formik.touched._ownerHatId}
               error={formik.errors._ownerHatId}
-            />
-          </Flex>
-          <Flex flexDirection={'column'} gap={0} w={'80%'}>
-            <Input
-              label="Signer Hat ID (integer)"
-              placeholder="26960000000000000000000000003152..."
-              onChange={(e) => {
-                formik.handleChange(e); // This updates formik
-              }}
-              name="_signerHatId"
-              value={formik.values._signerHatId}
-            />
-            <FormErrorMessage
-              touched={formik.touched._signerHatId}
-              error={formik.errors._signerHatId}
-            />
-          </Flex>
-          <Flex flexDirection={'column'} gap={0} w={'60%'}>
-            <Input
-              label="Min Threshold (integer)"
-              placeholder="3"
-              onChange={(e) => {
-                formik.handleChange(e); // This updates formik
-              }}
-              name="_minThreshold"
-              value={formik.values._minThreshold}
-            />
-            <FormErrorMessage
+            /> */}
+        </Flex>
+        <Flex flexDirection={'column'} gap={0} w={'80%'}>
+          {/* <FormControl
+              isInvalid={
+                formik.errors._signerHatId && formik.touched._signerHatId
+              }
+            >
+              <Input
+                label="Signer Hat ID (integer)"
+                placeholder="26960000000000000000000000003152..."
+                onChange={(e) => {
+                  formik.handleChange(e); // This updates formik
+                }}
+                name="_signerHatId"
+                value={formik.values._signerHatId}
+              />
+              <FormErrorMessage
+                touched={formik.touched._signerHatId}
+                error={formik.errors._signerHatId}
+              />
+            </FormControl> */}
+        </Flex>
+        <Flex flexDirection={'column'} gap={0} w={'60%'}>
+          <Input
+            label="Min Threshold (integer)"
+            placeholder="3"
+            onChange={(e) => {
+              formik.handleChange(e); // This updates formik
+            }}
+            name="_minThreshold"
+            value={formik.values._minThreshold}
+          />
+          {/* <FormErrorMessage
               touched={formik.touched._minThreshold}
               error={formik.errors._minThreshold}
-            />
-          </Flex>
-          <Flex flexDirection={'column'} gap={0} w={'60%'}>
-            <Input
-              label="Max Threshold (integer)"
-              placeholder="5"
-              onChange={(e) => {
-                formik.handleChange(e); // This updates formik
-              }}
-              name="_targetThreshold"
-              value={formik.values._targetThreshold}
-            />
-            <FormErrorMessage
+            /> */}
+        </Flex>
+        <Flex flexDirection={'column'} gap={0} w={'60%'}>
+          <Input
+            label="Max Threshold (integer)"
+            placeholder="5"
+            onChange={(e) => {
+              formik.handleChange(e); // This updates formik
+            }}
+            name="_targetThreshold"
+            value={formik.values._targetThreshold}
+          />
+          {/* <FormErrorMessage
               touched={formik.touched._targetThreshold}
               error={formik.errors._targetThreshold}
-            />
-          </Flex>
-          <Flex flexDirection={'column'} gap={0} w={'60%'}>
-            <Input
-              label="Max Signers (integer)"
-              placeholder="9"
-              onChange={(e) => {
-                formik.handleChange(e); // This updates formik
-              }}
-              name="_maxSigners"
-              value={formik.values._maxSigners}
-            />
-            <FormErrorMessage
+            /> */}
+        </Flex>
+        <Flex flexDirection={'column'} gap={0} w={'60%'}>
+          <Input
+            label="Max Signers (integer)"
+            placeholder="9"
+            onChange={(e) => {
+              formik.handleChange(e); // This updates formik
+            }}
+            name="_maxSigners"
+            value={formik.values._maxSigners}
+          />
+          {/* <FormErrorMessage
               touched={formik.touched._maxSigners}
               error={formik.errors._maxSigners}
-            />
-          </Flex>
-          <Button
-            type="submit"
-            disabled={!isConnected || isPending}
-            width={'140px'}
-          >
-            Deploy
-          </Button>
-        </VStack>
-      </form>
-    </>
+            /> */}
+        </Flex>
+        <Button
+          type="submit"
+          disabled={!isConnected || isPending}
+          width={'140px'}
+        >
+          Deploy
+        </Button>
+      </VStack>
+    </form>
   );
 }
