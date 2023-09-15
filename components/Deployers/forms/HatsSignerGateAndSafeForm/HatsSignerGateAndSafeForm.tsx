@@ -1,33 +1,22 @@
-import {
-  VStack,
-  Flex,
-  FormErrorMessage,
-  FormControl,
-  FormLabel,
-} from '@chakra-ui/react';
+import { VStack, Flex } from '@chakra-ui/react';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { useState, useRef, useEffect } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
-import Input from '../../../UI/CustomInput/CustomInput';
-import { Field, Form, Formik, useFormik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
 import { DeployConfigHSG_String } from '../types/forms';
 import * as Yup from 'yup';
-import '../utils/validation'; // Adjust the path to where yupExtensions.ts is located.
+import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 
-// import FormErrorMessage from '../utils/FormErrorMessage';
-
 // TODO - Add grey out once submitted once... do not allow re-submission with the same values.
-// TODO - Create new files for Form Error message
-// TODO - Abstract away the validation into another file
 // TODO - CHECK  if the hash needs to have "0x" at the front of it
 // TODO - Investigate if we want to use isError for any special handling
 // TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
-
+// TODO - Validation Schema - do we want more than present?
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
@@ -83,6 +72,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 
   // Yup Validation Schema is already used in this project.
   // It's usual to use Yup with Formik
+  // These are subject to change if we know more info
   const validationSchema = Yup.object().shape({
     _ownerHatId: Yup.string()
       .required('Required')
@@ -198,7 +188,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
               type="submit"
               disabled={!isConnected || isPending}
               width={'140px'}
-              isLoading={props.isSubmitting}
+              isLoading={props.isSubmitting} // Maybe change this to isPending
             >
               Deploy
             </Button>
