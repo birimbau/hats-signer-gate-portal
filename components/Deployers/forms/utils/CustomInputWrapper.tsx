@@ -1,6 +1,6 @@
 import { FormErrorMessage, FormControl } from '@chakra-ui/react';
 import Input from '../../../UI/CustomInput/CustomInput';
-import { Field } from 'formik';
+import { Field, FieldProps } from 'formik';
 import './validation'; // Adjust the path to where yupExtensions.ts is located.
 
 type CustomFieldProps = {
@@ -16,10 +16,11 @@ const CustomInputWrapper: React.FC<CustomFieldProps> = ({
 }) => {
   return (
     <Field name={name}>
-      {({ field, form }) => (
-        <FormControl isInvalid={form.errors[name] && form.touched[name]}>
+      {({ field, form }: FieldProps) => (
+        <FormControl isInvalid={!!(form.errors[name] && form.touched[name])}>
           <Input label={label} placeholder={placeholder} field={field} />
-          <FormErrorMessage>{form.errors[name]}</FormErrorMessage>
+          {/* Make sure all errors are created as strings in YupValidation */}
+          <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>
       )}
     </Field>

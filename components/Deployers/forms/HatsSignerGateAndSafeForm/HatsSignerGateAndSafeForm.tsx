@@ -2,7 +2,7 @@ import { VStack, Flex } from '@chakra-ui/react';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { useState, useRef, useEffect } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { decodeEventLog } from 'viem';
@@ -17,6 +17,7 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 // TODO - Investigate if we want to use isError for any special handling
 // TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
 // TODO - Validation Schema - do we want more than present?
+// TODO - change index.tsx text
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
