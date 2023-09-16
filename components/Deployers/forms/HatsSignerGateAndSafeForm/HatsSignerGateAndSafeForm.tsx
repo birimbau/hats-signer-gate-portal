@@ -56,7 +56,11 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction
-  const { isLoading: transationPending } = useWaitForTransaction({
+  const {
+    isSuccess,
+    isError,
+    isLoading: transationPending,
+  } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
     onSuccess(data) {
       const response = decodeEventLog({
@@ -187,9 +191,12 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 
             <Button
               type="submit"
-              disabled={!isConnected || isPending}
+              // Will be grey during submit and after success
+              // props.dirty comes from formik and makes the button clickable once values are inputted
+              isDisabled={
+                !props.dirty || !isConnected || isPending || isSuccess
+              }
               width={'140px'}
-              isLoading={props.isSubmitting} // Maybe change this to isPending
             >
               Deploy
             </Button>
