@@ -12,17 +12,14 @@ import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 
-// TODO - Add grey out once submitted once... do not allow re-submission with the same values.
 // TODO - CHECK  if the hash needs to have "0x" at the front of it
-// TODO - Investigate if we want to use isError for any special handling
 // TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
 // TODO - Validation Schema - do we want more than present?
-// TODO - change index.tsx text
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
   setTransactionData: (data: any) => void;
-  formData: DeployConfigHSG_String; // This now has it's own type and the initialised values are in state
+  formData: DeployConfigHSG_String; // This now has it's own type and the initialised values are strings
   setFormData: (formData: any) => void;
   isPending: boolean;
 }
@@ -40,6 +37,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 
   const [hash, setHash] = useState<`0x${string}` | ''>('');
 
+  // Used only for the useContractWrite, These do NOT update state (Their types would clash)
   const args = useRef({
     _ownerHatId: BigInt(0),
     _signerHatId: BigInt(0),
@@ -56,11 +54,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction
-  const {
-    isSuccess,
-    isError,
-    isLoading: transationPending,
-  } = useWaitForTransaction({
+  const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
     onSuccess(data) {
       const response = decodeEventLog({

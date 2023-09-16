@@ -10,6 +10,7 @@ import { BsCardList, BsSafe } from 'react-icons/bs';
 import { getBlockExplorerUrl } from '../../../utils/utils';
 import { useNetwork } from 'wagmi';
 import { DeployConfigHSG_String } from '../../../components/Deployers/forms/types/forms';
+import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 
 const HSGWF = () => {
   const { chain } = useNetwork();
@@ -31,7 +32,7 @@ const HSGWF = () => {
   );
   const headerTwo = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-      <Text as="b">Deploy Multi Hats Signer Gate + Safe</Text>
+      <Text as="b">Deploy Hats Signer Gate + Safe</Text>
       <Text>Enter inputs, click ‘Deploy’</Text>
     </VStack>
   );
@@ -55,43 +56,7 @@ const HSGWF = () => {
 
   const contentThree = () => (
     <>
-      {!isPending && !data && (
-        <VStack height="100%" alignItems="flex-start" gap={'8px'}>
-          <Text>
-            <b>Owner Hat</b> can transfer ownership to a new Hat ID, set
-            multisig parameters, and for a MHSG, add other Hats as valid
-            signers. Note: once added as a valid signer, a Hat cannot be removed
-            from the multisig.
-          </Text>
-          <Text>
-            <b>Signer Hat</b> is the ID of the Hat(s) that will have signing
-            authority for the Safe multisig.
-          </Text>
-          <Text>
-            <b>Min Threshold</b> is the fewest number of signers that can
-            execute a transaction.
-          </Text>
-          <Text>
-            <b>Max Threshold</b> when reached becomes the fewest number of
-            signers that can execute a transaction.
-          </Text>
-          <Text>
-            <b>Max Signers</b> is the maximum number of addresses that can claim
-            signing authority on the Safe.
-          </Text>
-          <Text>
-            <b>Max Signers</b> is the maximum number of addresses that can claim
-            signing authority on the Safe.
-          </Text>
-          <Text>
-            In order to execute a transaction, the safe must have a number of
-            valid hat-wearing signers &gt;= Min Threshold. Each valid signer
-            added beyond the Min Threshold will increase the safe&apos;s
-            threshold until the Max Threshold is reached, after which the
-            Safe&apos;s threshold will not increase.
-          </Text>
-        </VStack>
-      )}
+      {!isPending && !data && <VariableExplanations />}
       {data && !isPending && (
         <VStack height="100%" alignItems="flex-start" gap={'24px'}>
           <Button
@@ -133,11 +98,11 @@ const HSGWF = () => {
             View Safe
           </Button>
           <Text>
-            Min Threshold = {formData._minThreshold.toString()}
+            Min Threshold = {formData._minThreshold}
             <br />
-            Max Threshold = {formData._minThreshold.toString()}
+            Max Threshold = {formData._targetThreshold}
             <br />
-            Max Signers = {formData._maxSigners.toString()}
+            Max Signers = {formData._maxSigners}
           </Text>
           <Text>
             The Safe owner you see listed at app.safe.global is the new Hats
