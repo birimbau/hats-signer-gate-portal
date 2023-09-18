@@ -1,37 +1,33 @@
 import { VStack } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineRead } from 'react-icons/ai';
 import Button from '../../../../../components/UI/CustomButton/CustomButton';
 import Input from '../../../../../components/UI/CustomInput/CustomInput';
-import {
-  useCanAttachMHSG2Safe,
-  useDeployMultiHatSGwSafe,
-} from '../../../../../utils/hooks/HatsSignerGateFactory';
-import {
-  useContractRead,
-  useContractWrite,
-  useWaitForTransaction,
-} from 'wagmi';
-import { AbiTypeToPrimitiveType } from 'abitype';
+import { useGetModulesPaginated } from '../../../../../utils/hooks/GnosisSafeL2';
 
-const ReadForm = () => {
-  const [formData, setFormData] = useState({});
+interface P {
+  canAttachSafe: (value: boolean, address: string) => void;
+}
 
-  const args = useRef({
-    _mhsg: '0x1195634e628aFD98d4A1A77acAB73657895E7a4C',
+const ReadForm:React.FC<P> = (p) => {
+  const [formData, setFormData] = useState({
+    contractId: '',
   });
 
-  const { data, refetch } = useCanAttachMHSG2Safe(formData);
+  const { data, refetch, isLoading } = useGetModulesPaginated({
+    start: '0x0000000000000000000000000000000000000001',
+    pageSize: 1
+  }, formData.contractId);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     refetch?.();
   };
 
   useEffect(() => {
-    const he = data;
-    debugger;
+   if (data) {
+     p.canAttachSafe(data[0].length === 0, formData.start);
+   }
   }, [data]);
 
   return (
@@ -42,14 +38,14 @@ const ReadForm = () => {
             label='Existing Safe (address)'
             placeholder='0xC8ac0000000000000000000000000000000047fe'
             name='_address'
-            value={formData._mhsg}
+            value={formData.contractId}
             width='340px'
             onChange={(e) =>
-              setFormData({ ...formData, _mhsg: e.target.value.toLowerCase() })
+              setFormData({ ...formData, contractId: e.target.value.toLowerCase() })
             }
           />
 
-          <Button type='submit' leftIcon={<AiOutlineRead />}>
+          <Button type='submit' isDisabled={isLoading} leftIcon={<AiOutlineRead />}>
             Read
           </Button>
         </VStack>
