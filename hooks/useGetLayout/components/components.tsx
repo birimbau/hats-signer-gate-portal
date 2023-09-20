@@ -21,8 +21,8 @@ interface ComponentsP {
 export const components: ComponentsP = {
   deploy: () => {
     const headerOne = () => (
-      <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-        <Text as='b'>Hats Signer Gate Factory</Text>
+      <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
+        <Text as="b">Hats Signer Gate Factory</Text>
         <Text>Select the function to call</Text>
       </VStack>
     );
@@ -35,8 +35,8 @@ export const components: ComponentsP = {
 
   deploy_hsg: () => {
     const headerOne = () => (
-      <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-        <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
+      <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
+        <Text as="b">Welcome to the Hats Signer Gate Frontend</Text>
         <Text>
           You can leverage the capabilities of this dashboard for the following
           functions:
@@ -51,60 +51,60 @@ export const components: ComponentsP = {
       contentTwo,
     };
   },
-  deploy_hsgws: () => {
-    const headerOne = () => (
-      <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-        <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
-        <Text>
-          You can leverage the capabilities of this dashboard for the following
-          functions:
-        </Text>
-      </VStack>
-    );
-    const contentOne = () => <Deploy />;
-    const contentTwo = () => <HatsSignerGateAndSafeForm />;
+  // deploy_hsgws: () => {
+  //   const headerOne = () => (
+  //     <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
+  //       <Text as='b'>Welcome to the Hats Signer Gate Frontend</Text>
+  //       <Text>
+  //         You can leverage the capabilities of this dashboard for the following
+  //         functions:
+  //       </Text>
+  //     </VStack>
+  //   );
+  //   const contentOne = () => <Deploy />;
+  //   const contentTwo = () => <HatsSignerGateAndSafeForm />;
 
-    return {
-      headerOne,
-      contentOne,
-      contentTwo,
-    };
-  },
+  //   return {
+  //     headerOne,
+  //     contentOne,
+  //     contentTwo,
+  //   };
+  // },
   modify: () => {
     return {
-      headerOne: () => <Text as='b'>Modify</Text>,
-      headerTwo: () => <Text as='b'>Modify</Text>,
-      headerThree: () => <Text as='b'>Modify</Text>,
-      contentOne: () => <Text as='b'>Modify</Text>,
-      contentTwo: () => <Text as='b'>Modify</Text>,
-      contentThree: () => <Text as='b'>Modify</Text>,
+      headerOne: () => <Text as="b">Modify</Text>,
+      headerTwo: () => <Text as="b">Modify</Text>,
+      headerThree: () => <Text as="b">Modify</Text>,
+      contentOne: () => <Text as="b">Modify</Text>,
+      contentTwo: () => <Text as="b">Modify</Text>,
+      contentThree: () => <Text as="b">Modify</Text>,
     };
   },
   view: () => {
     return {
-      headerOne: () => <Text as='b'>View</Text>,
-      headerTwo: () => <Text as='b'>View</Text>,
-      headerThree: () => <Text as='b'>View</Text>,
-      contentOne: () => <Text as='b'>View</Text>,
-      contentTwo: () => <Text as='b'>View</Text>,
-      contentThree: () => <Text as='b'>View</Text>,
+      headerOne: () => <Text as="b">View</Text>,
+      headerTwo: () => <Text as="b">View</Text>,
+      headerThree: () => <Text as="b">View</Text>,
+      contentOne: () => <Text as="b">View</Text>,
+      contentTwo: () => <Text as="b">View</Text>,
+      contentThree: () => <Text as="b">View</Text>,
     };
   },
   claim: () => {
     return {
-      headerOne: () => <Text as='b'>Claim</Text>,
-      headerTwo: () => <Text as='b'>Claim</Text>,
-      headerThree: () => <Text as='b'>Claim</Text>,
-      contentOne: () => <Text as='b'>Claim</Text>,
-      contentTwo: () => <Text as='b'>Claim</Text>,
-      contentThree: () => <Text as='b'>Claim</Text>,
+      headerOne: () => <Text as="b">Claim</Text>,
+      headerTwo: () => <Text as="b">Claim</Text>,
+      headerThree: () => <Text as="b">Claim</Text>,
+      contentOne: () => <Text as="b">Claim</Text>,
+      contentTwo: () => <Text as="b">Claim</Text>,
+      contentThree: () => <Text as="b">Claim</Text>,
     };
   },
   renounce: () => {
     return {
       headerOne: () => (
-        <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
-          <Text as='b'>Renounce Hat, and Signer Authority on Hats App</Text>
+        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
+          <Text as="b">Renounce Hat, and Signer Authority on Hats App</Text>
           <Text>
             Click "Go to Hats" to be redirected, and to connect your wallet
           </Text>
@@ -138,12 +138,12 @@ export const components: ComponentsP = {
   },
   remove: () => {
     return {
-      headerOne: () => <Text as='b'>Remove</Text>,
-      headerTwo: () => <Text as='b'>Remove</Text>,
-      headerThree: () => <Text as='b'>Remove</Text>,
-      contentOne: () => <Text as='b'>Remove</Text>,
-      contentTwo: () => <Text as='b'>Remove</Text>,
-      contentThree: () => <Text as='b'>Remove</Text>,
+      headerOne: () => <Text as="b">Remove</Text>,
+      headerTwo: () => <Text as="b">Remove</Text>,
+      headerThree: () => <Text as="b">Remove</Text>,
+      contentOne: () => <Text as="b">Remove</Text>,
+      contentTwo: () => <Text as="b">Remove</Text>,
+      contentThree: () => <Text as="b">Remove</Text>,
     };
   },
 };

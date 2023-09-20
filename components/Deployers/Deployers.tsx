@@ -7,10 +7,10 @@ import {
   Box,
   HStack,
   VStack,
-} from "@chakra-ui/react";
-import HatsSignerGateAndSafeForm from "./forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm";
-import HatsSignerGateForm from "./forms/HatsSignerGateForm/HatsSignerGateForm";
-import MultiHatsSignerGateForm from "./forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm";
+} from '@chakra-ui/react';
+import HatsSignerGateAndSafeForm from './forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm';
+import HatsSignerGateForm from './forms/HatsSignerGateForm/HatsSignerGateForm';
+import MultiHatsSignerGateForm from './forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 
 export default function Deployers() {
   return (
@@ -20,7 +20,7 @@ export default function Deployers() {
       className="py-2"
       gap="24px"
     >
-      <VStack width="100%" py={10} pl={8} pr={24} alignItems={"flex-start"}>
+      <VStack width="100%" py={10} pl={8} pr={24} alignItems={'flex-start'}>
         <h3>What to deploy?</h3>
         <Accordion allowToggle width="100%">
           <AccordionItem>
@@ -47,7 +47,7 @@ export default function Deployers() {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              <HatsSignerGateAndSafeForm />
+              {/* <HatsSignerGateAndSafeForm /> */}
             </AccordionPanel>
           </AccordionItem>
           <AccordionItem>
