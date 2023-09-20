@@ -14,7 +14,7 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 
 // TODO - CHECK  if the hash needs to have "0x" at the front of it
 // TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
-// TODO - Validation Schema - do we want more than present?
+// TODO - Error handling, print the smart contract error to user display.
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
@@ -84,15 +84,72 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     _minThreshold: Yup.string()
       .required('Required')
       .max(77, 'Must be 77 characters or less')
-      .bigInt(),
+      .bigInt()
+      .test(
+        'is-less-than-target',
+        'Min Threshold must be less than or equal to Target Threshold',
+        function (value) {
+          // This checks for the type of value to ensure strings are being used
+          // Serves to guard against undefined values
+          const targetThreshold = this.parent._targetThreshold;
+          if (
+            typeof value === 'string' &&
+            typeof targetThreshold === 'string'
+          ) {
+            return BigInt(value) <= BigInt(targetThreshold);
+          }
+          return this.createError({
+            message: 'Invalid input type',
+          });
+        }
+      ),
     _targetThreshold: Yup.string()
       .required('Required')
       .max(77, 'Must be 77 characters or less')
-      .bigInt(),
+      .bigInt()
+      .test(
+        'is-between-min-and-max',
+        'Target Threshold must be between Min Threshold and Max Signers',
+        function (value) {
+          // Serves to guard against undefined values
+          const minThreshold = this.parent._minThreshold;
+          const maxSigners = this.parent._maxSigners;
+          if (
+            typeof value === 'string' &&
+            typeof minThreshold === 'string' &&
+            typeof maxSigners === 'string'
+          ) {
+            return (
+              BigInt(minThreshold) <= BigInt(value) &&
+              BigInt(value) <= BigInt(maxSigners)
+            );
+          }
+          return this.createError({
+            message: 'Invalid input type',
+          });
+        }
+      ),
     _maxSigners: Yup.string()
       .required('Required')
       .max(77, 'Must be 77 characters or less')
-      .bigInt(),
+      .bigInt()
+      .test(
+        'is-greater-than-target',
+        'Max Signers must be greater than or equal to Target Threshold',
+        function (value) {
+          // Serves to guard against undefined values
+          const targetThreshold = this.parent._targetThreshold;
+          if (
+            typeof value === 'string' &&
+            typeof targetThreshold === 'string'
+          ) {
+            return BigInt(value) >= BigInt(targetThreshold);
+          }
+          return this.createError({
+            message: 'Invalid input type',
+          });
+        }
+      ),
   });
 
   // This is used to update the parent's display status
@@ -108,9 +165,9 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     }
   }, [contractData]);
   return (
-    // Note: Have to use <Formik> wrapper for error handling
-    // You could also use formik's default wrapper: <Formik>
-    // ** Be aware that <Field>, <FastField>, <ErrorMessage>, connect(), and <FieldArray> will NOT work with useFormik() as they all require React Context.    <>
+    // Note: We have to use <Formik> wrapper for error handling
+    // ** Be aware that <Field>, <FastField>, <ErrorMessage>, connect(),
+    // and <FieldArray> will NOT work with useFormik() as they all require React Context **
 
     // Formik is going to automagically keep the state of our Form for us
     <Formik
