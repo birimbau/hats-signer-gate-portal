@@ -2,7 +2,8 @@ import { AbiTypeToPrimitiveType } from 'abitype';
 import { useContractRead, usePrepareContractWrite } from 'wagmi';
 import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSignerGateFactory';
 import { CONTRACTS } from '../constants';
-const contract = CONTRACTS.hatsSignerGateFactory.contractAddress;
+const contract = CONTRACTS.hatsSignerGateFactory
+  .contractAddress as `0x${string}`;
 const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 // Hooks for write functions for the HatsSignerGateFactory contract
