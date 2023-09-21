@@ -40,11 +40,6 @@ Yup.addMethod(
   }
 );
 
-export const hatIntSchema = Yup.string()
-  .required('Required')
-  .max(77, 'Must be 77 characters or less')
-  .bigInt();
-
 // Helper function to compare BigInt values in string format
 export const compareBigInts = (
   a: string | undefined,

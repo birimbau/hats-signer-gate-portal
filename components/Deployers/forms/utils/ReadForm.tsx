@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import CustomInputWrapper from './CustomInputWrapper';
 import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
 import * as Yup from 'yup';
+import '../utils/validation'; // for Yup Validation
 
 interface Props {
   setCanAttachSafe: (value: boolean) => void;
@@ -17,10 +18,6 @@ export type EthereumAddress = `0x${string}`;
 
 function ReadForm(props: Props) {
   const { setCanAttachSafe, setSafeAddress, safeAddress } = props;
-  const [formData, setFormData] = useState<{ contractId: EthereumAddress }>({
-    contractId: safeAddress,
-    // contractId: '0x0000000000000000000000000000000000000001',
-  });
 
   const { data, refetch, isLoading } = useGetModulesPaginated({
     start: safeAddress,
@@ -28,24 +25,24 @@ function ReadForm(props: Props) {
   });
 
   useEffect(() => {
+    console.log('inUseEffect: ', data);
+
     if (data) {
       setCanAttachSafe(data[0].length === 0);
       console.log('DATA: ', data);
     }
-  }, [data, setCanAttachSafe]);
+  }, [data, setCanAttachSafe, refetch]);
 
   const validationSchema = Yup.object().shape({
-    _ownerHatId: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt(),
+    _SafeAddress: Yup.string().required('Required').ethereumAddress(),
   });
 
   return (
-    // This system of refetch and enable:false allows the hook to be
+    // This system of refetch and enable:false allows the hook to be more
     // efficient and only run once, onSubmit
     <Formik
-      initialValues={{ _SafeAddress: '0x' }}
+      initialValues={{ _SafeAddress: '' }}
+      validationSchema={validationSchema}
       onSubmit={(values) => {
         setSafeAddress(values._SafeAddress as EthereumAddress);
         refetch;
