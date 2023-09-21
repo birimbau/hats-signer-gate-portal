@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --ignore-path .gitignore --write \"{*,**/*}.{ts,tsx,js,jsx,json,yml,yaml,md}\""
+    "format": "prettier --ignore-path .gitignore --write \"{*,**/*}.{ts,tsx,js,jsx,json,yml,yaml,md}\"",
+    "preinstall": "if echo $npm_execpath | grep -q 'yarn'; then echo 'Please use npm instead of yarn.' && exit 1; fi"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
