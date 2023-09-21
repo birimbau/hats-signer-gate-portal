@@ -9,15 +9,18 @@ interface P {
   canAttachSafe: (value: boolean, address: string) => void;
 }
 
-const ReadForm:React.FC<P> = (p) => {
+const ReadForm: React.FC<P> = (p) => {
   const [formData, setFormData] = useState({
     contractId: '',
   });
 
-  const { data, refetch, isLoading } = useGetModulesPaginated({
-    start: '0x0000000000000000000000000000000000000001',
-    pageSize: 1
-  }, formData.contractId);
+  const { data, refetch, isLoading } = useGetModulesPaginated(
+    {
+      start: '0x0000000000000000000000000000000000000001',
+      pageSize: 1,
+    },
+    formData.contractId
+  );
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,27 +28,34 @@ const ReadForm:React.FC<P> = (p) => {
   };
 
   useEffect(() => {
-   if (data) {
-     p.canAttachSafe(data[0].length === 0, formData.start);
-   }
+    if (data) {
+      p.canAttachSafe(data[0].length === 0, formData.start);
+    }
   }, [data]);
 
   return (
     <>
       <form onSubmit={onSubmit} noValidate>
-        <VStack width='100%' alignItems={'flex-start'} fontSize={14} gap={5}>
+        <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
           <Input
-            label='Existing Safe (address)'
-            placeholder='0xC8ac0000000000000000000000000000000047fe'
-            name='_address'
+            label="Existing Safe (address)"
+            placeholder="0xC8ac0000000000000000000000000000000047fe"
+            name="_address"
             value={formData.contractId}
-            width='340px'
+            width="340px"
             onChange={(e) =>
-              setFormData({ ...formData, contractId: e.target.value.toLowerCase() })
+              setFormData({
+                ...formData,
+                contractId: e.target.value.toLowerCase(),
+              })
             }
           />
 
-          <Button type='submit' isDisabled={isLoading} leftIcon={<AiOutlineRead />}>
+          <Button
+            type="submit"
+            isDisabled={isLoading}
+            leftIcon={<AiOutlineRead />}
+          >
             Read
           </Button>
         </VStack>

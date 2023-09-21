@@ -1,57 +1,40 @@
 import { Flex, VStack, useToast } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineRead } from 'react-icons/ai';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { Formik, Form } from 'formik';
-import { AbiTypeToPrimitiveType } from 'abitype'; // Make sure you're using this import correctly.
 import CustomInputWrapper from './CustomInputWrapper';
+import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
 
-// ethers imports
-import { Contract, Provider, constant } from 'ethers';
+interface Props {
+  canAttachSafe: (value: boolean, address: string) => void;
+}
 
-// Gnosis Safe ABI
-import { SAFE_ABI } from '../../../../utils/contracts';
+export type EthereumAddress = `0x${string}`;
 
-const ReadForm = () => {
-  const toast = useToast();
-  const alchemyProvider = new ethers.providers.AlchemyProvider(
-    'mainnet',
-    YOUR_ALCHEMY_API_KEY
+function ReadForm(props: Props) {
+  const { canAttachSafe } = props;
+  const [formData, setFormData] = useState<{ contractId: EthereumAddress }>({
+    contractId: '0x',
+  });
+
+  const { data, refetch, isLoading } = useGetModulesPaginated(
+    {
+      start: '0x0000000000000000000000000000000000000001',
+      pageSize: BigInt(1),
+    },
+    formData.contractId
   );
-  const signer = provider.getSigner();
-  const SENTINEL_MODULES = constants.AddressZero; // This value is usually the zero address, adjust if needed
 
-  const initialValues = {
-    _mhsg: '',
-  };
-
-  const checkIfCanAttachHSG = async (safeAddress: string) => {
-    const safeContract = new Contract(safeAddress, SAFE_ABI, signer);
-    const modules = await safeContract.getModulesPaginated(SENTINEL_MODULES, 1);
-
-    if (modules.length > 0) {
-      toast({
-        title: 'HSG cannot be attached',
-        description: 'HSG must be the sole module for a given Safe.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-      return false;
+  useEffect(() => {
+    if (data) {
+      canAttachSafe(data[0].length === 0, formData.start);
+      console.log('DATA: ', data);
     }
-    return true;
-  };
+  }, [data]);
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={async (values) => {
-        const canAttach = await checkIfCanAttachHSG(values._mhsg);
-        if (canAttach) {
-          // Implement what should happen when HSG can be attached
-        }
-      }}
-    >
+    <Formik initialValues={{}} onSubmit={async (values) => {}}>
       {() => (
         <Form noValidate>
           <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
@@ -71,6 +54,6 @@ const ReadForm = () => {
       )}
     </Formik>
   );
-};
+}
 
 export default ReadForm;
