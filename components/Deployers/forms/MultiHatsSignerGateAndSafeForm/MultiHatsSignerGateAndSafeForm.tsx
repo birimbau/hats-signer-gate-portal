@@ -46,6 +46,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
 
         p.setTransactionData(data);
         p.setData(response.args);
+        console.log('inside Success');
       },
     });
 
@@ -75,13 +76,13 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
 
   return (
     <form onSubmit={onSubmit} noValidate>
-      <VStack width='100%' alignItems={'flex-start'} fontSize={14} gap={5}>
+      <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
         <Input
-          label='Owner Hat ID (integer)'
-          placeholder='26950000000000000000000000004196...'
-          name='_ownerHatId'
+          label="Owner Hat ID (integer)"
+          placeholder="26950000000000000000000000004196..."
+          name="_ownerHatId"
           value={p.formData._ownerHatId}
-          width='340px'
+          width="340px"
           onChange={(e) =>
             p.setFormData({ ...p.formData, _ownerHatId: e.target.value })
           }
@@ -89,11 +90,11 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
         />
         <MultiInput
           values={p.formData._signersHatIds}
-          width='372px'
-          label='Signer Hat IDs'
-          name='_signersHatIds'
-          countLabel='Id'
-          placeholder='26960000000000000000000000003152...'
+          width="372px"
+          label="Signer Hat IDs"
+          name="_signersHatIds"
+          countLabel="Id"
+          placeholder="26960000000000000000000000003152..."
           onChange={(_value, index, e) => {
             p.setFormData({
               ...p.formData,
@@ -120,10 +121,10 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
           }}
         />
         <Input
-          label='Min Threshold (integer)'
-          width='340px'
-          placeholder='3'
-          name='_minThreshold'
+          label="Min Threshold (integer)"
+          width="340px"
+          placeholder="3"
+          name="_minThreshold"
           value={p.formData._minThreshold}
           onChange={(e) =>
             p.setFormData({ ...p.formData, _minThreshold: e.target.value })
@@ -131,10 +132,10 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
           isDisabled={isLoading}
         />
         <Input
-          label='Max Threshold (integer)'
-          width='340px'
-          placeholder='5'
-          name='_targetThreshold'
+          label="Max Threshold (integer)"
+          width="340px"
+          placeholder="5"
+          name="_targetThreshold"
           value={p.formData._targetThreshold}
           onChange={(e) =>
             p.setFormData({ ...p.formData, _targetThreshold: e.target.value })
@@ -142,17 +143,17 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
           isDisabled={isLoading}
         />
         <Input
-          label='Max Signers (integer)'
-          width='340px'
-          placeholder='9'
-          name='_maxSigners'
+          label="Max Signers (integer)"
+          width="340px"
+          placeholder="9"
+          name="_maxSigners"
           value={p.formData._maxSigners}
           onChange={(e) =>
             p.setFormData({ ...p.formData, _maxSigners: e.target.value })
           }
           isDisabled={isLoading}
         />
-        <Button isDisabled={isLoading} type='submit' leftIcon={<BsPen />}>
+        <Button isDisabled={isLoading} type="submit" leftIcon={<BsPen />}>
           Write
         </Button>
       </VStack>

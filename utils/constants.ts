@@ -2,7 +2,7 @@ import { goerli, optimism } from 'wagmi/chains';
 
 export const CONTRACTS = {
   hatsSignerGateFactory: {
-    contractAddress: '0x50dbb35b81c94b8d1a0ff0cb4aa218ff30166187',
+    contractAddress: '0xa1fb14b5f322651e20f06ee2f2681b8f380bbb0e',
   },
   hatsSignerGate: {
     contractAddress: '0x844b3c7781338d3308eb8d64727033893fce1432',

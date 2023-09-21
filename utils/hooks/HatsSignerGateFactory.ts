@@ -2,8 +2,8 @@ import { AbiTypeToPrimitiveType } from 'abitype';
 import { useContractRead, usePrepareContractWrite } from 'wagmi';
 import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSignerGateFactory';
 import { CONTRACTS } from '../constants';
-const contract = (CONTRACTS.hatsSignerGateFactory.contractAddress ||
-  '0x50dbb35b81c94b8d1a0ff0cb4aa218ff30166187') as AbiTypeToPrimitiveType<'address'>;
+const contract = CONTRACTS.hatsSignerGateFactory
+  .contractAddress as `0x${string}`;
 const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 // Hooks for write functions for the HatsSignerGateFactory contract
@@ -115,7 +115,7 @@ const useCanAttachHSG2Safe = (args: {
   });
 
 const useCanAttachMHSG2Safe = (args: {
-  _mhsg: AbiTypeToPrimitiveType<'uint256'>;
+  _mhsg: AbiTypeToPrimitiveType<'address'>;
 }) =>
   useContractRead({
     abi: HatsSignerGateFactoryAbi,
@@ -149,7 +149,6 @@ const useGnosisMultiSendLibrary = () =>
     abi: HatsSignerGateFactoryAbi,
     address: contract,
     functionName: 'gnosisMultiSendLibrary',
-
     onSuccess: (data) => {
       console.log(data);
     },
@@ -163,7 +162,6 @@ const useGnosisSafeProxyFactory = () => {
     abi: HatsSignerGateFactoryAbi,
     address: contract,
     functionName: 'gnosisSafeProxyFactory',
-
     onSuccess: (data) => {
       console.log(data);
     },
