@@ -45,7 +45,7 @@ function ReadForm(props: Props) {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         setSafeAddress(values._SafeAddress as EthereumAddress);
-        refetch;
+        refetch();
       }}
     >
       {() => (
