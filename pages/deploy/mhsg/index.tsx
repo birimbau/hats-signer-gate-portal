@@ -1,16 +1,24 @@
-import { VStack, Text } from "@chakra-ui/react";
-import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
-import MainContent from "../../../components/MainContent/MainContent";
-import { DEPLOY_ACTIONS } from "../../../context/DeployContext";
-import ReadForm from "./components/ReadForm/ReadForm";
-import { useState } from "react";
-import { set } from "zod";
+import { VStack, Text } from '@chakra-ui/react';
+import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
+import MainContent from '../../../components/MainContent/MainContent';
+import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
+import ReadForm, {
+  EthereumAddress,
+} from '../../../components/Deployers/forms/utils/ReadForm';
+import { useState } from 'react';
+import { set } from 'zod';
 
 const MHSG = () => {
+  // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState<undefined | boolean>(
     undefined
   );
-  const [safeAddress, setSafeAddress] = useState<string>("");
+  // We need access to the SafeAddress that is validated
+  const [formData, setFormData] = useState<{ contractId: EthereumAddress }>({
+    contractId: '0x',
+    // contractId: '0x0000000000000000000000000000000000000001',
+  });
+  const [safeAddress, setSafeAddress] = useState<EthereumAddress>('0x');
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
       <Text as="b">Hats Signer Gate Factory</Text>
@@ -52,10 +60,9 @@ const MHSG = () => {
     <>
       {!canAttachSafe && (
         <ReadForm
-          canAttachSafe={(value, address) => {
-            setCanAttachSafe(value);
-            setSafeAddress(address);
-          }}
+          setCanAttachSafe={setCanAttachSafe}
+          setSafeAddress={setSafeAddress}
+          safeAddress={safeAddress}
         />
       )}
       {canAttachSafe && <>Form here</>}

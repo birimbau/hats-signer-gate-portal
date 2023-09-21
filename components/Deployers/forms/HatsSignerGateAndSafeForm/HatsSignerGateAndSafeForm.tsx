@@ -11,10 +11,14 @@ import { DeployConfigHSG_String } from '../types/forms';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
+import { EthereumAddress } from '../utils/ReadForm';
+import { compareBigInts } from '../utils/validation';
 
 // TODO - CHECK  if the hash needs to have "0x" at the front of it
 // TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
 // TODO - Error handling, print the smart contract error to user display.
+// TODO - Use `enabled: false` and `refetch()` from useContractRead to prevent unecessary calls
+
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
@@ -35,7 +39,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     isPending,
   } = props;
 
-  const [hash, setHash] = useState<`0x${string}` | ''>('');
+  const [hash, setHash] = useState<EthereumAddress | ''>('');
 
   // Used only for the useContractWrite, These do NOT update state (Their types would clash)
   const args = useRef({
@@ -72,84 +76,50 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   // Yup Validation Schema is already used in this project.
   // It's usual to use Yup with Formik
   // These are subject to change if we know more info
+  // Define a standard hatIntSchema schema to reuse for multiple fields
+  const hatIntSchema = Yup.string()
+    .required('Required')
+    .max(77, 'Must be 77 characters or less')
+    .bigInt();
+
   const validationSchema = Yup.object().shape({
-    _ownerHatId: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt(),
-    _signerHatId: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt(),
-    _minThreshold: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt()
-      .test(
-        'is-less-than-target',
-        'Min Threshold must be less than or equal to Target Threshold',
-        function (value) {
-          // This checks for the type of value to ensure strings are being used
-          // Serves to guard against undefined values
-          const targetThreshold = this.parent._targetThreshold;
-          if (
-            typeof value === 'string' &&
-            typeof targetThreshold === 'string'
-          ) {
-            return BigInt(value) <= BigInt(targetThreshold);
-          }
-          return this.createError({
-            message: 'Invalid input type',
-          });
-        }
-      ),
-    _targetThreshold: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt()
-      .test(
-        'is-between-min-and-max',
-        'Target Threshold must be between Min Threshold and Max Signers',
-        function (value) {
-          // Serves to guard against undefined values
-          const minThreshold = this.parent._minThreshold;
-          const maxSigners = this.parent._maxSigners;
-          if (
-            typeof value === 'string' &&
-            typeof minThreshold === 'string' &&
-            typeof maxSigners === 'string'
-          ) {
-            return (
-              BigInt(minThreshold) <= BigInt(value) &&
-              BigInt(value) <= BigInt(maxSigners)
-            );
-          }
-          return this.createError({
-            message: 'Invalid input type',
-          });
-        }
-      ),
-    _maxSigners: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt()
-      .test(
-        'is-greater-than-target',
-        'Max Signers must be greater than or equal to Target Threshold',
-        function (value) {
-          // Serves to guard against undefined values
-          const targetThreshold = this.parent._targetThreshold;
-          if (
-            typeof value === 'string' &&
-            typeof targetThreshold === 'string'
-          ) {
-            return BigInt(value) >= BigInt(targetThreshold);
-          }
-          return this.createError({
-            message: 'Invalid input type',
-          });
-        }
-      ),
+    _ownerHatId: hatIntSchema,
+    _signerHatId: hatIntSchema,
+    _minThreshold: hatIntSchema.test(
+      'is-less-than-target',
+      'Min Threshold must be less than or equal to Target Threshold',
+      function (value) {
+        const targetThreshold = this.parent._targetThreshold;
+        return (
+          compareBigInts(value, targetThreshold, (a, b) => a <= b) ||
+          this.createError({ message: 'Invalid input type' })
+        );
+      }
+    ),
+    _targetThreshold: hatIntSchema.test(
+      'is-between-min-and-max',
+      'Target Threshold must be between Min Threshold and Max Signers',
+      function (value) {
+        const minThreshold = this.parent._minThreshold;
+        const maxSigners = this.parent._maxSigners;
+        return (
+          (compareBigInts(value, minThreshold, (a, b) => a >= b) &&
+            compareBigInts(value, maxSigners, (a, b) => a <= b)) ||
+          this.createError({ message: 'Invalid input type' })
+        );
+      }
+    ),
+    _maxSigners: hatIntSchema.test(
+      'is-greater-than-target',
+      'Max Signers must be greater than or equal to Target Threshold',
+      function (value) {
+        const targetThreshold = this.parent._targetThreshold;
+        return (
+          compareBigInts(value, targetThreshold, (a, b) => a >= b) ||
+          this.createError({ message: 'Invalid input type' })
+        );
+      }
+    ),
   });
 
   // This is used to update the parent's display status
