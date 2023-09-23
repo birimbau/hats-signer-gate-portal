@@ -14,11 +14,6 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { EthereumAddress } from '../utils/ReadForm';
 import { compareBigInts } from '../utils/validation';
 
-// TODO - CHECK  if the hash needs to have "0x" at the front of it
-// TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
-// TODO - Error handling, print the smart contract error to user display.
-// TODO - Use `enabled: false` and `refetch()` from useContractRead to prevent unecessary calls
-
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
@@ -40,21 +35,25 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
-
-  // Used only for the useContractWrite, These do NOT update state (Their types would clash)
-  const args = useRef({
-    _ownerHatId: BigInt(0),
-    _signerHatId: BigInt(0),
-    _minThreshold: BigInt(0),
-    _targetThreshold: BigInt(0),
-    _maxSigners: BigInt(0),
-  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [refetchNow, setRefetchNow] = useState(false);
 
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const { config } = useDeployHSGwSafe(args.current);
-  const { data: contractData, isLoading, write } = useContractWrite(config);
+  const { config, refetch } = useDeployHSGwSafe({
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signerHatId: BigInt(formData._signerHatId),
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
+  });
+  const {
+    data: contractData,
+    isLoading,
+    write,
+    isError,
+  } = useContractWrite(config);
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction
@@ -74,8 +73,6 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   });
 
   // Yup Validation Schema is already used in this project.
-  // It's usual to use Yup with Formik
-  // These are subject to change if we know more info
   // Define a standard hatIntSchema schema to reuse for multiple fields
   const hatIntSchema = Yup.string()
     .required('Required')
@@ -128,25 +125,48 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   }, [isLoading, transationPending, setIsPending, hash]);
 
   // The hash changes when the user clicks submit.
-  // This triggers the "Transaction is progress" status
+  // This triggers the "useWaitForTransaction"
   useEffect(() => {
     if (contractData) {
       setHash(contractData.hash);
     }
   }, [contractData]);
+
+  // LOGIC FOR RUNNING CONTRACTS AFTER CLICKING FORMIK'S OnSubmit
+  // This only runs once on user submit, avoiding unnecessary calls to hooks.
+  useEffect(() => {
+    if (isSubmitted) {
+      if (refetchNow) {
+        setRefetchNow(false);
+        refetch();
+      }
+
+      if (write) {
+        setIsSubmitted(false);
+        write?.();
+      }
+    }
+  }, [isSubmitted, refetchNow, refetch, write]);
+
+  // If user aborts transaction, reset status
+  useEffect(() => {
+    setIsSubmitted(false);
+  }, [isError]);
   return (
     // Note: We have to use <Formik> wrapper for error handling
     // ** Be aware that <Field>, <FastField>, <ErrorMessage>, connect(),
     // and <FieldArray> will NOT work with useFormik() as they all require React Context **
 
-    // Formik is going to automagically keep the state of our Form for us
     <Formik
       initialValues={formData}
       validationSchema={validationSchema}
       onSubmit={(values: DeployConfigHSG_String, actions) => {
         // e.preventDefault(); - This line is now handled by Formik
 
-        // Update the data for use in the parent file -> index.jsx
+        // What happens here?
+        //    The formData is updates state in the parent file -> index.jsx,
+        //    this component re-renders, the updated state is used in
+        //    'useDeployHSGwSafe()' and this creates a valid 'write()'.
         setFormData({
           _ownerHatId: values._ownerHatId,
           _signerHatId: values._signerHatId,
@@ -155,16 +175,9 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
           _maxSigners: values._maxSigners,
         });
 
-        args.current = {
-          _ownerHatId: BigInt(values._ownerHatId),
-          _signerHatId: BigInt(values._signerHatId),
-          _minThreshold: BigInt(values._minThreshold),
-          _targetThreshold: BigInt(values._targetThreshold),
-          _maxSigners: BigInt(values._maxSigners),
-        };
-
-        // write has access to the args.current
-        write?.();
+        // This ensures that write() and refetch behave as expected.
+        setIsSubmitted(true);
+        setRefetchNow(true);
       }}
     >
       {(props) => (

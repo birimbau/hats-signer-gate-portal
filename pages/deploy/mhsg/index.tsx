@@ -8,6 +8,9 @@ import ReadForm, {
 import { useState } from 'react';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 
+// TODO - CONNECT THE FORM
+// TODO - APPLY TO THE HSG
+
 const MHSG = () => {
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState<undefined | boolean>(
