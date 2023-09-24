@@ -1,5 +1,5 @@
 import { Flex, VStack, useToast } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import { AiOutlineRead } from 'react-icons/ai';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { Formik, Form } from 'formik';
@@ -7,6 +7,7 @@ import CustomInputWrapper from './CustomInputWrapper';
 import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
+import { useSubmitRefetch } from '../../../../hooks/useGetLayout/useSubmitRefetch';
 
 interface Props {
   setCanAttachSafe: (value: boolean) => void;
@@ -19,10 +20,12 @@ export type EthereumAddress = `0x${string}`;
 function ReadForm(props: Props) {
   const { setCanAttachSafe, setSafeAddress, safeAddress } = props;
 
-  const { data, refetch, isLoading } = useGetModulesPaginated({
+  const { data, refetch, isLoading, isError } = useGetModulesPaginated({
     start: safeAddress,
     pageSize: BigInt(1),
   });
+
+  const triggerRefetch = useSubmitRefetch(refetch, isError);
 
   useEffect(() => {
     console.log('inUseEffect: ', data);
@@ -45,7 +48,7 @@ function ReadForm(props: Props) {
       validationSchema={validationSchema}
       onSubmit={(values) => {
         setSafeAddress(values._SafeAddress as EthereumAddress);
-        refetch();
+        triggerRefetch();
       }}
     >
       {() => (
