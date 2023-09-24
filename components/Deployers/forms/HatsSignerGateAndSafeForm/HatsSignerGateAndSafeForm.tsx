@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { EthereumAddress } from '../utils/ReadForm';
-import { compareBigInts } from '../utils/validation';
+import { hatIntSchema } from '../utils/validation';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -73,50 +73,28 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   });
 
   // Yup Validation Schema is already used in this project.
-  // Define a standard hatIntSchema schema to reuse for multiple fields
-  const hatIntSchema = Yup.string()
-    .required('Required')
-    .max(77, 'Must be 77 characters or less')
-    .bigInt();
-
+  // Custom Validations are in one file for maintainability "validation.tsx"
+  // const validationSchema = Yup.object().shape({
+  //   _ownerHatId: hatIntSchema,
+  //   _signerHatId: hatIntSchema,
+  //   _minThreshold: hatIntSchema.lessThanTarget(),
+  //   _targetThreshold: hatIntSchema.betweenMinAndMax(),
+  //   _maxSigners: hatIntSchema.greaterThanTarget(),
+  // });
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
     _signerHatId: hatIntSchema,
-    _minThreshold: hatIntSchema.test(
-      'is-less-than-target',
-      'Min Threshold must be less than or equal to Target Threshold',
-      function (value) {
-        const targetThreshold = this.parent._targetThreshold;
-        return (
-          compareBigInts(value, targetThreshold, (a, b) => a <= b) ||
-          this.createError({ message: 'Invalid input type' })
-        );
-      }
-    ),
-    _targetThreshold: hatIntSchema.test(
-      'is-between-min-and-max',
-      'Target Threshold must be between Min Threshold and Max Signers',
-      function (value) {
-        const minThreshold = this.parent._minThreshold;
-        const maxSigners = this.parent._maxSigners;
-        return (
-          (compareBigInts(value, minThreshold, (a, b) => a >= b) &&
-            compareBigInts(value, maxSigners, (a, b) => a <= b)) ||
-          this.createError({ message: 'Invalid input type' })
-        );
-      }
-    ),
-    _maxSigners: hatIntSchema.test(
-      'is-greater-than-target',
-      'Max Signers must be greater than or equal to Target Threshold',
-      function (value) {
-        const targetThreshold = this.parent._targetThreshold;
-        return (
-          compareBigInts(value, targetThreshold, (a, b) => a >= b) ||
-          this.createError({ message: 'Invalid input type' })
-        );
-      }
-    ),
+    _minThreshold: hatIntSchema.when('_targetThreshold', {
+      is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
+      then: (hatIntSchema) => hatIntSchema.lessThanTarget(),
+      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
+    }),
+    _targetThreshold: hatIntSchema.when('_maxSigners', {
+      is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
+      then: (hatIntSchema) => hatIntSchema.betweenMinAndMax(),
+      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
+    }),
+    _maxSigners: hatIntSchema.greaterThanTarget(),
   });
 
   // This is used to update the parent's display status

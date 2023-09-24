@@ -2,12 +2,17 @@ import * as Yup from 'yup';
 // READ ME!
 // Additional validation schemas can be added here to check for the correct inputs in HSG
 
-// DECLARATION OF: bigInt
+// DECLARATIONs OF
 declare module 'yup' {
   interface StringSchema {
+    lessThanTarget(): this;
+    betweenMinAndMax(): this;
+    greaterThanTarget(): this;
+    ethereumAddress(message?: string): StringSchema;
     bigInt(message?: string): StringSchema;
   }
 }
+
 function isBigInt(value?: string): boolean {
   if (!value) return false;
   try {
@@ -27,11 +32,6 @@ Yup.addMethod(
 );
 
 // DECLARATION OF: ethereumAddress
-declare module 'yup' {
-  interface StringSchema {
-    ethereumAddress(message?: string): StringSchema;
-  }
-}
 Yup.addMethod(
   Yup.string,
   'ethereumAddress',
@@ -41,15 +41,85 @@ Yup.addMethod(
 );
 
 // Helper function to compare BigInt values in string format
+// export const compareBigInts = (
+//   a: string | undefined,
+//   b: string | undefined,
+//   comparator: (x: BigInt, y: BigInt) => boolean
+// ): boolean => {
+//   if (typeof a === 'string' && typeof b === 'string') {
+//     return comparator(BigInt(a), BigInt(b));
+//   }
+//   return false;
+// };
+
 export const compareBigInts = (
-  a: string | undefined,
-  b: string | undefined,
-  comparator: (x: BigInt, y: BigInt) => boolean
+  comparator: (x: BigInt, y: BigInt) => boolean,
+  a?: string,
+  b?: string
 ): boolean => {
-  if (typeof a === 'string' && typeof b === 'string') {
+  if (a && b && isBigInt(a) && isBigInt(b)) {
     return comparator(BigInt(a), BigInt(b));
   }
   return false;
 };
+
+// CUSTOM VALIDATION FOR FORMIK INPUTS
+
+// Define a standard hatIntSchema schema to reuse for multiple fields
+export const hatIntSchema = Yup.string()
+  .required('Required')
+  .max(77, 'Must be 77 characters or less')
+  .bigInt();
+
+function isValidBigInt(value: any) {
+  // You can enhance this check based on your needs.
+  return typeof value === 'string';
+}
+
+Yup.addMethod(Yup.string, 'lessThanTarget', function () {
+  return this.test(
+    'less-than-target',
+    'Min Threshold must be less than or equal to Max Threshold',
+    function (value) {
+      if (!isValidBigInt(value)) {
+        return this.createError({ message: 'Invalid input type' });
+      }
+      const targetThreshold = this.parent._targetThreshold;
+      return compareBigInts((a, b) => a <= b, value, targetThreshold);
+    }
+  );
+});
+
+Yup.addMethod(Yup.string, 'betweenMinAndMax', function () {
+  return this.test(
+    'between-min-and-max',
+    'Max Threshold must be between Min Threshold and Max Signers',
+    function (value) {
+      if (!isValidBigInt(value)) {
+        return this.createError({ message: 'Invalid input type' });
+      }
+      const minThreshold = this.parent._minThreshold;
+      const maxSigners = this.parent._maxSigners;
+      return (
+        compareBigInts((a, b) => a >= b, value, minThreshold) &&
+        compareBigInts((a, b) => a <= b, value, maxSigners)
+      );
+    }
+  );
+});
+
+Yup.addMethod(Yup.string, 'greaterThanTarget', function () {
+  return this.test(
+    'greater-than-target',
+    'Max Signers must be greater than or equal to Max Threshold',
+    function (value) {
+      if (!isValidBigInt(value)) {
+        return this.createError({ message: 'Invalid input type' });
+      }
+      const targetThreshold = this.parent._targetThreshold;
+      return compareBigInts((a, b) => a >= b, value, targetThreshold);
+    }
+  );
+});
 
 export {};
