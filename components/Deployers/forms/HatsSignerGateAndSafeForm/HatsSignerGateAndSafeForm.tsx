@@ -74,13 +74,6 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 
   // Yup Validation Schema is already used in this project.
   // Custom Validations are in one file for maintainability "validation.tsx"
-  // const validationSchema = Yup.object().shape({
-  //   _ownerHatId: hatIntSchema,
-  //   _signerHatId: hatIntSchema,
-  //   _minThreshold: hatIntSchema.lessThanTarget(),
-  //   _targetThreshold: hatIntSchema.betweenMinAndMax(),
-  //   _maxSigners: hatIntSchema.greaterThanTarget(),
-  // });
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
     _signerHatId: hatIntSchema,
@@ -90,9 +83,9 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
       otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
     }),
     _targetThreshold: hatIntSchema.when('_maxSigners', {
-      is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
+      is: (value: any) => Boolean(value && value !== ''), // Checks if _maxSigners has a value
       then: (hatIntSchema) => hatIntSchema.betweenMinAndMax(),
-      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
+      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _maxSigners doesn't have a value
     }),
     _maxSigners: hatIntSchema.greaterThanTarget(),
   });
