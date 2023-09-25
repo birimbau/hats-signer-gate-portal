@@ -7,11 +7,36 @@ import ReadForm, {
 } from '../../../components/Deployers/forms/utils/ReadForm';
 import { useState } from 'react';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
+import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
+import {
+  DeployConfigHSG_String,
+  DeployConfigMHSG_String,
+} from '../../../components/Deployers/forms/types/forms';
+import HatsSignerGateAndSafeForm from '../../../components/Deployers/forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm';
 
 // TODO - CONNECT THE FORM
 // TODO - APPLY TO THE HSG
 
 const MHSG = () => {
+  const [isPending, setIsPending] = useState<boolean>(false);
+  const [data, setData] = useState(undefined);
+  const [formData, setFormData] = useState<DeployConfigMHSG_String>({
+    _ownerHatId: '',
+    _signersHatIds: [''],
+    _minThreshold: '',
+    _targetThreshold: '',
+    _maxSigners: '',
+    _safe: '',
+  });
+  // const [formData, setFormData] = useState<DeployConfigHSG_String>({
+  //   _ownerHatId: '',
+  //   _signerHatId: '',
+  //   _minThreshold: '',
+  //   _targetThreshold: '',
+  //   _maxSigners: '',
+  // });
+  const [transactionData, setTransactionData] = useState(undefined);
+
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState<undefined | boolean>(
     undefined
@@ -59,13 +84,47 @@ const MHSG = () => {
   const contentTwo = () => (
     <>
       {!canAttachSafe && (
-        <ReadForm
-          setCanAttachSafe={setCanAttachSafe}
-          setSafeAddress={setSafeAddress}
-          safeAddress={safeAddress}
+        // TODO - HatsSignerGateAndSafeForm WORKS AS EXPECTED WHEN PLACED IN HERE.
+        //        FIND SOME WAY OF RECREATING THE MultiHatsSignerGateForm.
+        //        MAYBE STRIP OUT EVERYTHING AND JUST WORK WITH IT IN A SIMPLE FORM
+        // IT HAS TO BE SOMETHING TO DO WITH MultiHatsSignerGateForm.
+        // CHECK WITH GPT ON WHY THIS MIGHT BE.
+        // FOLLOW THE LOGIC FROM BEGINNING TO END
+
+        // I DOUBT ITS VALIDATION, BUT MAYBE IT'S SOMETHING INSIDE OF YUP?
+
+        // <HatsSignerGateAndSafeForm
+        //   setIsPending={setIsPending}
+        //   setData={setData}
+        //   setTransactionData={setTransactionData}
+        //   formData={formData}
+        //   setFormData={setFormData}
+        //   isPending={isPending}
+        // />
+        <MultiHatsSignerGateForm
+          setIsPending={setIsPending}
+          setData={setData}
+          setTransactionData={setTransactionData}
+          formData={formData}
+          setFormData={setFormData}
+          isPending={isPending}
         />
+        // <ReadForm
+        //   setCanAttachSafe={setCanAttachSafe}
+        //   setSafeAddress={setSafeAddress}
+        //   safeAddress={safeAddress}
+        // />
       )}
-      {canAttachSafe && <>Form here</>}
+      {/* {canAttachSafe && (
+        <MultiHatsSignerGateForm
+          setIsPending={setIsPending}
+          setData={setData}
+          setTransactionData={setTransactionData}
+          formData={formData}
+          setFormData={setFormData}
+          isPending={isPending}
+        />
+      )} */}
     </>
   );
   const contentThree = () => (

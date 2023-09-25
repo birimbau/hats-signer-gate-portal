@@ -61,6 +61,7 @@ const useDeployMultiHatSG = (args: {
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }) =>
   usePrepareContractWrite({
+    enabled: false,
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
@@ -82,6 +83,7 @@ const useDeployMultiHatSGwSafe = (args: {
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }) => {
   return usePrepareContractWrite({
+    enabled: false,
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,

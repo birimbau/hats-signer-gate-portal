@@ -1,4 +1,5 @@
 import { AbiTypeToPrimitiveType } from 'abitype';
+import { EthereumAddress } from '../utils/ReadForm';
 
 export interface DeployConfigHSG_BigInt {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
@@ -15,4 +16,12 @@ export interface DeployConfigHSG_String {
   _minThreshold: string;
   _targetThreshold: string;
   _maxSigners: string;
+}
+export interface DeployConfigMHSG_String {
+  _ownerHatId: string;
+  _signersHatIds: [string];
+  _minThreshold: string;
+  _targetThreshold: string;
+  _maxSigners: string;
+  _safe: string;
 }
