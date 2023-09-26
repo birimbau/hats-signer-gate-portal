@@ -19,9 +19,9 @@ export interface DeployConfigHSG_String {
 }
 export interface DeployConfigMHSG_String {
   _ownerHatId: string;
-  _signersHatIds: [string];
+  _signersHatIds: string[];
+  _safe: string;
   _minThreshold: string;
   _targetThreshold: string;
   _maxSigners: string;
-  _safe: string;
 }

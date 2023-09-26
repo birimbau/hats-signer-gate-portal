@@ -53,7 +53,7 @@ const MHSG = () => {
   const headerTwo = () => (
     <>
       <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-        <Text as="b">Deploy Hats Signer Gate</Text>
+        <Text as="b">Deploy Multi Hats Signer Gate</Text>
         <Text>Input safe address, click ‘Read’</Text>
       </VStack>
     </>

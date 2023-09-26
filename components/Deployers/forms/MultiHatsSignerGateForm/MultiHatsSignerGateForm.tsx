@@ -1,19 +1,34 @@
 import { Flex, VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { useEffect, useState } from 'react';
-import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import {
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from 'wagmi';
 import { useDeployMultiHatSG } from '../../../../utils/hooks/HatsSignerGateFactory';
 import Button from '../../../UI/CustomButton/CustomButton';
 import MultiInput from '../../../UI/MultiInput/MultiInput';
 import { DeployConfigMHSG_String } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
-import { hatIntSchema } from '../utils/validation';
+import {
+  arrayOfHatStrings,
+  ethAdressSchema,
+  hatIntSchema,
+} from '../utils/validation';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
 import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../utils/CustomInputWrapper';
+import { ethers } from 'ethers';
+
+import { CONTRACTS } from '../../../../utils/constants';
+const contract = CONTRACTS.hatsSignerGateFactory
+  .contractAddress as `0x${string}`;
+const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -42,14 +57,58 @@ export default function MultiHatsSignerGateForm(props: Props) {
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const { config, refetch } = useDeployMultiHatSG({
-    _ownerHatId: BigInt(formData._ownerHatId),
-    _signersHatIds: formData._signersHatIds.map((v) => BigInt(v)),
-    _minThreshold: BigInt(formData._minThreshold),
-    _targetThreshold: BigInt(formData._targetThreshold),
-    _maxSigners: BigInt(formData._maxSigners),
-    _safe: formData._safe as EthereumAddress,
+  const prepareContractArguments = (formData: any) => {
+    const _ownerHatId = BigInt(formData._ownerHatId);
+    const _signersHatIds = [7];
+    const _safe = formData._safe as EthereumAddress;
+    const _minThreshold = BigInt(formData._minThreshold);
+    const _targetThreshold = BigInt(formData._targetThreshold);
+    const _maxSigners = BigInt(formData._maxSigners);
+
+    return [
+      _ownerHatId,
+      _signersHatIds,
+      _safe,
+      _minThreshold,
+      _targetThreshold,
+      _maxSigners,
+    ];
+  };
+
+  const args = prepareContractArguments(formData);
+
+  // const { config, refetch } = useDeployMultiHatSG({
+  //   _ownerHatId: BigInt(formData._ownerHatId),
+  //   _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
+  //   _safe: formData._safe as EthereumAddress,
+  //   _minThreshold: BigInt(formData._minThreshold),
+  //   _targetThreshold: BigInt(formData._targetThreshold),
+  //   _maxSigners: BigInt(formData._maxSigners),
+  // });
+  // const { config, refetch } = useDeployMultiHatSG({
+  //   _ownerHatId: BigInt(formData._ownerHatId),
+  //   _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
+  //   _safe: formData._safe as EthereumAddress,
+  //   _minThreshold: BigInt(formData._minThreshold),
+  //   _targetThreshold: BigInt(formData._targetThreshold),
+  //   _maxSigners: BigInt(formData._maxSigners),
+  // });
+
+  const { config, refetch } = usePrepareContractWrite({
+    enabled: false,
+    chainId,
+    abi: HatsSignerGateFactoryAbi,
+    address: contract,
+    functionName: 'deployMultiHatsSignerGate',
+    args: args,
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
+
   const {
     data: contractData,
     isLoading,
@@ -74,11 +133,13 @@ export default function MultiHatsSignerGateForm(props: Props) {
     },
   });
 
-  // Yup Validation Schema is already used in this project.
+  ethers.isAddress('0x8ba1f109551bd432803012645ac136ddd64dba72');
+
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
-    _signerHatId: hatIntSchema,
+    _signersHatIds: arrayOfHatStrings,
+    _safe: ethAdressSchema,
     _minThreshold: hatIntSchema.when('_targetThreshold', {
       is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
       then: (hatIntSchema) => hatIntSchema.lessThanTarget(),
@@ -205,11 +266,14 @@ export default function MultiHatsSignerGateForm(props: Props) {
 
             <Button
               type="submit"
-              onClick={() => console.log('button click')}
               // Will be grey during submit and after success
               // props.dirty comes from formik and makes the button clickable once values are inputted
               isDisabled={
-                !props.dirty || !isConnected || isPending || isSuccess
+                !props.isValid ||
+                !props.dirty ||
+                !isConnected ||
+                isPending ||
+                isSuccess
               }
               width={'140px'}
             >

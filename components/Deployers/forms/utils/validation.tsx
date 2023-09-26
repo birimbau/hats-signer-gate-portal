@@ -65,11 +65,27 @@ export const compareBigInts = (
 
 // CUSTOM VALIDATION FOR FORMIK INPUTS
 
+// Define a standard ethAdressSchema schema to reuse for multiple fields
+export const ethAdressSchema = Yup.string()
+  .required('Required')
+  .ethereumAddress();
+
 // Define a standard hatIntSchema schema to reuse for multiple fields
 export const hatIntSchema = Yup.string()
   .required('Required')
   .max(77, 'Must be 77 characters or less')
   .bigInt();
+
+// Define the validation schema for an array of BigInt strings
+export const arrayOfHatStrings = Yup.array()
+  .of(
+    Yup.string()
+      .required('ID is required')
+      .max(77, 'Must be 77 characters or less')
+      .bigInt()
+  )
+  .min(1, 'At least one ID is required')
+  .required('This field is required');
 
 function isValidBigInt(value: any) {
   // You can enhance this check based on your needs.
