@@ -42,13 +42,12 @@ export default function MultiHatsSignerGateForm(props: Props) {
     isPending,
   } = props;
 
-  // 1. useState and useRef Hooks
   const [hash, setHash] = useState<EthereumAddress | ''>('');
 
+  // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
   const { config, refetch } = useDeployMultiHatSG(formData);
-
   const {
     data: contractData,
     isLoading,
@@ -56,6 +55,8 @@ export default function MultiHatsSignerGateForm(props: Props) {
     isError,
   } = useContractWrite(config);
 
+  // This only runs if "hash" is defined
+  // Use this to detect isLoading state in transaction
   const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
     onSuccess(data) {
@@ -73,18 +74,20 @@ export default function MultiHatsSignerGateForm(props: Props) {
 
   const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
 
-  // 2. useEffect Hooks
+  // This is used to update the parent's display status
   useEffect(() => {
     setIsPending((isLoading || transationPending) && hash !== '');
   }, [isLoading, transationPending, setIsPending, hash]);
 
+  // The hash changes when the user clicks submit.
+  // This triggers the "useWaitForTransaction"
   useEffect(() => {
     if (contractData) {
       setHash(contractData.hash);
     }
   }, [contractData]);
 
-  // 3. Custom Validations and Other Logic
+  // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
     _signersHatIds: arrayOfHatStrings,
