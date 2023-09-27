@@ -20,8 +20,18 @@ export interface DeployConfigHSG_String {
 export interface DeployConfigMHSG_String {
   _ownerHatId: string;
   _signersHatIds: string[];
-  _safe: string;
+  _safe: EthereumAddress;
   _minThreshold: string;
   _targetThreshold: string;
   _maxSigners: string;
+}
+
+// This is redundent code used for double checking types inside of: useDeployMultiHatSG
+export interface MHSG_Args {
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
+  _safe: AbiTypeToPrimitiveType<'address'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }

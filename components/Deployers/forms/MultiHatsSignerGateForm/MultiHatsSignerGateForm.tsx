@@ -9,8 +9,10 @@ import { DeployConfigMHSG_String } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 import {
   arrayOfHatStrings,
-  ethAdressSchema,
+  ethAddressSchema,
   hatIntSchema,
+  minThresholdValidation,
+  targetThresholdValidation,
 } from '../utils/validation';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
@@ -46,14 +48,8 @@ export default function MultiHatsSignerGateForm(props: Props) {
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const { config, refetch } = useDeployMultiHatSG({
-    _ownerHatId: BigInt(formData._ownerHatId),
-    _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
-    _safe: formData._safe as EthereumAddress,
-    _minThreshold: BigInt(formData._minThreshold),
-    _targetThreshold: BigInt(formData._targetThreshold),
-    _maxSigners: BigInt(formData._maxSigners),
-  });
+  const { config, refetch } = useDeployMultiHatSG(formData);
+
   const {
     data: contractData,
     isLoading,
@@ -82,17 +78,9 @@ export default function MultiHatsSignerGateForm(props: Props) {
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
     _signersHatIds: arrayOfHatStrings,
-    _safe: ethAdressSchema,
-    _minThreshold: hatIntSchema.when('_targetThreshold', {
-      is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
-      then: (hatIntSchema) => hatIntSchema.lessThanTarget(),
-      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
-    }),
-    _targetThreshold: hatIntSchema.when('_maxSigners', {
-      is: (value: any) => Boolean(value && value !== ''), // Checks if _maxSigners has a value
-      then: (hatIntSchema) => hatIntSchema.betweenMinAndMax(),
-      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _maxSigners doesn't have a value
-    }),
+    _safe: ethAddressSchema,
+    _minThreshold: minThresholdValidation(hatIntSchema),
+    _targetThreshold: targetThresholdValidation(hatIntSchema),
     _maxSigners: hatIntSchema.greaterThanTarget(),
   });
 
@@ -144,10 +132,10 @@ export default function MultiHatsSignerGateForm(props: Props) {
         setFormData({
           _ownerHatId: values._ownerHatId,
           _signersHatIds: values._signersHatIds,
+          _safe: values._safe,
           _minThreshold: values._minThreshold,
           _targetThreshold: values._targetThreshold,
           _maxSigners: values._maxSigners,
-          _safe: values._safe,
         });
         console.log('submit');
         // This ensures that write() and refetch behave as expected.
@@ -181,6 +169,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
                 name="_safe"
                 label="Existing Safe (address)"
                 placeholder="0xC8ac0000000000000000000000000000000047fe"
+                isReadOnly={true}
               />
             </Flex>
             <Flex flexDirection={'column'} gap={0} w={'80%'}>

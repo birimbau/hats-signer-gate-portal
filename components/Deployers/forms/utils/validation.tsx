@@ -65,8 +65,8 @@ export const compareBigInts = (
 
 // CUSTOM VALIDATION FOR FORMIK INPUTS
 
-// Define a standard ethAdressSchema schema to reuse for multiple fields
-export const ethAdressSchema = Yup.string()
+// Define a standard ethAddressSchema schema to reuse for multiple fields
+export const ethAddressSchema = Yup.string()
   .required('Required')
   .ethereumAddress();
 
@@ -86,6 +86,22 @@ export const arrayOfHatStrings = Yup.array()
   )
   .min(1, 'At least one ID is required')
   .required('This field is required');
+
+export function minThresholdValidation(hatIntSchema: any) {
+  return hatIntSchema.when('_targetThreshold', {
+    is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
+    then: (schema: any) => schema.lessThanTarget(),
+    otherwise: (schema: any) => schema, // Fallback to the default schema if _targetThreshold doesn't have a value
+  });
+}
+
+export function targetThresholdValidation(hatIntSchema: any) {
+  return hatIntSchema.when('_maxSigners', {
+    is: (value: any) => Boolean(value && value !== ''),
+    then: (schema: any) => schema.betweenMinAndMax(),
+    otherwise: (schema: any) => schema,
+  });
+}
 
 function isValidBigInt(value: any) {
   // You can enhance this check based on your needs.

@@ -2,19 +2,12 @@ import { VStack, Text } from '@chakra-ui/react';
 import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
 import MainContent from '../../../components/MainContent/MainContent';
 import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
-import ReadForm, {
-  EthereumAddress,
-} from '../../../components/Deployers/forms/utils/ReadForm';
+import ReadForm from '../../../components/Deployers/forms/utils/ReadForm';
 import { useState } from 'react';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
-import {
-  DeployConfigHSG_String,
-  DeployConfigMHSG_String,
-} from '../../../components/Deployers/forms/types/forms';
-import HatsSignerGateAndSafeForm from '../../../components/Deployers/forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm';
+import { DeployConfigMHSG_String } from '../../../components/Deployers/forms/types/forms';
 
-// TODO - CONNECT THE FORM
 // TODO - APPLY TO THE HSG
 
 const MHSG = () => {
@@ -26,23 +19,15 @@ const MHSG = () => {
     _minThreshold: '',
     _targetThreshold: '',
     _maxSigners: '',
-    _safe: '',
+    _safe: '0x',
   });
-  // const [formData, setFormData] = useState<DeployConfigHSG_String>({
-  //   _ownerHatId: '',
-  //   _signerHatId: '',
-  //   _minThreshold: '',
-  //   _targetThreshold: '',
-  //   _maxSigners: '',
-  // });
+
   const [transactionData, setTransactionData] = useState(undefined);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState<undefined | boolean>(
     undefined
   );
-  // We need access to the SafeAddress that is 'Read' and validated
-  const [safeAddress, setSafeAddress] = useState<EthereumAddress>('0x');
 
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
@@ -50,6 +35,7 @@ const MHSG = () => {
       <Text>Select the type of Hats Signer Gate to deploy</Text>
     </VStack>
   );
+
   const headerTwo = () => (
     <>
       <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
@@ -64,9 +50,9 @@ const MHSG = () => {
       {canAttachSafe === false && (
         <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
           <Text as="b" color="red">
-            No the Safe cannot be Attached
+            No the Safe cannot be attached
           </Text>
-          <Text>{safeAddress}</Text>
+          <Text>{formData._safe}</Text>
         </VStack>
       )}
       {canAttachSafe === true && (
@@ -74,7 +60,7 @@ const MHSG = () => {
           <Text as="b" color="green">
             Safe can be attached
           </Text>
-          <Text>{safeAddress}</Text>
+          <Text>{formData._safe}</Text>
         </VStack>
       )}
     </>
@@ -84,38 +70,13 @@ const MHSG = () => {
   const contentTwo = () => (
     <>
       {!canAttachSafe && (
-        // TODO - HatsSignerGateAndSafeForm WORKS AS EXPECTED WHEN PLACED IN HERE.
-        //        FIND SOME WAY OF RECREATING THE MultiHatsSignerGateForm.
-        //        MAYBE STRIP OUT EVERYTHING AND JUST WORK WITH IT IN A SIMPLE FORM
-        // IT HAS TO BE SOMETHING TO DO WITH MultiHatsSignerGateForm.
-        // CHECK WITH GPT ON WHY THIS MIGHT BE.
-        // FOLLOW THE LOGIC FROM BEGINNING TO END
-
-        // I DOUBT ITS VALIDATION, BUT MAYBE IT'S SOMETHING INSIDE OF YUP?
-
-        // <HatsSignerGateAndSafeForm
-        //   setIsPending={setIsPending}
-        //   setData={setData}
-        //   setTransactionData={setTransactionData}
-        //   formData={formData}
-        //   setFormData={setFormData}
-        //   isPending={isPending}
-        // />
-        <MultiHatsSignerGateForm
-          setIsPending={setIsPending}
-          setData={setData}
-          setTransactionData={setTransactionData}
+        <ReadForm
+          setCanAttachSafe={setCanAttachSafe}
           formData={formData}
           setFormData={setFormData}
-          isPending={isPending}
         />
-        // <ReadForm
-        //   setCanAttachSafe={setCanAttachSafe}
-        //   setSafeAddress={setSafeAddress}
-        //   safeAddress={safeAddress}
-        // />
       )}
-      {/* {canAttachSafe && (
+      {canAttachSafe && (
         <MultiHatsSignerGateForm
           setIsPending={setIsPending}
           setData={setData}
@@ -124,7 +85,7 @@ const MHSG = () => {
           setFormData={setFormData}
           isPending={isPending}
         />
-      )} */}
+      )}
     </>
   );
   const contentThree = () => (
@@ -142,11 +103,7 @@ const MHSG = () => {
           <Text>&lt;&lt; Check another safe address</Text>
         </VStack>
       )}
-      {canAttachSafe === true && (
-        // <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-        <VariableExplanations />
-        // </VStack>
-      )}
+      {canAttachSafe === true && <VariableExplanations />}
     </>
   );
 

@@ -1,5 +1,5 @@
-import { Flex, VStack, useToast } from '@chakra-ui/react';
-import { use, useEffect, useRef, useState } from 'react';
+import { Flex, VStack } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { AiOutlineRead } from 'react-icons/ai';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { Formik, Form } from 'formik';
@@ -8,23 +8,25 @@ import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import { useSubmitRefetch } from '../../../../hooks/useGetLayout/useSubmitRefetch';
+import { DeployConfigMHSG_String } from '../types/forms';
 
 interface Props {
   setCanAttachSafe: (value: boolean) => void;
-  setSafeAddress: (value: EthereumAddress) => void;
-  safeAddress: EthereumAddress;
+  formData: DeployConfigMHSG_String;
+  setFormData: (formData: any) => void;
 }
 
 export type EthereumAddress = `0x${string}`;
 
 function ReadForm(props: Props) {
-  const { setCanAttachSafe, setSafeAddress, safeAddress } = props;
+  const { setCanAttachSafe, formData, setFormData } = props;
 
   const { data, refetch, isLoading, isError } = useGetModulesPaginated({
-    start: safeAddress,
+    start: formData._safe as EthereumAddress,
     pageSize: BigInt(1),
   });
 
+  // This is used to manage unnecessary re-renders. onSubmit only one re-render occurs
   const triggerRefetch = useSubmitRefetch(refetch, isError);
 
   useEffect(() => {
@@ -41,13 +43,16 @@ function ReadForm(props: Props) {
   });
 
   return (
-    // This system of refetch and enable:false allows the hook to be more
-    // efficient and only run once, onSubmit
+    // This system of 'refetch' and 'enable:false' allows the hook to be more
+    // efficient and only run once, onSubmit -> for more info see 'useSubmitRefetch'
     <Formik
       initialValues={{ _SafeAddress: '' }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        setSafeAddress(values._SafeAddress as EthereumAddress);
+        setFormData({
+          ...formData,
+          _safe: values._SafeAddress,
+        });
         triggerRefetch();
       }}
     >

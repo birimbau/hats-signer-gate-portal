@@ -7,18 +7,25 @@ type CustomFieldProps = {
   name: string;
   label: string;
   placeholder: string;
+  isReadOnly?: boolean;
 };
 
 const CustomInputWrapper: React.FC<CustomFieldProps> = ({
   name,
   label,
   placeholder,
+  isReadOnly = false,
 }) => {
   return (
     <Field name={name}>
       {({ field, form }: FieldProps) => (
         <FormControl isInvalid={!!(form.errors[name] && form.touched[name])}>
-          <Input label={label} placeholder={placeholder} field={field} />
+          <Input
+            label={label}
+            placeholder={placeholder}
+            field={field}
+            isReadOnly={isReadOnly}
+          />
           {/* Make sure all errors are created as strings in YupValidation */}
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>
