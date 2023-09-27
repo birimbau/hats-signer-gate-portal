@@ -7,7 +7,7 @@ import CustomInputWrapper from './CustomInputWrapper';
 import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
-import { useSubmitRefetch } from '../../../../hooks/useGetLayout/useSubmitRefetch';
+import { useSubmitRefetch } from '../../../../hooks/useSubmitRefetch';
 import { DeployConfigMHSG_String } from '../types/forms';
 
 interface Props {
