@@ -1,12 +1,7 @@
 import { Flex, VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { useEffect, useState } from 'react';
-import {
-  useAccount,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { useDeployMultiHatSG } from '../../../../utils/hooks/HatsSignerGateFactory';
 import Button from '../../../UI/CustomButton/CustomButton';
 import MultiInput from '../../../UI/MultiInput/MultiInput';
@@ -23,12 +18,6 @@ import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
 import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../utils/CustomInputWrapper';
-import { ethers } from 'ethers';
-
-import { CONTRACTS } from '../../../../utils/constants';
-const contract = CONTRACTS.hatsSignerGateFactory
-  .contractAddress as `0x${string}`;
-const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -57,62 +46,14 @@ export default function MultiHatsSignerGateForm(props: Props) {
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const prepareContractArguments = (formData: any) => {
-    const _ownerHatId = BigInt(formData._ownerHatId);
-    const _signersHatIds = formData._signersHatIds.map((v: string) =>
-      BigInt(Number(v))
-    );
-    const _safe = formData._safe as EthereumAddress;
-    const _minThreshold = BigInt(formData._minThreshold);
-    const _targetThreshold = BigInt(formData._targetThreshold);
-    const _maxSigners = BigInt(formData._maxSigners);
-
-    return [
-      _ownerHatId,
-      _signersHatIds,
-      _safe,
-      _minThreshold,
-      _targetThreshold,
-      _maxSigners,
-    ];
-  };
-
-  const args = prepareContractArguments(formData);
-
-  console.log('args', args);
-
-  // const { config, refetch } = useDeployMultiHatSG({
-  //   _ownerHatId: BigInt(formData._ownerHatId),
-  //   _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
-  //   _safe: formData._safe as EthereumAddress,
-  //   _minThreshold: BigInt(formData._minThreshold),
-  //   _targetThreshold: BigInt(formData._targetThreshold),
-  //   _maxSigners: BigInt(formData._maxSigners),
-  // });
-  // const { config, refetch } = useDeployMultiHatSG({
-  //   _ownerHatId: BigInt(formData._ownerHatId),
-  //   _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
-  //   _safe: formData._safe as EthereumAddress,
-  //   _minThreshold: BigInt(formData._minThreshold),
-  //   _targetThreshold: BigInt(formData._targetThreshold),
-  //   _maxSigners: BigInt(formData._maxSigners),
-  // });
-
-  const { config, refetch } = usePrepareContractWrite({
-    enabled: false,
-    chainId,
-    abi: HatsSignerGateFactoryAbi,
-    address: contract,
-    functionName: 'deployMultiHatsSignerGate',
-    args: args,
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
+  const { config, refetch } = useDeployMultiHatSG({
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
+    _safe: formData._safe as EthereumAddress,
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
   });
-
   const {
     data: contractData,
     isLoading,
@@ -136,8 +77,6 @@ export default function MultiHatsSignerGateForm(props: Props) {
       console.log('Transaction Success');
     },
   });
-
-  ethers.isAddress('0x8ba1f109551bd432803012645ac136ddd64dba72');
 
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({

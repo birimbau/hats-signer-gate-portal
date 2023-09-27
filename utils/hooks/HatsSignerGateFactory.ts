@@ -59,8 +59,10 @@ const useDeployMultiHatSG = (args: {
   _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}) =>
-  usePrepareContractWrite({
+}) => {
+  console.log('args b4 prepareContractWrite: ', args);
+  console.log('args formatted: ', Array.from(Object.values(args)));
+  return usePrepareContractWrite({
     enabled: false,
     chainId,
     abi: HatsSignerGateFactoryAbi,
@@ -74,6 +76,7 @@ const useDeployMultiHatSG = (args: {
       console.log(error);
     },
   });
+};
 
 const useDeployMultiHatSGwSafe = (args: {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
