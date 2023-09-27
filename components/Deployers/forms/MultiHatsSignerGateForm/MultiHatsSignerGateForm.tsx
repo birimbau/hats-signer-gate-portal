@@ -59,7 +59,9 @@ export default function MultiHatsSignerGateForm(props: Props) {
 
   const prepareContractArguments = (formData: any) => {
     const _ownerHatId = BigInt(formData._ownerHatId);
-    const _signersHatIds = [7];
+    const _signersHatIds = formData._signersHatIds.map((v: string) =>
+      BigInt(Number(v))
+    );
     const _safe = formData._safe as EthereumAddress;
     const _minThreshold = BigInt(formData._minThreshold);
     const _targetThreshold = BigInt(formData._targetThreshold);
@@ -76,6 +78,8 @@ export default function MultiHatsSignerGateForm(props: Props) {
   };
 
   const args = prepareContractArguments(formData);
+
+  console.log('args', args);
 
   // const { config, refetch } = useDeployMultiHatSG({
   //   _ownerHatId: BigInt(formData._ownerHatId),
