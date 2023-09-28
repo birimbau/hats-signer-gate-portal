@@ -8,11 +8,11 @@ import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import { useSubmitRefetch } from '../../../../hooks/useSubmitRefetch';
-import { DeployConfigMHSG_String } from '../types/forms';
+import { DeployConfigHSG, DeployConfigMHSG_String } from '../types/forms';
 
 interface Props {
   setCanAttachSafe: (value: boolean) => void;
-  formData: DeployConfigMHSG_String;
+  formData: DeployConfigMHSG_String | DeployConfigHSG;
   setFormData: (formData: any) => void;
 }
 

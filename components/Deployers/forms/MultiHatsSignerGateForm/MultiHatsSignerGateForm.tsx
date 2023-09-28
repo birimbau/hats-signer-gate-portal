@@ -22,9 +22,7 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigMHSG_String } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 
-// TODO - CREATE RE-USABLE FORM FOR ALL 4 sections - STYLE
-// TODO - simplify the nested input and CustomInputWrapper
-// TODO - duplicate changes and apply to HSG, HSGwF, MHSGwF
+// TODO - Implement blue button selection corrections - get the right state sorted out.
 // TODO - finalise connecting "attach MHSG TO SAFE" - READ DOCS!
 
 interface Props {

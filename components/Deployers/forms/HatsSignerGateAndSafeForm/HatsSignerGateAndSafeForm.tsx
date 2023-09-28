@@ -154,45 +154,37 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
       {(props) => (
         <Form>
           <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_ownerHatId"
-                label="Owner Hat ID (integer)"
-                placeholder="26950000000000000000000000004196..."
-              />
-            </Flex>
+            <CustomInputWrapper
+              name="_ownerHatId"
+              label="Owner Hat ID (integer)"
+              placeholder="26950000000000000000000000004196..."
+              width={80}
+            />
+            <CustomInputWrapper
+              name="_signerHatId"
+              label="Signer Hat ID (integer)"
+              placeholder="26960000000000000000000000003152..."
+              width={80}
+            />
+            <CustomInputWrapper
+              name="_minThreshold"
+              label="Min Threshold (integer)"
+              placeholder="3"
+              width={60}
+            />
+            <CustomInputWrapper
+              name="_targetThreshold"
+              label="Max Threshold (integer)"
+              placeholder="5"
+              width={60}
+            />
 
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_signerHatId"
-                label="Signer Hat ID (integer)"
-                placeholder="26960000000000000000000000003152..."
-              />
-            </Flex>
-
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_minThreshold"
-                label="Min Threshold (integer)"
-                placeholder="3"
-              />
-            </Flex>
-
-            <Flex flexDirection={'column'} gap={0} w={'60%'}>
-              <CustomInputWrapper
-                name="_targetThreshold"
-                label="Max Threshold (integer)"
-                placeholder="5"
-              />
-            </Flex>
-
-            <Flex flexDirection={'column'} gap={0} w={'60%'}>
-              <CustomInputWrapper
-                name="_maxSigners"
-                label="Max Signers (integer)"
-                placeholder="9"
-              />
-            </Flex>
+            <CustomInputWrapper
+              name="_maxSigners"
+              label="Max Signers (integer)"
+              placeholder="9"
+              width={60}
+            />
 
             <Button
               type="submit"

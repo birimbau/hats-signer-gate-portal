@@ -3,7 +3,9 @@ import { useContractRead, usePrepareContractWrite } from 'wagmi';
 import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSignerGateFactory';
 import { CONTRACTS } from '../constants';
 import {
+  DeployConfigHSG,
   DeployConfigMHSG_String,
+  HSG_Args,
   MHSG_Args,
 } from '../../components/Deployers/forms/types/forms';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
@@ -13,15 +15,17 @@ const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
 
 // Hooks for write functions for the HatsSignerGateFactory contract
 
-const useDeployHSG = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _safe: AbiTypeToPrimitiveType<'address'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}) =>
-  usePrepareContractWrite({
+const useDeployHSG = (formData: DeployConfigHSG) => {
+  const args: HSG_Args = {
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signerHatId: BigInt(formData._signerHatId),
+    _safe: formData._safe as EthereumAddress,
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
+  };
+
+  return usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
@@ -34,6 +38,7 @@ const useDeployHSG = (args: {
       console.log(error);
     },
   });
+};
 
 const useDeployHSGwSafe = (args: {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;

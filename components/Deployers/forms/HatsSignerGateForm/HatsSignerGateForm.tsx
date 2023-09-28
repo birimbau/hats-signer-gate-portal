@@ -1,98 +1,166 @@
-import { VStack, Text, Flex } from '@chakra-ui/react';
-import Button from '../../../UI/CustomButton/CustomButton';
+import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
-import { useState } from 'react';
-import { useAccount, useContractWrite } from 'wagmi';
-import { useDeployHSG } from '../../../../utils/hooks/HatsSignerGateFactory';
-import Input from '../../../UI/CustomInput/CustomInput';
+import { Form, Formik } from 'formik';
+import { useEffect, useRef, useState } from 'react';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import { decodeEventLog } from 'viem';
+import * as Yup from 'yup';
+import '../utils/validation'; // for Yup Validation
+import {
+  useDeployHSG,
+  useDeployMultiHatSG,
+} from '../../../../utils/hooks/HatsSignerGateFactory';
+import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
+import {
+  arrayOfHatStrings,
+  ethAddressSchema,
+  hatIntSchema,
+  minThresholdValidation,
+  targetThresholdValidation,
+} from '../utils/validation';
+import { useRefetchWrite } from '../../../../hooks/useRefetchWrite';
+import Button from '../../../UI/CustomButton/CustomButton';
+import CustomInputWrapper from '../utils/CustomInputWrapper';
+import { DeployConfigHSG } from '../types/forms';
+import { EthereumAddress } from '../utils/ReadForm';
 
-interface useDeployHSGargs {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _safe: AbiTypeToPrimitiveType<'address'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+interface Props {
+  setIsPending: (isPending: boolean) => void;
+  formData: DeployConfigHSG;
+  setFormData: (formData: any) => void;
+  isPending: boolean;
 }
 
-export default function HatsSignerGateForm() {
-  const { address, isConnected } = useAccount();
+export default function HatsSignerGateForm(props: Props) {
+  // Destructure Props for ease of use & visibility within this function
+  const { setIsPending, formData, setFormData, isPending } = props;
 
-  const [args, SetArgs] = useState<useDeployHSGargs>(
-    {} as useDeployHSGargs);
+  const [hash, setHash] = useState<EthereumAddress | ''>('');
 
-  const { config } = useDeployHSG(args as useDeployHSGargs);
-  const { data, isLoading, isSuccess, isError, write } =
-    useContractWrite(config);
+  // Used to prevent the user Deploying when not connected
+  const { isConnected } = useAccount();
 
-  {
-    /* Safe address to be added and set from first step */
-  }
+  const { config, refetch } = useDeployHSG(formData);
+  const {
+    data: contractData,
+    isLoading,
+    write,
+    isError,
+  } = useContractWrite(config);
+
+  // This only runs if "hash" is defined
+  // Use this to detect isLoading state in transaction
+  const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
+    hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
+    onSuccess(data) {
+      const response = decodeEventLog({
+        abi: HatsSignerGateFactoryAbi,
+        data: data.logs[8].data,
+        topics: data.logs[8].topics,
+      });
+
+      console.log('Transaction Success, Response: ', response);
+    },
+  });
+
+  const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
+
+  // This is used to update the parent's display status
+  useEffect(() => {
+    setIsPending((isLoading || transationPending) && hash !== '');
+  }, [isLoading, transationPending, setIsPending, hash]);
+
+  // The hash changes when the user clicks submit.
+  // This triggers the "useWaitForTransaction"
+  useEffect(() => {
+    if (contractData) {
+      setHash(contractData.hash);
+    }
+  }, [contractData]);
+
+  // Custom Validations are in one file for maintainability "validation.tsx"
+  const validationSchema = Yup.object().shape({
+    _ownerHatId: hatIntSchema,
+    _signerHatId: hatIntSchema,
+    _safe: ethAddressSchema,
+    _minThreshold: minThresholdValidation(hatIntSchema),
+    _targetThreshold: targetThresholdValidation(hatIntSchema),
+    _maxSigners: hatIntSchema.greaterThanTarget(),
+  });
 
   return (
-    <VStack
-      width='100%'
-      alignItems={'flex-start'}
-      fontSize={14}
-      gap={5}
+    <Formik
+      initialValues={formData}
+      validationSchema={validationSchema}
+      onSubmit={(values: DeployConfigHSG, actions) => {
+        // The formData updates state in the parent file -> index.jsx
+        setFormData({
+          _ownerHatId: values._ownerHatId,
+          _signerHatId: values._signerHatId,
+          _safe: values._safe,
+          _minThreshold: values._minThreshold,
+          _targetThreshold: values._targetThreshold,
+          _maxSigners: values._maxSigners,
+        });
+        handleFormSubmit();
+      }}
     >
-      <Flex flexDirection={'column'} gap={0} w={'80%'}>
-        {' '}
-        <Input
-          label='Owner Hat ID (integer)'
-          placeholder='26950000000000000000000000004196...'
-          onChange={(e) =>
-            SetArgs({ ...args, _ownerHatId: BigInt(e.target.value) })
-          }
-        />
-      </Flex>
-      <Flex flexDirection={'column'} gap={0} w={'80%'}>
-        {' '}
-        <Input
-          label='Signer Hat ID (integer)'
-          placeholder='26960000000000000000000000003152...'
-          onChange={(e) =>
-            SetArgs({ ...args, _signerHatId: BigInt(e.target.value) })
-          }
-        />
-      </Flex>
-      <Flex flexDirection={'column'} gap={0} w={'60%'}>
-        {' '}
-        <Input
-          label='Min Threshold (integer)'
-          placeholder='3'
-          onChange={(e) =>
-            SetArgs({ ...args, _minThreshold: BigInt(e.target.value) })
-          }
-        />
-      </Flex>
-      <Flex flexDirection={'column'} gap={0} w={'60%'}>
-        {' '}
-        <Input
-          label='Max Threshold (integer)'
-          placeholder='5'
-          onChange={(e) =>
-            SetArgs({ ...args, _targetThreshold: BigInt(e.target.value) })
-          }
-        />
-      </Flex>
-      <Flex flexDirection={'column'} gap={0} w={'60%'}>
-        {' '}
-        <Input
-          label='Max Signers (integer)'
-          placeholder='9'
-          onChange={(e) =>
-            SetArgs({ ...args, _maxSigners: BigInt(e.target.value) })
-          }
-        />
-      </Flex>
-      <Button
-        disabled={!isConnected || !write}
-        onClick={() => write?.()}
-        width={'140px'}
-      >
-        Deploy
-      </Button>
-    </VStack>
+      {(props) => (
+        <Form>
+          <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
+            <CustomInputWrapper
+              name="_ownerHatId"
+              label="Owner Hat ID (integer)"
+              placeholder="26950000000000000000000000004196..."
+            />
+            <CustomInputWrapper
+              name="_signerHatId"
+              label="Signer Hat ID (integer)"
+              placeholder="26960000000000000000000000003152..."
+              width={80}
+            />
+            <CustomInputWrapper
+              name="_safe"
+              label="Existing Safe (address)"
+              placeholder="0xC8ac0000000000000000000000000000000047fe"
+              isReadOnly={true}
+            />
+            <CustomInputWrapper
+              name="_minThreshold"
+              label="Min Threshold (integer)"
+              placeholder="3"
+              width={60}
+            />
+            <CustomInputWrapper
+              name="_targetThreshold"
+              label="Max Threshold (integer)"
+              placeholder="5"
+              width={60}
+            />
+            <CustomInputWrapper
+              name="_maxSigners"
+              label="Max Signers (integer)"
+              placeholder="9"
+              width={60}
+            />
+            <Button
+              type="submit"
+              // Will be grey during submit and after success
+              // props.dirty comes from formik and makes the button clickable once values are inputted
+              isDisabled={
+                !props.isValid ||
+                !props.dirty ||
+                !isConnected ||
+                isPending ||
+                isSuccess
+              }
+              width={'140px'}
+            >
+              Deploy
+            </Button>
+          </VStack>
+        </Form>
+      )}
+    </Formik>
   );
 }
