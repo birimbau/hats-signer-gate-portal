@@ -1,4 +1,5 @@
 import {
+  Flex,
   FormControl,
   FormErrorMessage,
   HStack,
@@ -27,79 +28,82 @@ interface P {
 import { FieldArray, FieldArrayRenderProps } from 'formik';
 const MultiInput: React.FC<P> = (p) => {
   return (
-    <FieldArray name={p.name}>
-      {({ push, remove, form }: FieldArrayRenderProps) => (
-        <VStack gap={'13px'} alignItems="flex-start" width={p.width}>
-          {form.values[p.name].map((v: string, i: number) => {
-            const isError =
-              Array.isArray(form.errors[p.name]) &&
-              typeof (form.errors[p.name] as any[])[i] === 'string';
-            const isTouched =
-              Array.isArray(form.touched[p.name]) &&
-              typeof (form.touched[p.name] as any[])[i] === 'boolean';
+    <Flex flexDirection={'column'} gap={0} w={'80%'}>
+      <FieldArray name={p.name}>
+        {({ push, remove, form }: FieldArrayRenderProps) => (
+          <VStack gap={'13px'} alignItems="flex-start" width={p.width}>
+            {form.values[p.name].map((v: string, i: number) => {
+              const isError =
+                Array.isArray(form.errors[p.name]) &&
+                typeof (form.errors[p.name] as any[])[i] === 'string';
+              const isTouched =
+                Array.isArray(form.touched[p.name]) &&
+                typeof (form.touched[p.name] as any[])[i] === 'boolean';
 
-            // console.log(`Error state for Field ${i}:`, form.errors[p.name]);
-            // console.log(`Touched state for Field ${i}:`, form.touched[p.name]);
-            // console.log(
-            //   `Combined invalid state for Field ${i}:`,
-            //   !!(isError && isTouched)
-            // );
+              // console.log(`Error state for Field ${i}:`, form.errors[p.name]);
+              // console.log(`Touched state for Field ${i}:`, form.touched[p.name]);
+              // console.log(
+              //   `Combined invalid state for Field ${i}:`,
+              //   !!(isError && isTouched)
+              // );
 
-            return (
-              <FormControl key={i} isInvalid={!!(isError && isTouched)}>
-                <Input
-                  label={`${p.label} [${p.countLabel}${i + 1}] (integer)`}
-                  type={p.type || 'text'}
-                  name={`${p.name}[${i}]`}
-                  value={v.toString()}
-                  placeholder={p.placeholder}
-                  _placeholder={{
-                    fontSize: '14px',
-                  }}
-                  width={'100%'}
-                  isDisabled={p.isDisabled}
-                  onChange={(e) => {
-                    form.setFieldValue(`${p.name}[${i}]`, e.target.value);
-                    form.setFieldTouched(`${p.name}[${i}]`, true);
-                  }}
-                  onBlur={() => {
-                    form.setFieldTouched(`${p.name}[${i}]`, true);
-                  }}
-                  extra={
-                    <>
-                      <HStack gap="8px">
-                        {i > 0 && (
+              return (
+                <FormControl key={i} isInvalid={!!(isError && isTouched)}>
+                  <Input
+                    label={`${p.label} [${p.countLabel}${i + 1}] (integer)`}
+                    type={p.type || 'text'}
+                    name={`${p.name}[${i}]`}
+                    value={v.toString()}
+                    placeholder={p.placeholder}
+                    _placeholder={{
+                      fontSize: '14px',
+                    }}
+                    multi={true}
+                    width={'100%'}
+                    isDisabled={p.isDisabled}
+                    onChange={(e) => {
+                      form.setFieldValue(`${p.name}[${i}]`, e.target.value);
+                      form.setFieldTouched(`${p.name}[${i}]`, true);
+                    }}
+                    onBlur={() => {
+                      form.setFieldTouched(`${p.name}[${i}]`, true);
+                    }}
+                    extra={
+                      <>
+                        <HStack gap="8px">
+                          {i > 0 && (
+                            <S.IconButtonStyled
+                              aria-label="remove value"
+                              icon={<HiMinus />}
+                              size="xs"
+                              onClick={() => {
+                                remove(i);
+                              }}
+                            />
+                          )}
                           <S.IconButtonStyled
-                            aria-label="remove value"
-                            icon={<HiMinus />}
+                            aria-label="Add value"
+                            icon={<BsPlusLg />}
                             size="xs"
-                            onClick={() => {
-                              remove(i);
-                            }}
+                            isDisabled={!v || p.isDisabled}
+                            onClick={() => push('')}
                           />
-                        )}
-                        <S.IconButtonStyled
-                          aria-label="Add value"
-                          icon={<BsPlusLg />}
-                          size="xs"
-                          isDisabled={!v || p.isDisabled}
-                          onClick={() => push('')}
-                        />
-                      </HStack>
-                    </>
-                  }
-                />
-                <FormErrorMessage>
-                  {(Array.isArray(form.errors[p.name]) &&
-                    (form.errors[p.name] as string[])[i]) ||
-                    ''}
-                </FormErrorMessage>
-              </FormControl>
-            );
-          })}
-        </VStack>
-      )}
-    </FieldArray>
+                        </HStack>
+                      </>
+                    }
+                  />
+                  <FormErrorMessage>
+                    {(Array.isArray(form.errors[p.name]) &&
+                      (form.errors[p.name] as string[])[i]) ||
+                      ''}
+                  </FormErrorMessage>
+                </FormControl>
+              );
+            })}
+          </VStack>
+        )}
+      </FieldArray>
+    </Flex>
   );
 };
 

@@ -22,6 +22,11 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigMHSG_String } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 
+// TODO - CREATE RE-USABLE FORM FOR ALL 4 sections - STYLE
+// TODO - simplify the nested input and CustomInputWrapper
+// TODO - duplicate changes and apply to HSG, HSGwF, MHSGwF
+// TODO - finalise connecting "attach MHSG TO SAFE" - READ DOCS!
+
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
@@ -117,15 +122,11 @@ export default function MultiHatsSignerGateForm(props: Props) {
       {(props) => (
         <Form>
           <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_ownerHatId"
-                label="Owner Hat ID (integer)"
-                placeholder="26950000000000000000000000004196..."
-              />
-            </Flex>
-
-            {/* <Flex flexDirection={'column'} gap={0} w={'80%'}> */}
+            <CustomInputWrapper
+              name="_ownerHatId"
+              label="Owner Hat ID (integer)"
+              placeholder="26950000000000000000000000004196..."
+            />
             <MultiInput
               values={formData._signersHatIds}
               width="372px"
@@ -134,38 +135,32 @@ export default function MultiHatsSignerGateForm(props: Props) {
               countLabel="Id"
               placeholder="26960000000000000000000000003152..."
             />
-            {/* </Flex> */}
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_safe"
-                label="Existing Safe (address)"
-                placeholder="0xC8ac0000000000000000000000000000000047fe"
-                isReadOnly={true}
-              />
-            </Flex>
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_minThreshold"
-                label="Min Threshold (integer)"
-                placeholder="3"
-              />
-            </Flex>
+            <CustomInputWrapper
+              name="_safe"
+              label="Existing Safe (address)"
+              placeholder="0xC8ac0000000000000000000000000000000047fe"
+              isReadOnly={true}
+            />
+            <CustomInputWrapper
+              name="_minThreshold"
+              label="Min Threshold (integer)"
+              placeholder="3"
+              width={60}
+            />
 
-            <Flex flexDirection={'column'} gap={0} w={'60%'}>
-              <CustomInputWrapper
-                name="_targetThreshold"
-                label="Max Threshold (integer)"
-                placeholder="5"
-              />
-            </Flex>
+            <CustomInputWrapper
+              name="_targetThreshold"
+              label="Max Threshold (integer)"
+              placeholder="5"
+              width={60}
+            />
 
-            <Flex flexDirection={'column'} gap={0} w={'60%'}>
-              <CustomInputWrapper
-                name="_maxSigners"
-                label="Max Signers (integer)"
-                placeholder="9"
-              />
-            </Flex>
+            <CustomInputWrapper
+              name="_maxSigners"
+              label="Max Signers (integer)"
+              placeholder="9"
+              width={60}
+            />
 
             <Button
               type="submit"
