@@ -10,9 +10,9 @@ interface P {
 }
 const Deploy: React.FC<P> = (p) => {
   const router = useRouter();
-  const { slug } = router.query;
-  const slug2 = findAction(slug, 1);
-  const activeButton = p.active || slug2;
+  const path = router.asPath;
+  const pathSegment = findAction(path, 1);
+  const activeButton = p.active || pathSegment;
 
   const onClickHandler = (action: DEPLOY_ACTIONS) => {
     router.replace(encodeURI(`/deploy/${action.toLowerCase()}`));
@@ -20,10 +20,10 @@ const Deploy: React.FC<P> = (p) => {
 
   return (
     <VStack
-      justifyContent='flex-start'
-      height='100%'
-      alignItems='flex-start'
-      gap='36px'
+      justifyContent="flex-start"
+      height="100%"
+      alignItems="flex-start"
+      gap="36px"
       width={'340px'}
     >
       <Button

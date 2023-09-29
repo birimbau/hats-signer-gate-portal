@@ -6,7 +6,7 @@ import { findAction } from '../../utils/utils';
 
 const X: NextPage = () => {
   const router = useRouter();
-  const { slug } = router.query;
+  const path = router.asPath;
   const {
     headerOne,
     headerTwo,
@@ -15,8 +15,8 @@ const X: NextPage = () => {
     contentTwo,
     contentThree,
   } = useGetLayout({
-    slug1: findAction(slug, 0),
-    slug2: findAction(slug, 1),
+    slug1: findAction(path, 1),
+    slug2: findAction(path, 2),
   });
 
   return (

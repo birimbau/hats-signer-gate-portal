@@ -1,11 +1,11 @@
-export const findAction = (value: string | string[] | undefined, pos = 0) => {
-  return typeof value === 'string'
-    ? value
-    : Array.isArray(value)
-    ? value[pos]
-    : undefined;
+// Finds the segment specified from an entire path.
+export const findAction = (value: string | undefined, pos: number) => {
+  if (typeof value === 'string') {
+    const segments = value.split('/');
+    return segments[pos] || undefined;
+  }
+  return undefined;
 };
-
 export function getBlockExplorerUrl(networkId = 1): string {
   switch (networkId) {
     case 1:
