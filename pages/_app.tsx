@@ -6,6 +6,7 @@ import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
 import Layout from '../components/Layout/Layout';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
 import '../styles/globals.css';
@@ -13,7 +14,11 @@ import { SUPPORTED_NETWORKS } from '../utils/constants';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   Object.values(SUPPORTED_NETWORKS),
-  [publicProvider()]
+  [
+    // alchemyProvider({ apiKey: 'yourAlchemyApiKey' }), // TODO - ADD ALCHEMY TO PREVENT RATE LIMITING
+    publicProvider(),
+  ]
+  // { stallTimeout: 1000 } // TODO - used to delay time between trying providers
 );
 
 const { connectors } = getDefaultWallets({
@@ -49,7 +54,7 @@ const colors = {
 const styles = {
   global: {
     body: {
-      fontFamily: "inter",
+      fontFamily: 'inter',
       fontWeight: 500,
     },
   },
