@@ -2,7 +2,12 @@ import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { Form, Formik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
-import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
+import {
+  useAccount,
+  useContractWrite,
+  usePublicClient,
+  useWaitForTransaction,
+} from 'wagmi';
 import { decodeEventLog } from 'viem';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
@@ -37,7 +42,14 @@ export default function HatsSignerGateForm(props: Props) {
   const [hash, setHash] = useState<EthereumAddress | ''>('');
 
   // Used to prevent the user Deploying when not connected
-  const { isConnected, address: connectedAddress } = useAccount();
+  // activeConnector used for Safe
+  const {
+    isConnected,
+    address: connectedAddress,
+    connector: activeConnector,
+  } = useAccount();
+
+  const publicClient = usePublicClient();
 
   const { config, refetch } = useDeployHSG(formData);
   const {
@@ -63,85 +75,6 @@ export default function HatsSignerGateForm(props: Props) {
     NewHsgContractAddress = extractHsgAddress(transactionData);
     console.log(NewHsgContractAddress);
   }
-
-  // console.log('Transaction data: ', transactionData);
-
-  const transactionReceipt = {
-    blockHash:
-      '0x5d5f9c5c1b47655a1d7bae510efe202a5d3aa11a4c7f88fcda3cdb6cd5e4852f',
-    blockNumber: 9781091,
-    contractAddress: null,
-    cumulativeGasUsed: 584637,
-    effectiveGasPrice: 1500000011,
-    from: '0xc56a789558a0dec88b99c11a887460301d016cf7',
-    gasUsed: 304422,
-    logs: [
-      {
-        address: '0xb674e846c3340e5eac66acb97594b958206ca867',
-        blockHash:
-          '0x5d5f9c5c1b47655a1d7bae510efe202a5d3aa11a4c7f88fcda3cdb6cd5e4852f',
-        blockNumber: 9781091,
-        data: '0x',
-        logIndex: 6,
-        topics: [
-          '0xc582b0d6f8160692b7d6f285c9111242fa38c5dcb8616fc9c8453e9b7ad0f22b',
-          '0x0000000000000000000000000000000000000000000000000000000000000001',
-          '0x0000000000000000000000003bc1a0ad72417f2d411118085256fc53cbddd137',
-        ],
-        transactionHash:
-          '0xb5f2ada01a99699a31e4b4ecad03478626e3b0470e2ad3d2ecfe71e337e9819c',
-        transactionIndex: 6,
-      },
-      // ... other log entries ...
-      {
-        address: '0xa1fb14b5f322651e20f06ee2f2681b8f380bbb0e',
-        blockHash:
-          '0x5d5f9c5c1b47655a1d7bae510efe202a5d3aa11a4c7f88fcda3cdb6cd5e4852f',
-        blockNumber: 9781091,
-        data: '0x000000000000000000000000b674e846c3340e5eac66acb97594b958206ca86700000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c2bd60183b54cc628df709c7a78ec67a7b6dc827000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000005',
-        logIndex: 9,
-        topics: [
-          '0x7272cee601084fb7bb4c747abc7213dabe88e27e27133d9390e9a56b1c46690e',
-        ],
-        transactionHash:
-          '0xb5f2ada01a99699a31e4b4ecad03478626e3b0470e2ad3d2ecfe71e337e9819c',
-        transactionIndex: 6,
-      },
-    ],
-    logsBloom:
-      '0x00000002000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000001000000000000040000004000000000000000000000000000000000000000040000000000000040020000000000000000000000000028010000080000000000000300000000400000000000000000000000040000000000100020000000000080000400800000000000000000000000020000000000000404000000000000000000000000000000000000000000000000000000000000040000000002000000000000000000000040000000008000000000040000000080000000000110000004000000000000000000',
-    status: 'success',
-    to: '0xa1fb14b5f322651e20f06ee2f2681b8f380bbb0e',
-    transactionHash:
-      '0xb5f2ada01a99699a31e4b4ecad03478626e3b0470e2ad3d2ecfe71e337e9819c',
-    transactionIndex: 6,
-    type: 'eip1559',
-  };
-
-  console.log(extractHsgAddress(transactionReceipt));
-  // // Define the HatsSignerGateSetup event signature
-  // const hatsSignerGateSetupSignature = keccak256(
-  //   toUtf8Bytes(
-  //     'HatsSignerGateSetup(address,uint256,uint256,address,uint256,uint256,uint256)'
-  //   )
-  // );
-
-  // // Find the log corresponding to HatsSignerGateSetup
-  // const hatsSignerGateSetupLog = transactionReceipt.logs.find(
-  //   (log) => log.topics[0] === hatsSignerGateSetupSignature
-  // );
-
-  // if (!hatsSignerGateSetupLog) {
-  //   console.log('Log for HatsSignerGateSetup not found.');
-  // }
-
-  // // Extract the _hatsSignerGate from the data of the log
-  // const _hatsSignerGate = '0x' + hatsSignerGateSetupLog?.data.slice(26, 66);
-  // console.log('_hatsSignerGate:', _hatsSignerGate);
-  // console.log('Signature:', hatsSignerGateSetupSignature);
-  // transactionReceipt.logs.forEach((log) =>
-  //   console.log('logs - topic: ', log.topics[0])
-  // );
 
   const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
 
@@ -240,28 +173,23 @@ export default function HatsSignerGateForm(props: Props) {
             <Button
               onClick={() => {
                 // Snippet with constant variables
-                const EXISTING_SAFE_ADDRESS = '0xYourExistingSafeAddress';
-                const HSG_MODULE_ADDRESS = '0xYourHSGModuleAddress';
-                const HSG_GUARD_ADDRESS = '0xYourHSGGuardAddress';
 
-                if (connectedAddress)
+                // This is tempory, if I submit and it's successful, I can move the logic.
+
+                // TODO - FIND THE HSG MODULE AND GUARD ADDRESSES.
+                const EXISTING_HSG_ADDRESS =
+                  '0xb674e846c3340e5eac66acb97594b958206ca867';
+
+                if (connectedAddress) {
+                  console.log('connectedAdrress: ', connectedAddress);
+                  console.log('EXISTING_HSG_ADDRESS: ', EXISTING_HSG_ADDRESS);
                   handleConnect(
-                    EXISTING_SAFE_ADDRESS,
-                    HSG_MODULE_ADDRESS,
-                    HSG_GUARD_ADDRESS,
-                    connectedAddress
+                    EXISTING_HSG_ADDRESS,
+                    connectedAddress,
+                    publicClient
                   );
-                console.log('handleConnect');
+                }
               }}
-              // Will be grey during submit and after success
-              // props.dirty comes from formik and makes the button clickable once values are inputted
-              isDisabled={
-                !props.isValid ||
-                !props.dirty ||
-                !isConnected ||
-                isPending ||
-                isSuccess
-              }
               width={'140px'}
             >
               Attach HSG to Safe
@@ -272,3 +200,57 @@ export default function HatsSignerGateForm(props: Props) {
     </Formik>
   );
 }
+
+// const transactionReceipt = {
+//   blockHash:
+//     '0x5d5f9c5c1b47655a1d7bae510efe202a5d3aa11a4c7f88fcda3cdb6cd5e4852f',
+//   blockNumber: 9781091,
+//   contractAddress: null,
+//   cumulativeGasUsed: 584637,
+//   effectiveGasPrice: 1500000011,
+//   from: '0xc56a789558a0dec88b99c11a887460301d016cf7',
+//   gasUsed: 304422,
+//   logs: [
+//     {
+//       address: '0xb674e846c3340e5eac66acb97594b958206ca867',
+//       blockHash:
+//         '0x5d5f9c5c1b47655a1d7bae510efe202a5d3aa11a4c7f88fcda3cdb6cd5e4852f',
+//       blockNumber: 9781091,
+//       data: '0x',
+//       logIndex: 6,
+//       topics: [
+//         '0xc582b0d6f8160692b7d6f285c9111242fa38c5dcb8616fc9c8453e9b7ad0f22b',
+//         '0x0000000000000000000000000000000000000000000000000000000000000001',
+//         '0x0000000000000000000000003bc1a0ad72417f2d411118085256fc53cbddd137',
+//       ],
+//       transactionHash:
+//         '0xb5f2ada01a99699a31e4b4ecad03478626e3b0470e2ad3d2ecfe71e337e9819c',
+//       transactionIndex: 6,
+//     },
+//     // ... other log entries ...
+//     {
+//       address: '0xa1fb14b5f322651e20f06ee2f2681b8f380bbb0e',
+//       blockHash:
+//         '0x5d5f9c5c1b47655a1d7bae510efe202a5d3aa11a4c7f88fcda3cdb6cd5e4852f',
+//       blockNumber: 9781091,
+//       data: '0x000000000000000000000000b674e846c3340e5eac66acb97594b958206ca86700000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c2bd60183b54cc628df709c7a78ec67a7b6dc827000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000005',
+//       logIndex: 9,
+//       topics: [
+//         '0x7272cee601084fb7bb4c747abc7213dabe88e27e27133d9390e9a56b1c46690e',
+//       ],
+//       transactionHash:
+//         '0xb5f2ada01a99699a31e4b4ecad03478626e3b0470e2ad3d2ecfe71e337e9819c',
+//       transactionIndex: 6,
+//     },
+//   ],
+//   logsBloom:
+//     '0x00000002000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000001000000000000040000004000000000000000000000000000000000000000040000000000000040020000000000000000000000000028010000080000000000000300000000400000000000000000000000040000000000100020000000000080000400800000000000000000000000020000000000000404000000000000000000000000000000000000000000000000000000000000040000000002000000000000000000000040000000008000000000040000000080000000000110000004000000000000000000',
+//   status: 'success',
+//   to: '0xa1fb14b5f322651e20f06ee2f2681b8f380bbb0e',
+//   transactionHash:
+//     '0xb5f2ada01a99699a31e4b4ecad03478626e3b0470e2ad3d2ecfe71e337e9819c',
+//   transactionIndex: 6,
+//   type: 'eip1559',
+// };
+
+// console.log(extractHsgAddress(transactionReceipt));
