@@ -16,14 +16,12 @@ interface ContractResponse {
   next: string;
 }
 
-const useGetModulesPaginated = (
-  args: {
-    start: AbiTypeToPrimitiveType<'address'>;
-    pageSize: AbiTypeToPrimitiveType<'uint256'>;
-  },
-  safeAddress: EthereumAddress
-) => {
-  console.log('useContract-args.start: ', args.start);
+const useGetModulesPaginated = (safeAddress: EthereumAddress) => {
+  const args = {
+    start:
+      '0x0000000000000000000000000000000000000001' as AbiTypeToPrimitiveType<'address'>, // SENTINAL_ADDRESS - DO NOT CHANGE
+    pageSize: BigInt(1) as AbiTypeToPrimitiveType<'uint256'>,
+  };
 
   // useContractRead<TAbi, TFunctionName, TSelectData> - Generic types
   // ContractResponse is the generic which is passed in

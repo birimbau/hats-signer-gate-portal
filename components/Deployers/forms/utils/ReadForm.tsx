@@ -21,11 +21,8 @@ export type EthereumAddress = `0x${string}`;
 function ReadForm(props: Props) {
   const { setCanAttachSafe, formData, setFormData } = props;
 
+  // This passes the safe address and check's if it's valid for connection
   const { data, refetch, isLoading, isError } = useGetModulesPaginated(
-    {
-      start: '0x0000000000000000000000000000000000000001', // SENTINAL_ADDRESS - DO NOT CHANGE
-      pageSize: BigInt(1),
-    },
     formData._safe as EthereumAddress
   );
 
