@@ -1,7 +1,12 @@
 import { EthereumAddress } from './ReadForm';
 import Web3 from 'web3';
 import Safe, { Web3Adapter } from '@safe-global/protocol-kit';
-import { SafeSignature } from '@safe-global/safe-core-sdk-types';
+import {
+  SafeSignature,
+  MetaTransactionData,
+} from '@safe-global/safe-core-sdk-types';
+
+// why don't these populate correctly when i want to import autmatically?
 
 // TODO - console log the data structures of the two things I want to submit.
 // TODO - identify if I should be combining the transactions into one submit. "MultiSend transactions - from Safe docs.
@@ -44,17 +49,6 @@ async function connectSafeToHSG(
   // I need to use the EthersAdapter to connect to the @safe-global/protocol-kit SDK.
 
   // To use 'Ethers' for the EthersAdapter, we must use V5. Because this project uses Ethers V6, I opted for a Web3 implementation instead.
-  // const provider = new Web3.providers.HttpProvider(
-  //   `https://eth-goerli.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
-  // );
-  // const web3 = new Web3(provider);
-
-  // const ethAdapter = new Web3Adapter({
-  //   web3,
-  //   signerAddress: connectedAddress,
-  // });
-  // console.log('ethAdapter: ', ethAdapter);
-
   let safeSdk;
   try {
     // Connects the 'Connected user' to the safe in question so that the user can perform the required actions: 'createEnableModuleTx' & 'createEnableGuardTx'
@@ -69,49 +63,93 @@ async function connectSafeToHSG(
   }
 
   try {
+    // 1. Prepare the transactions
     const enableModuleTx = await safeSdk.createEnableModuleTx(
       existingHSGAddress
     );
-    console.log('enableModuleTx', enableModuleTx);
-
-    const signedSafeTx = await safeSdk.signTransaction(
-      enableModuleTx,
-      'eth_signTypedData_v4'
-    );
-    console.log('signedSafeTx', signedSafeTx);
-
-    const moduleTxResponse = await safeSdk.executeTransaction(signedSafeTx);
-
-    await moduleTxResponse.transactionResponse?.wait();
-    console.log(
-      'Module transaction executed successfully. Response: ',
-      moduleTxResponse
-    );
-  } catch (error) {
-    console.error('Error in module transaction:', error);
-  }
-
-  try {
     const enableGuardTx = await safeSdk.createEnableGuardTx(existingHSGAddress);
-    console.log('enableGuardTx', enableGuardTx);
 
-    const signedSafeTx = await safeSdk.signTransaction(
-      enableGuardTx,
+    const safeTransactionData: MetaTransactionData[] = [
+      {
+        to: enableModuleTx.data.to,
+        value: enableModuleTx.data.value.toString(),
+        data: enableModuleTx.data.data,
+        // you can add operation if needed, but it's optional
+      },
+      {
+        to: enableGuardTx.data.to,
+        value: enableGuardTx.data.value.toString(),
+        data: enableGuardTx.data.data,
+        // you can add operation if needed, but it's optional
+      },
+    ];
+
+    // 2. Use the `createTransaction` function for MultiSend transactions
+    const batchedTransaction = await safeSdk.createTransaction({
+      safeTransactionData,
+    });
+
+    // 3. Sign the batched transaction
+    const signedBatchedTx = await safeSdk.signTransaction(
+      batchedTransaction,
       'eth_signTypedData_v4'
     );
 
-    const guardTxResponse = await safeSdk.executeTransaction(signedSafeTx);
-
-    console.log('guardTxResponse', guardTxResponse);
-
-    await guardTxResponse.transactionResponse?.wait();
+    // 4. Execute the batched transaction
+    const txResponse = await safeSdk.executeTransaction(signedBatchedTx);
+    await txResponse.transactionResponse?.wait();
     console.log(
-      'Guard transaction executed successfully. Response: ',
-      guardTxResponse
+      'Batched transaction executed successfully. Response:',
+      txResponse
     );
   } catch (error) {
-    console.error('Error in guard transaction:', error);
+    console.error('Error in batched transaction:', error);
   }
+
+  // try {
+  //   const enableModuleTx = await safeSdk.createEnableModuleTx(
+  //     existingHSGAddress
+  //   );
+  //   console.log('enableModuleTx', enableModuleTx);
+
+  //   const signedSafeTx = await safeSdk.signTransaction(
+  //     enableModuleTx,
+  //     'eth_signTypedData_v4'
+  //   );
+  //   console.log('signedSafeTx', signedSafeTx);
+
+  //   const moduleTxResponse = await safeSdk.executeTransaction(signedSafeTx);
+
+  //   await moduleTxResponse.transactionResponse?.wait();
+  //   console.log(
+  //     'Module transaction executed successfully. Response: ',
+  //     moduleTxResponse
+  //   );
+  // } catch (error) {
+  //   console.error('Error in module transaction:', error);
+  // }
+
+  // try {
+  //   const enableGuardTx = await safeSdk.createEnableGuardTx(existingHSGAddress);
+  //   console.log('enableGuardTx', enableGuardTx);
+
+  //   const signedSafeTx = await safeSdk.signTransaction(
+  //     enableGuardTx,
+  //     'eth_signTypedData_v4'
+  //   );
+
+  //   const guardTxResponse = await safeSdk.executeTransaction(signedSafeTx);
+
+  //   console.log('guardTxResponse', guardTxResponse);
+
+  //   await guardTxResponse.transactionResponse?.wait();
+  //   console.log(
+  //     'Guard transaction executed successfully. Response: ',
+  //     guardTxResponse
+  //   );
+  // } catch (error) {
+  //   console.error('Error in guard transaction:', error);
+  // }
 }
 
 export async function handleConnect(
