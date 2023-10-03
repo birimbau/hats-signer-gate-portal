@@ -16,10 +16,13 @@ interface ContractResponse {
   next: string;
 }
 
-const useGetModulesPaginated = (args: {
-  start: AbiTypeToPrimitiveType<'address'>;
-  pageSize: AbiTypeToPrimitiveType<'uint256'>;
-}) => {
+const useGetModulesPaginated = (
+  args: {
+    start: AbiTypeToPrimitiveType<'address'>;
+    pageSize: AbiTypeToPrimitiveType<'uint256'>;
+  },
+  safeAddress: EthereumAddress
+) => {
   console.log('useContract-args.start: ', args.start);
 
   // useContractRead<TAbi, TFunctionName, TSelectData> - Generic types
@@ -30,7 +33,7 @@ const useGetModulesPaginated = (args: {
     ContractResponse
   >({
     abi: GnosisSafeL2Abi,
-    address: contract,
+    address: safeAddress || contract,
     functionName: 'getModulesPaginated',
     args: Array.from(Object.values(args)),
     enabled: false,

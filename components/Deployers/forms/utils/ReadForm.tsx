@@ -21,17 +21,19 @@ export type EthereumAddress = `0x${string}`;
 function ReadForm(props: Props) {
   const { setCanAttachSafe, formData, setFormData } = props;
 
-  const { data, refetch, isLoading, isError } = useGetModulesPaginated({
-    start: formData._safe as EthereumAddress,
-    pageSize: BigInt(1),
-  });
+  const { data, refetch, isLoading, isError } = useGetModulesPaginated(
+    {
+      start: '0x0000000000000000000000000000000000000001', // SENTINAL_ADDRESS - DO NOT CHANGE
+      pageSize: BigInt(1),
+    },
+    formData._safe as EthereumAddress
+  );
 
   // This is used to manage unnecessary re-renders. onSubmit only one re-render occurs
   const triggerRefetch = useSubmitRefetch(refetch, isError);
 
+  // On re-render update the status to display relevant user message.
   useEffect(() => {
-    console.log('inUseEffect: ', data);
-
     if (data) {
       setCanAttachSafe(data[0].length === 0);
       console.log('DATA: ', data);
