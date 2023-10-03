@@ -183,11 +183,7 @@ export default function HatsSignerGateForm(props: Props) {
                 if (connectedAddress) {
                   console.log('connectedAdrress: ', connectedAddress);
                   console.log('EXISTING_HSG_ADDRESS: ', EXISTING_HSG_ADDRESS);
-                  handleConnect(
-                    EXISTING_HSG_ADDRESS,
-                    connectedAddress,
-                    publicClient
-                  );
+                  handleConnect(EXISTING_HSG_ADDRESS, connectedAddress);
                 }
               }}
               width={'140px'}
