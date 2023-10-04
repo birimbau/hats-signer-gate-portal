@@ -16,3 +16,14 @@ export function getBlockExplorerUrl(networkId = 1): string {
       return 'https://etherscan.io';
   }
 }
+
+export function getSafeAppUrlPrefix(networkId = 1): string {
+  switch (networkId) {
+    case 1:
+      return 'https://app.safe.global/home?safe=eth:';
+    case 5:
+      return 'https://app.safe.global/home?safe=gor:';
+    default:
+      return 'https://app.safe.global/home?safe=eth:';
+  }
+}

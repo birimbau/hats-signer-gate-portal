@@ -33,6 +33,7 @@ const HSG = () => {
 
   // This is extracted form the HSG factory response and connected to the existing safe
   const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
@@ -55,33 +56,70 @@ const HSG = () => {
     </>
   );
 
-  const headerThree = () =>
-    !isPending && ( // Loading state ensures the message refreshes correctly
-      <>
-        {canAttachSafe === safe.CANNOT_ATTACH && (
+  const headerThree = () => {
+    // Initial phases of reading the Safe address
+    if (!isPending && !hsgAddress) {
+      if (canAttachSafe === safe.CANNOT_ATTACH) {
+        return (
           <SafeAttachMessage
             text="This safe cannot be attached"
             color="red"
             safeData={formData._safe}
           />
-        )}
-        {canAttachSafe === safe.INVALID_ADDRESS && (
+        );
+      } else if (canAttachSafe === safe.INVALID_ADDRESS) {
+        return (
           <SafeAttachMessage
             text="This is not a valid safe address"
             color="red"
             safeData={formData._safe}
           />
-        )}
-        {canAttachSafe === safe.CAN_ATTACH && (
+        );
+      } else if (canAttachSafe === safe.CAN_ATTACH) {
+        return (
           <SafeAttachMessage
             text="Safe can be attached"
             color="green"
             safeData={formData._safe}
           />
-        )}
-      </>
-    );
+        );
+      }
+    }
 
+    // Secondary phase, during transaction
+    if (isPending) {
+      return (
+        <SafeAttachMessage
+          text="Transaction pending..."
+          color="black"
+          safeData=""
+        />
+      );
+    }
+
+    // Third phase - Click attach
+    if (hsgAddress) {
+      return (
+        <SafeAttachMessage
+          text="HSG Created"
+          color="black"
+          safeData='Click "Attach HSG to Safe"'
+        />
+      );
+    }
+    // Fourth phase - transaction complete
+    if (isSuccess && !isPending) {
+      return (
+        <SafeAttachMessage
+          text="Transaction Complete"
+          color="black"
+          safeData=""
+        />
+      );
+    }
+
+    return null; // Default return if none of the conditions above are met
+  };
   const contentOne = () => <Deploy active={DEPLOY_ACTIONS.DEPLOY_HSG} />;
   const contentTwo = () => (
     <>
@@ -101,6 +139,7 @@ const HSG = () => {
           setFormData={setFormData}
           formData={formData}
           setHsgAddress={setHsgAddress}
+          setIsSuccess={setIsSuccess}
         />
       )}
     </>

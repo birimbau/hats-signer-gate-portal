@@ -34,12 +34,19 @@ interface Props {
   setFormData: (formData: any) => void;
   isPending: boolean;
   setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
+  setIsSuccess: (isSuccess: boolean) => void;
 }
 
 export default function HatsSignerGateForm(props: Props) {
   // Destructure Props for ease of use & visibility within this function
-  const { setIsPending, formData, setFormData, isPending, setHsgAddress } =
-    props;
+  const {
+    setIsPending,
+    formData,
+    setFormData,
+    isPending,
+    setHsgAddress,
+    setIsSuccess,
+  } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
 
@@ -90,6 +97,11 @@ export default function HatsSignerGateForm(props: Props) {
       setHash(contractData.hash);
     }
   }, [contractData]);
+
+  // After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
+  useEffect(() => {
+    setIsSuccess(isSuccess);
+  }, [setIsSuccess, isSuccess]);
 
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
