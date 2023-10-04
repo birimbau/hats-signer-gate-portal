@@ -14,13 +14,15 @@ interface SafeInstructionsProps {
   connectedAddress: EthereumAddress | undefined;
   handleConnect: (
     hsgAddress: EthereumAddress,
-    connectedAddress: EthereumAddress
+    connectedAddress: EthereumAddress,
+    setIsSuccessTwo: (isSuccess: boolean) => void
   ) => void;
   safeType: string;
   data: any; // Adjust the type accordingly
   transactionData: any; // Adjust the type accordingly
   formData: DeployConfigHSG_String | DeployConfigMHSG_String;
   isPending: boolean;
+  setIsSuccessTwo: (isSuccess: boolean) => void;
 }
 
 const SafeInstructions: React.FC<SafeInstructionsProps> = ({
@@ -33,6 +35,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
   transactionData,
   formData,
   isPending,
+  setIsSuccessTwo,
 }) => {
   return (
     <>
@@ -69,7 +72,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
           <Text>&lt;&lt; Check a valid safe address</Text>
         </VStack>
       )}
-      {canAttachSafe === safe.CAN_ATTACH && !hsgAddress && (
+      {canAttachSafe === safe.CAN_ATTACH && !hsgAddress && !isPending && (
         <VariableExplanations />
       )}
       {canAttachSafe === safe.CAN_ATTACH && hsgAddress && (
@@ -78,7 +81,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
             isDisabled={!connectedAddress}
             onClick={() => {
               if (connectedAddress && hsgAddress) {
-                handleConnect(hsgAddress, connectedAddress);
+                handleConnect(hsgAddress, connectedAddress, setIsSuccessTwo);
               }
             }}
             width={'140px'}

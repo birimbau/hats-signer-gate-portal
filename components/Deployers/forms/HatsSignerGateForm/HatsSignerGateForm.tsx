@@ -1,13 +1,8 @@
 import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { Form, Formik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
-import {
-  useAccount,
-  useContractWrite,
-  usePublicClient,
-  useWaitForTransaction,
-} from 'wagmi';
+import { useEffect, useState } from 'react';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { decodeEventLog } from 'viem';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
@@ -24,9 +19,7 @@ import Button from '../../../UI/CustomButton/CustomButton';
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigHSG } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
-import { keccak256, toUtf8Bytes } from 'ethers';
 import { extractHsgAddress } from '../utils/extractHsgAddress';
-import { handleConnect } from '../utils/connectSafeToHSG';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -34,7 +27,7 @@ interface Props {
   setFormData: (formData: any) => void;
   isPending: boolean;
   setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
-  setIsSuccess: (isSuccess: boolean) => void;
+  setIsSuccessOne: (isSuccess: boolean) => void;
   setData: (data: any) => void;
   setTransactionData: (data: any) => void;
 }
@@ -47,7 +40,7 @@ export default function HatsSignerGateForm(props: Props) {
     setFormData,
     isPending,
     setHsgAddress,
-    setIsSuccess,
+    setIsSuccessOne,
     setData,
     setTransactionData,
   } = props;
@@ -123,8 +116,8 @@ export default function HatsSignerGateForm(props: Props) {
 
   // After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
   useEffect(() => {
-    setIsSuccess(isSuccess);
-  }, [setIsSuccess, isSuccess]);
+    setIsSuccessOne(isSuccess);
+  }, [setIsSuccessOne, isSuccess]);
 
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({

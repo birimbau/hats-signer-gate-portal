@@ -35,7 +35,7 @@ const HSG = () => {
 
   // This is extracted form the HSG factory response and connected to the existing safe
   const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [tranOneIsSuccess, setTranOneIsSuccess] = useState(false);
   const [data, setData] = useState(undefined);
   const [transactionData, setTransactionData] = useState(undefined);
 
@@ -59,6 +59,10 @@ const HSG = () => {
       </VStack>
     </>
   );
+  console.log('isPending', isPending);
+  console.log('hsgAddress', hsgAddress);
+  console.log('canAttachSafe', canAttachSafe);
+  console.log('tranOneIsSuccess', tranOneIsSuccess);
 
   const headerThree = () => {
     // Initial phases of reading the Safe address
@@ -91,28 +95,34 @@ const HSG = () => {
     }
 
     // Secondary phase, during transaction
-    if (isPending)
-      <SafeAttachMessage
-        text="Transaction pending..."
-        color="black"
-        safeData=""
-      />;
+    if (isPending && !hsgAddress)
+      return (
+        <SafeAttachMessage
+          text="Transaction pending..."
+          color="black"
+          safeData=""
+        />
+      );
 
-    // Third phase - is a hsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
-    if (hsgAddress)
-      <SafeAttachMessage
-        text="HSG Created"
-        color="black"
-        safeData='Click "Attach HSG to Safe"'
-      />;
+    // Third phase - if a hsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
+    if (hsgAddress && tranOneIsSuccess)
+      return (
+        <SafeAttachMessage
+          text="HSG Created"
+          color="black"
+          safeData='Click "Attach HSG to Safe"'
+        />
+      );
 
     // Fourth phase - transaction complete
-    if (isSuccess && !isPending)
-      <SafeAttachMessage
-        text="Transaction Complete"
-        color="black"
-        safeData=""
-      />;
+    if (tranOneIsSuccess && !isPending)
+      return (
+        <SafeAttachMessage
+          text="Transaction Complete"
+          color="black"
+          safeData=""
+        />
+      );
 
     return null; // Default return if none of the conditions above are met
   };
@@ -135,7 +145,7 @@ const HSG = () => {
           setFormData={setFormData}
           formData={formData}
           setHsgAddress={setHsgAddress}
-          setIsSuccess={setIsSuccess}
+          setTranOneIsSuccess={setTranOneIsSuccess}
           setData={setData}
           setTransactionData={setTransactionData}
         />

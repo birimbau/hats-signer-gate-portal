@@ -2,8 +2,8 @@ import { EthereumAddress } from './ReadForm';
 import Web3 from 'web3';
 import Safe, { Web3Adapter } from '@safe-global/protocol-kit';
 import {
-  SafeSignature,
   MetaTransactionData,
+  SafeSignature,
 } from '@safe-global/safe-core-sdk-types';
 
 // why don't these populate correctly when i want to import autmatically?
@@ -154,11 +154,13 @@ async function connectSafeToHSG(
 
 export async function handleConnect(
   existingHSGAddress: EthereumAddress,
-  connectedAddress: EthereumAddress
+  connectedAddress: EthereumAddress,
+  setIsSuccessTwo: (isSuccess: boolean) => void
 ): Promise<void> {
   console.log('inside handleConnect');
   try {
     await connectSafeToHSG(existingHSGAddress, connectedAddress);
+    setIsSuccessTwo(true);
   } catch (error) {
     if (error instanceof Error) {
       console.error('Error connecting Safe to HSG:', error.message);
