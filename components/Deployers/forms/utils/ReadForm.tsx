@@ -9,9 +9,13 @@ import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import { useSubmitRefetch } from '../../../../hooks/useSubmitRefetch';
 import { DeployConfigHSG, DeployConfigMHSG_String } from '../types/forms';
+import { safe } from '../../../../pages/deploy/hsg';
+
+// TODO - Loading state!!!!!!
+// todo - move the attach button to the correct location = curretnly in HSGform just at the end.
 
 interface Props {
-  setCanAttachSafe: (value: boolean) => void;
+  setCanAttachSafe: (value: number) => void;
   formData: DeployConfigMHSG_String | DeployConfigHSG;
   setFormData: (formData: any) => void;
 }
@@ -32,10 +36,18 @@ function ReadForm(props: Props) {
   // On re-render update the status to display relevant user message.
   useEffect(() => {
     if (data) {
-      setCanAttachSafe(data[0].length === 0);
       console.log('DATA: ', data);
+      setCanAttachSafe(
+        data[0].length === 0 ? safe.CAN_ATTACH : safe.CANNOT_ATTACH
+      );
     }
   }, [data, setCanAttachSafe, refetch]);
+  // // On re-render check the error
+  useEffect(() => {
+    if (isError) {
+      setCanAttachSafe(safe.INVALID_ADDRESS);
+    }
+  }, [isError, setCanAttachSafe]);
 
   const validationSchema = Yup.object().shape({
     _SafeAddress: Yup.string().required('Required').ethereumAddress(),
@@ -66,7 +78,11 @@ function ReadForm(props: Props) {
               />
             </Flex>
 
-            <Button type="submit" leftIcon={<AiOutlineRead />}>
+            <Button
+              type="submit"
+              leftIcon={<AiOutlineRead />}
+              isDisabled={isLoading}
+            >
               Read
             </Button>
           </VStack>

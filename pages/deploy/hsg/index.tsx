@@ -7,6 +7,14 @@ import { useState } from 'react';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 import { DeployConfigHSG } from '../../../components/Deployers/forms/types/forms';
 import HatsSignerGateForm from '../../../components/Deployers/forms/HatsSignerGateForm/HatsSignerGateForm';
+import { SafeAttachMessage } from '../../../components/Deployers/forms/utils/SafeAttachMessage';
+
+export enum safe {
+  UNSET = 1,
+  INVALID_ADDRESS = 2,
+  CANNOT_ATTACH = 3,
+  CAN_ATTACH = 4,
+}
 
 const HSG = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
@@ -20,9 +28,7 @@ const HSG = () => {
   });
 
   // Use this state for conditional rendering
-  const [canAttachSafe, setCanAttachSafe] = useState<undefined | boolean>(
-    undefined
-  );
+  const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
 
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
@@ -40,38 +46,46 @@ const HSG = () => {
     </>
   );
 
-  const headerThree = () => (
-    <>
-      {canAttachSafe === false && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text as="b" color="red">
-            No the Safe cannot be attached
-          </Text>
-          <Text>{formData._safe}</Text>
-        </VStack>
-      )}
-      {canAttachSafe === true && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text as="b" color="green">
-            Safe can be attached
-          </Text>
-          <Text>{formData._safe}</Text>
-        </VStack>
-      )}
-    </>
-  );
+  const headerThree = () =>
+    !isPending && ( // Loading state ensures the message refreshes correctly
+      <>
+        {canAttachSafe === safe.CANNOT_ATTACH && (
+          <SafeAttachMessage
+            text="This safe cannot be attached"
+            color="red"
+            safeData={formData._safe}
+          />
+        )}
+        {canAttachSafe === safe.INVALID_ADDRESS && (
+          <SafeAttachMessage
+            text="This is not a valid safe address"
+            color="red"
+            safeData={formData._safe}
+          />
+        )}
+        {canAttachSafe === safe.CAN_ATTACH && (
+          <SafeAttachMessage
+            text="Safe can be attached"
+            color="green"
+            safeData={formData._safe}
+          />
+        )}
+      </>
+    );
 
   const contentOne = () => <Deploy active={DEPLOY_ACTIONS.DEPLOY_HSG} />;
   const contentTwo = () => (
     <>
-      {!canAttachSafe && (
+      {(canAttachSafe === safe.UNSET ||
+        canAttachSafe === safe.CANNOT_ATTACH ||
+        canAttachSafe === safe.INVALID_ADDRESS) && (
         <ReadForm
           setCanAttachSafe={setCanAttachSafe}
           formData={formData}
           setFormData={setFormData}
         />
       )}
-      {canAttachSafe && (
+      {canAttachSafe === safe.CAN_ATTACH && (
         <HatsSignerGateForm
           setIsPending={setIsPending}
           isPending={isPending}
@@ -83,7 +97,7 @@ const HSG = () => {
   );
   const contentThree = () => (
     <>
-      {canAttachSafe === undefined && (
+      {canAttachSafe === safe.UNSET && (
         <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
           <Text>
             This step will check if your existing safe can be attached to the
@@ -91,12 +105,13 @@ const HSG = () => {
           </Text>
         </VStack>
       )}
-      {canAttachSafe === false && (
+      {(canAttachSafe === safe.CANNOT_ATTACH ||
+        canAttachSafe === safe.INVALID_ADDRESS) && (
         <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
           <Text>&lt;&lt; Check another safe address</Text>
         </VStack>
       )}
-      {canAttachSafe === true && <VariableExplanations />}
+      {canAttachSafe === safe.CAN_ATTACH && <VariableExplanations />}
     </>
   );
 
