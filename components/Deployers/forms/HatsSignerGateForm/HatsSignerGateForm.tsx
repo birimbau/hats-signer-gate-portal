@@ -44,14 +44,9 @@ export default function HatsSignerGateForm(props: Props) {
   const [hash, setHash] = useState<EthereumAddress | ''>('');
 
   // Used to prevent the user Deploying when not connected
-  // activeConnector used for Safe
-  const {
-    isConnected,
-    address: connectedAddress,
-    connector: activeConnector,
-  } = useAccount();
+  const { isConnected } = useAccount();
 
-  const publicClient = usePublicClient();
+  // console.log('inside hsgForm - formData: ', formData);
 
   const { config, refetch } = useDeployHSG(formData);
   const {
@@ -78,6 +73,8 @@ export default function HatsSignerGateForm(props: Props) {
     console.log('HsgContractAddress: ', HsgContractAddress);
     setHsgAddress(HsgContractAddress);
   }
+
+  // console.log('inside hsgForm - render');
 
   const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
 
@@ -110,6 +107,8 @@ export default function HatsSignerGateForm(props: Props) {
       validationSchema={validationSchema}
       onSubmit={(values: DeployConfigHSG, actions) => {
         // The formData updates state in the parent file -> index.jsx
+        // console.log('inside hsgForm - submit');
+
         setFormData({
           _ownerHatId: values._ownerHatId,
           _signerHatId: values._signerHatId,
@@ -180,6 +179,7 @@ export default function HatsSignerGateForm(props: Props) {
   );
 }
 
+// Example transaction from HSG factory
 // const transactionReceipt = {
 //   blockHash:
 //     '0x5d5f9c5c1b47655a1d7bae510efe202a5d3aa11a4c7f88fcda3cdb6cd5e4852f',
