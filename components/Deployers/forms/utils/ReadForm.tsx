@@ -10,6 +10,7 @@ import '../utils/validation'; // for Yup Validation
 import { useSubmitRefetch } from '../../../../hooks/useSubmitRefetch';
 import { DeployConfigHSG, DeployConfigMHSG_String } from '../types/forms';
 import { safe } from '../../../../pages/deploy/hsg';
+import { useAccount } from 'wagmi';
 
 // TODO - Loading state!!!!!!
 // todo - move the attach button to the correct location = curretnly in HSGform just at the end.
@@ -24,6 +25,7 @@ export type EthereumAddress = `0x${string}`;
 
 function ReadForm(props: Props) {
   const { setCanAttachSafe, formData, setFormData } = props;
+  const { isConnected } = useAccount();
 
   // This passes the safe address and check's if it's valid for connection
   const { data, refetch, isLoading, isError } = useGetModulesPaginated(
@@ -81,7 +83,7 @@ function ReadForm(props: Props) {
             <Button
               type="submit"
               leftIcon={<AiOutlineRead />}
-              isDisabled={isLoading}
+              isDisabled={isLoading || !isConnected}
             >
               Read
             </Button>

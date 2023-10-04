@@ -35,6 +35,8 @@ interface Props {
   isPending: boolean;
   setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
   setIsSuccess: (isSuccess: boolean) => void;
+  setData: (data: any) => void;
+  setTransactionData: (data: any) => void;
 }
 
 export default function HatsSignerGateForm(props: Props) {
@@ -46,6 +48,8 @@ export default function HatsSignerGateForm(props: Props) {
     isPending,
     setHsgAddress,
     setIsSuccess,
+    setData,
+    setTransactionData,
   } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
@@ -64,23 +68,42 @@ export default function HatsSignerGateForm(props: Props) {
   } = useContractWrite(config);
 
   // This only runs if "hash" is defined
-  // Use this to detect isLoading state in transaction
+  // Use this to detect isLoading state in transaction and update user interface
   const {
     isSuccess,
     isLoading: transationPending,
     data: transactionData,
   } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
+    onSuccess(data) {
+      if (data && data.logs && data.logs.length > 3 && data.logs[3]) {
+        const response = decodeEventLog({
+          abi: HatsSignerGateFactoryAbi,
+          data: data.logs[3].data,
+          topics: data.logs[3].topics,
+        });
+        // rest of your code
+        setTransactionData(data);
+        setData(response.args);
+        console.log('Transaction Success');
+      } else {
+        console.error('Unexpected data structure:', data);
+      }
+
+      // setTransactionData(data);
+      // setData(response.args);
+      console.log('Transaction Success');
+    },
   });
 
   // Get the HsgAddress from the HsgFactory response
-  let HsgContractAddress = null;
-  if (transactionData) {
-    HsgContractAddress = extractHsgAddress(transactionData);
-    console.log('HsgContractAddress: ', HsgContractAddress);
-    setHsgAddress(HsgContractAddress);
-  }
-
+  useEffect(() => {
+    if (transactionData) {
+      const HsgContractAddress = extractHsgAddress(transactionData);
+      console.log('HsgContractAddress: ', HsgContractAddress);
+      setHsgAddress(HsgContractAddress);
+    }
+  }, [transactionData]);
   // console.log('inside hsgForm - render');
 
   const handleFormSubmit = useRefetchWrite({ write, refetch, isError });

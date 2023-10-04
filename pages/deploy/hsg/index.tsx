@@ -12,6 +12,8 @@ import HatsSignerGateForm from '../../../components/Deployers/forms/HatsSignerGa
 import { SafeAttachMessage } from '../../../components/Deployers/forms/utils/SafeAttachMessage';
 import { useAccount } from 'wagmi';
 import { handleConnect } from '../../../components/Deployers/forms/utils/connectSafeToHSG';
+import TransactionDetails from '../../../components/Deployers/forms/utils/TransactionDetails';
+import SafeInstructions from '../../../components/Deployers/forms/utils/SafeInstruction';
 
 export enum safe {
   UNSET = 1,
@@ -34,6 +36,8 @@ const HSG = () => {
   // This is extracted form the HSG factory response and connected to the existing safe
   const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [data, setData] = useState(undefined);
+  const [transactionData, setTransactionData] = useState(undefined);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
@@ -87,36 +91,28 @@ const HSG = () => {
     }
 
     // Secondary phase, during transaction
-    if (isPending) {
-      return (
-        <SafeAttachMessage
-          text="Transaction pending..."
-          color="black"
-          safeData=""
-        />
-      );
-    }
+    if (isPending)
+      <SafeAttachMessage
+        text="Transaction pending..."
+        color="black"
+        safeData=""
+      />;
 
-    // Third phase - Click attach
-    if (hsgAddress) {
-      return (
-        <SafeAttachMessage
-          text="HSG Created"
-          color="black"
-          safeData='Click "Attach HSG to Safe"'
-        />
-      );
-    }
+    // Third phase - is a hsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
+    if (hsgAddress)
+      <SafeAttachMessage
+        text="HSG Created"
+        color="black"
+        safeData='Click "Attach HSG to Safe"'
+      />;
+
     // Fourth phase - transaction complete
-    if (isSuccess && !isPending) {
-      return (
-        <SafeAttachMessage
-          text="Transaction Complete"
-          color="black"
-          safeData=""
-        />
-      );
-    }
+    if (isSuccess && !isPending)
+      <SafeAttachMessage
+        text="Transaction Complete"
+        color="black"
+        safeData=""
+      />;
 
     return null; // Default return if none of the conditions above are met
   };
@@ -140,46 +136,24 @@ const HSG = () => {
           formData={formData}
           setHsgAddress={setHsgAddress}
           setIsSuccess={setIsSuccess}
+          setData={setData}
+          setTransactionData={setTransactionData}
         />
       )}
     </>
   );
   const contentThree = () => (
-    <>
-      {canAttachSafe === safe.UNSET && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text>
-            This step will check if your existing safe can be attached to the
-            HSG you are creating.
-          </Text>
-        </VStack>
-      )}
-      {(canAttachSafe === safe.CANNOT_ATTACH ||
-        canAttachSafe === safe.INVALID_ADDRESS) && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text>&lt;&lt; Check another safe address</Text>
-        </VStack>
-      )}
-      {canAttachSafe === safe.CAN_ATTACH && !hsgAddress && (
-        <VariableExplanations />
-      )}
-      {canAttachSafe === safe.CAN_ATTACH && hsgAddress && (
-        <>
-          <Button
-            onClick={() => {
-              if (connectedAddress && hsgAddress) {
-                console.log('connectedAdrress: ', connectedAddress);
-                console.log('EXISTING_HSG_ADDRESS: ', hsgAddress);
-                handleConnect(hsgAddress, connectedAddress);
-              }
-            }}
-            width={'140px'}
-          >
-            Attach HSG to Safe
-          </Button>
-        </>
-      )}
-    </>
+    <SafeInstructions
+      canAttachSafe={canAttachSafe}
+      hsgAddress={hsgAddress}
+      connectedAddress={connectedAddress}
+      handleConnect={handleConnect}
+      safeType="HSG" // or "MHSG"
+      data={data}
+      transactionData={transactionData}
+      formData={formData}
+      isPending={isPending}
+    />
   );
 
   return (

@@ -16,7 +16,7 @@ export const SafeAttachMessage: React.FC<SafeInfoProps> = ({
       <Text as="b" color={color}>
         {text}
       </Text>
-      <Text>{safeData}</Text>
+      <Text wordBreak="break-word">{safeData}</Text>
     </VStack>
   );
 };
