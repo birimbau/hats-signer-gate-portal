@@ -33,11 +33,13 @@ interface Props {
   formData: DeployConfigHSG;
   setFormData: (formData: any) => void;
   isPending: boolean;
+  setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
 }
 
 export default function HatsSignerGateForm(props: Props) {
   // Destructure Props for ease of use & visibility within this function
-  const { setIsPending, formData, setFormData, isPending } = props;
+  const { setIsPending, formData, setFormData, isPending, setHsgAddress } =
+    props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
 
@@ -70,10 +72,11 @@ export default function HatsSignerGateForm(props: Props) {
   });
 
   // Providing the
-  let NewHsgContractAddress = null;
+  let HsgContractAddress = null;
   if (transactionData) {
-    NewHsgContractAddress = extractHsgAddress(transactionData);
-    console.log(NewHsgContractAddress);
+    HsgContractAddress = extractHsgAddress(transactionData);
+    console.log('HsgContractAddress: ', HsgContractAddress);
+    setHsgAddress(HsgContractAddress);
   }
 
   const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
@@ -169,26 +172,6 @@ export default function HatsSignerGateForm(props: Props) {
               width={'140px'}
             >
               Deploy
-            </Button>
-            <Button
-              onClick={() => {
-                // Snippet with constant variables
-
-                // This is tempory, if I submit and it's successful, I can move the logic.
-
-                // TODO - FIND THE HSG MODULE AND GUARD ADDRESSES.
-                const EXISTING_HSG_ADDRESS =
-                  '0xb674e846c3340e5eac66acb97594b958206ca867';
-
-                if (connectedAddress) {
-                  console.log('connectedAdrress: ', connectedAddress);
-                  console.log('EXISTING_HSG_ADDRESS: ', EXISTING_HSG_ADDRESS);
-                  handleConnect(EXISTING_HSG_ADDRESS, connectedAddress);
-                }
-              }}
-              width={'140px'}
-            >
-              Attach HSG to Safe
             </Button>
           </VStack>
         </Form>

@@ -1,9 +1,10 @@
 import { keccak256, toUtf8Bytes } from 'ethers';
 import { TransactionReceipt } from 'viem';
+import { EthereumAddress } from './ReadForm';
 
 export const extractHsgAddress = (
   transactionReceipt: TransactionReceipt
-): string | null => {
+): EthereumAddress | null => {
   if (
     !transactionReceipt ||
     !transactionReceipt.logs ||
@@ -40,7 +41,7 @@ export const extractHsgAddress = (
   // The data is in a hex string, we need to extract a small part of that.
 
   // Extract the _hatsSignerGate from the data of the log
-  return '0x' + hatsSignerGateSetupLog.data.slice(26, 66);
+  return ('0x' + hatsSignerGateSetupLog.data.slice(26, 66)) as EthereumAddress;
 };
 
 // Usage:

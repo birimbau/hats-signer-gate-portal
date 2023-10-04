@@ -1,13 +1,17 @@
-import { VStack, Text } from '@chakra-ui/react';
+import { VStack, Text, Button } from '@chakra-ui/react';
 import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
 import MainContent from '../../../components/MainContent/MainContent';
 import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
-import ReadForm from '../../../components/Deployers/forms/utils/ReadForm';
+import ReadForm, {
+  EthereumAddress,
+} from '../../../components/Deployers/forms/utils/ReadForm';
 import { useState } from 'react';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 import { DeployConfigHSG } from '../../../components/Deployers/forms/types/forms';
 import HatsSignerGateForm from '../../../components/Deployers/forms/HatsSignerGateForm/HatsSignerGateForm';
 import { SafeAttachMessage } from '../../../components/Deployers/forms/utils/SafeAttachMessage';
+import { useAccount } from 'wagmi';
+import { handleConnect } from '../../../components/Deployers/forms/utils/connectSafeToHSG';
 
 export enum safe {
   UNSET = 1,
@@ -26,9 +30,12 @@ const HSG = () => {
     _targetThreshold: '',
     _maxSigners: '',
   });
+  const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
+
+  const { address: connectedAddress } = useAccount();
 
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
@@ -91,6 +98,7 @@ const HSG = () => {
           isPending={isPending}
           setFormData={setFormData}
           formData={formData}
+          setHsgAddress={setHsgAddress}
         />
       )}
     </>
@@ -112,6 +120,22 @@ const HSG = () => {
         </VStack>
       )}
       {canAttachSafe === safe.CAN_ATTACH && <VariableExplanations />}
+      {canAttachSafe === safe.CAN_ATTACH && (
+        <>
+          <Button
+            onClick={() => {
+              if (connectedAddress && hsgAddress) {
+                console.log('connectedAdrress: ', connectedAddress);
+                console.log('EXISTING_HSG_ADDRESS: ', hsgAddress);
+                handleConnect(hsgAddress, connectedAddress);
+              }
+            }}
+            width={'140px'}
+          >
+            Attach HSG to Safe
+          </Button>
+        </>
+      )}
     </>
   );
 
