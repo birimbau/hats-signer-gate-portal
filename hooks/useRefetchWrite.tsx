@@ -5,8 +5,8 @@ import { useRef, useEffect, useState } from 'react';
 
 // HOW DOES IT WORK?
 // onSubmit, state is passed up one layer which causes a re-render.
-// the new values are needed to populate useDeployMultiHatSG and useContractWrite
-// useDeployMultiHatSG creates a new refetch function which is needed for write()
+// The new values are needed to populate useDeployMultiHatSG and useContractWrite.
+// useDeployMultiHatSG creates a new refetch function which is needed for write(),
 // it is for this reason that setSubmitCount is used and reftech() & write?.()
 // are split into separate useEffects.
 

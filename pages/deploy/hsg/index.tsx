@@ -30,6 +30,8 @@ const HSG = () => {
     _targetThreshold: '',
     _maxSigners: '',
   });
+
+  // This is extracted form the HSG factory response and connected to the existing safe
   const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
 
   // Use this state for conditional rendering
@@ -119,8 +121,10 @@ const HSG = () => {
           <Text>&lt;&lt; Check another safe address</Text>
         </VStack>
       )}
-      {canAttachSafe === safe.CAN_ATTACH && <VariableExplanations />}
-      {canAttachSafe === safe.CAN_ATTACH && (
+      {canAttachSafe === safe.CAN_ATTACH && !hsgAddress && (
+        <VariableExplanations />
+      )}
+      {canAttachSafe === safe.CAN_ATTACH && hsgAddress && (
         <>
           <Button
             onClick={() => {

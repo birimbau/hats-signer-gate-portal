@@ -71,7 +71,7 @@ export default function HatsSignerGateForm(props: Props) {
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
   });
 
-  // Providing the
+  // Get the HsgAddress from the HsgFactory response
   let HsgContractAddress = null;
   if (transactionData) {
     HsgContractAddress = extractHsgAddress(transactionData);
