@@ -11,10 +11,9 @@ import {
 
 async function connectSafeToHSG(
   existingHSGAddress: EthereumAddress,
-  connectedAddress: EthereumAddress
+  connectedAddress: EthereumAddress,
+  safeAddress: EthereumAddress
 ): Promise<void> {
-  const SafeAddress = `${process.env.NEXT_PUBLIC_VALID_SAFE_ADDRESS}`;
-
   if (typeof window.ethereum === 'undefined') {
     throw new Error('MetaMask is not installed!');
   }
@@ -171,11 +170,13 @@ async function connectSafeToHSG(
 export async function handleConnect(
   existingHSGAddress: EthereumAddress,
   connectedAddress: EthereumAddress,
+  safeAddress: EthereumAddress,
+
   setIsSuccessTwo: (isSuccess: boolean) => void
 ): Promise<void> {
   console.log('inside handleConnect');
   try {
-    await connectSafeToHSG(existingHSGAddress, connectedAddress);
+    await connectSafeToHSG(existingHSGAddress, connectedAddress, safeAddress);
     console.log('successTwo set to TRUE');
 
     setIsSuccessTwo(true);

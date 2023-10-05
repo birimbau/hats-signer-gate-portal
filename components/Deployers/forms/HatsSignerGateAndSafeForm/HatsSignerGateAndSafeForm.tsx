@@ -7,7 +7,7 @@ import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { DeployConfigHSG_String } from '../types/forms';
+import { DeployConfigHSGWF } from '../types/forms';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
@@ -18,7 +18,7 @@ interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
   setTransactionData: (data: any) => void;
-  formData: DeployConfigHSG_String; // This now has it's own type and the initialised values are strings
+  formData: DeployConfigHSGWF; // This now has it's own type and the initialised values are strings
   setFormData: (formData: any) => void;
   isPending: boolean;
 }
@@ -131,7 +131,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     <Formik
       initialValues={formData}
       validationSchema={validationSchema}
-      onSubmit={(values: DeployConfigHSG_String, actions) => {
+      onSubmit={(values: DeployConfigHSGWF, actions) => {
         // e.preventDefault(); - This line is now handled by Formik
 
         // What happens here?

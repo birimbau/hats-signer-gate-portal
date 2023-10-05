@@ -2,25 +2,18 @@ import { VStack, Text, Button } from '@chakra-ui/react';
 import { safe } from '../../../../pages/deploy/hsg';
 import VariableExplanations from './VariableExplainations';
 import TransactionDetails from './TransactionDetails';
-import {
-  DeployConfigHSG_String,
-  DeployConfigMHSG_String,
-} from '../types/forms';
+import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
 import { EthereumAddress } from './ReadForm';
+import { handleConnect } from './connectSafeToHSG';
 
 interface SafeInstructionsProps {
   canAttachSafe: number;
   hsgAddress: EthereumAddress | null;
   connectedAddress: EthereumAddress | undefined;
-  handleConnect: (
-    hsgAddress: EthereumAddress,
-    connectedAddress: EthereumAddress,
-    setIsSuccessTwo: (isSuccess: boolean) => void
-  ) => void;
   safeType: string;
   data: any; // Adjust the type accordingly
   transactionData: any; // Adjust the type accordingly
-  formData: DeployConfigHSG_String | DeployConfigMHSG_String;
+  formData: DeployConfigHSG | DeployConfigMHSG;
   isPending: boolean;
   setIsSuccessTwo: (isSuccess: boolean) => void;
   isSuccessTwo: boolean;
@@ -30,7 +23,6 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
   canAttachSafe,
   hsgAddress,
   connectedAddress,
-  handleConnect,
   safeType,
   data,
   transactionData,
@@ -83,7 +75,12 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
             isDisabled={!connectedAddress}
             onClick={() => {
               if (connectedAddress && hsgAddress) {
-                handleConnect(hsgAddress, connectedAddress, setIsSuccessTwo);
+                handleConnect(
+                  hsgAddress,
+                  connectedAddress,
+                  formData.safe,
+                  setIsSuccessTwo
+                );
               }
             }}
             width={'140px'}

@@ -158,7 +158,6 @@ const HSG = () => {
       canAttachSafe={canAttachSafe}
       hsgAddress={hsgAddress}
       connectedAddress={connectedAddress}
-      handleConnect={handleConnect}
       safeType="HSG" // or "MHSG"
       data={data}
       transactionData={transactionData}

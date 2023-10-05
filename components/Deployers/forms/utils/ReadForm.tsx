@@ -8,7 +8,7 @@ import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import { useSubmitRefetch } from '../../../../hooks/useSubmitRefetch';
-import { DeployConfigHSG, DeployConfigMHSG_String } from '../types/forms';
+import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
 import { safe } from '../../../../pages/deploy/hsg';
 import { useAccount } from 'wagmi';
 
@@ -17,7 +17,7 @@ import { useAccount } from 'wagmi';
 
 interface Props {
   setCanAttachSafe: (value: number) => void;
-  formData: DeployConfigMHSG_String | DeployConfigHSG;
+  formData: DeployConfigHSG | DeployConfigMHSG;
   setFormData: (formData: any) => void;
 }
 

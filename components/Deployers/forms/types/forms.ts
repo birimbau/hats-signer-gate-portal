@@ -10,14 +10,14 @@ export interface DeployConfigHSG_BigInt {
 }
 
 // used to allow the FE to have strings, this is converted
-export interface DeployConfigHSG_String {
+export interface DeployConfigHSGWF {
   _ownerHatId: string;
   _signerHatId: string;
   _minThreshold: string;
   _targetThreshold: string;
   _maxSigners: string;
 }
-export interface DeployConfigMHSG_String {
+export interface DeployConfigMHSG {
   _ownerHatId: string;
   _signersHatIds: string[];
   _safe: EthereumAddress;
