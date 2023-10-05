@@ -7,15 +7,12 @@ import {
   getBlockExplorerUrl,
   getSafeAppUrlPrefix,
 } from '../../../../utils/utils';
-import {
-  DeployConfigHSG_String,
-  DeployConfigMHSG_String,
-} from '../types/forms';
+import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
 
 interface TransactionDetailsProps {
   data: any; // TODO
   transactionData: any; // TODO
-  formData: DeployConfigHSG_String | DeployConfigMHSG_String;
+  formData: DeployConfigHSG | DeployConfigMHSG;
 }
 
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({

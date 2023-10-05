@@ -6,14 +6,14 @@ import ReadForm from '../../../components/Deployers/forms/utils/ReadForm';
 import { useState } from 'react';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
-import { DeployConfigMHSG_String } from '../../../components/Deployers/forms/types/forms';
+import { DeployConfigMHSG } from '../../../components/Deployers/forms/types/forms';
 
 // TODO - APPLY TO THE HSG
 
 const MHSG = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [data, setData] = useState(undefined);
-  const [formData, setFormData] = useState<DeployConfigMHSG_String>({
+  const [formData, setFormData] = useState<DeployConfigMHSG>({
     _ownerHatId: '',
     _signersHatIds: [''],
     _minThreshold: '',

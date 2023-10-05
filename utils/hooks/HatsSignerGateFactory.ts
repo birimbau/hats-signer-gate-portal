@@ -4,7 +4,7 @@ import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSigne
 import { CONTRACTS } from '../constants';
 import {
   DeployConfigHSG,
-  DeployConfigMHSG_String,
+  DeployConfigMHSG,
   HSG_Args,
   MHSG_Args,
 } from '../../components/Deployers/forms/types/forms';
@@ -62,7 +62,7 @@ const useDeployHSGwSafe = (args: {
     },
   });
 
-const useDeployMultiHatSG = (formData: DeployConfigMHSG_String) => {
+const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
   const args: MHSG_Args = {
     _ownerHatId: BigInt(formData._ownerHatId),
     _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),

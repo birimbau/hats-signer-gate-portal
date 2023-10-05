@@ -19,7 +19,7 @@ import { useRefetchWrite } from '../../../../hooks/useRefetchWrite';
 import Button from '../../../UI/CustomButton/CustomButton';
 import MultiInput from '../../../UI/MultiInput/MultiInput';
 import CustomInputWrapper from '../utils/CustomInputWrapper';
-import { DeployConfigMHSG_String } from '../types/forms';
+import { DeployConfigMHSG } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 
 // TODO - Implement blue button selection corrections - get the right state sorted out.
@@ -29,7 +29,7 @@ interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
   setTransactionData: (data: any) => void;
-  formData: DeployConfigMHSG_String;
+  formData: DeployConfigMHSG;
   setFormData: (formData: any) => void;
   isPending: boolean;
 }
@@ -104,7 +104,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
     <Formik
       initialValues={formData}
       validationSchema={validationSchema}
-      onSubmit={(values: DeployConfigMHSG_String, actions) => {
+      onSubmit={(values: DeployConfigMHSG, actions) => {
         // The formData updates state in the parent file -> index.jsx
         setFormData({
           _ownerHatId: values._ownerHatId,
