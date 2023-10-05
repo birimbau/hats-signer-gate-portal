@@ -78,7 +78,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
                 handleConnect(
                   hsgAddress,
                   connectedAddress,
-                  formData.safe,
+                  formData._safe,
                   setIsSuccessTwo
                 );
               }

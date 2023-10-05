@@ -34,7 +34,7 @@ async function connectSafeToHSG(
   });
 
   console.log('inside connectSafeToHSG');
-  console.log('SafeAddress: ', SafeAddress);
+  console.log('SafeAddress: ', safeAddress);
   console.log('existingHSGAddress: ', existingHSGAddress);
   console.log('signerAddress: ', connectedAddress);
   console.log(
@@ -62,7 +62,7 @@ async function connectSafeToHSG(
     // Connects the 'Connected user' to the safe in question so that the user can perform the required actions: 'createEnableModuleTx' & 'createEnableGuardTx'
     safeSdk = await Safe.create({
       ethAdapter,
-      safeAddress: SafeAddress,
+      safeAddress: safeAddress,
     });
     console.log('safeSdk: ', safeSdk);
   } catch (error) {
