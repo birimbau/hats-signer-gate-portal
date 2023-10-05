@@ -25,9 +25,7 @@ const MHSG = () => {
   const [transactionData, setTransactionData] = useState(undefined);
 
   // Use this state for conditional rendering
-  const [canAttachSafe, setCanAttachSafe] = useState<undefined | boolean>(
-    undefined
-  );
+  const [canAttachSafe, setCanAttachSafe] = useState(1);
 
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
@@ -47,7 +45,8 @@ const MHSG = () => {
 
   const headerThree = () => (
     <>
-      {canAttachSafe === false && (
+      {/* {canAttachSafe === false && ( */}
+      {canAttachSafe && (
         <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
           <Text as="b" color="red">
             No the Safe cannot be attached
@@ -55,7 +54,8 @@ const MHSG = () => {
           <Text>{formData._safe}</Text>
         </VStack>
       )}
-      {canAttachSafe === true && (
+      {/* {canAttachSafe === true && ( */}
+      {canAttachSafe && (
         <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
           <Text as="b" color="green">
             Safe can be attached
@@ -98,12 +98,14 @@ const MHSG = () => {
           </Text>
         </VStack>
       )}
-      {canAttachSafe === false && (
+      {/* {canAttachSafe === false && ( */}
+      {canAttachSafe && (
         <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
           <Text>&lt;&lt; Check another safe address</Text>
         </VStack>
       )}
-      {canAttachSafe === true && <VariableExplanations />}
+      {/* // {canAttachSafe === true && <VariableExplanations />} */}
+      {canAttachSafe && <VariableExplanations />}
     </>
   );
 
