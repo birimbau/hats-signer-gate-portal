@@ -23,6 +23,7 @@ interface SafeInstructionsProps {
   formData: DeployConfigHSG_String | DeployConfigMHSG_String;
   isPending: boolean;
   setIsSuccessTwo: (isSuccess: boolean) => void;
+  isSuccessTwo: boolean;
 }
 
 const SafeInstructions: React.FC<SafeInstructionsProps> = ({
@@ -36,6 +37,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
   formData,
   isPending,
   setIsSuccessTwo,
+  isSuccessTwo,
 }) => {
   return (
     <>
@@ -75,7 +77,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
       {canAttachSafe === safe.CAN_ATTACH && !hsgAddress && !isPending && (
         <VariableExplanations />
       )}
-      {canAttachSafe === safe.CAN_ATTACH && hsgAddress && (
+      {canAttachSafe === safe.CAN_ATTACH && hsgAddress && !isSuccessTwo && (
         <>
           <Button
             isDisabled={!connectedAddress}
@@ -90,19 +92,24 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
           </Button>
           <>
             <Text>
-              Two transactions will get batched via multisend, and those
-              transactions will be created on the safe:
+              Now that the {safeType} has successfully been created, it needs to
+              be attached to the Safe via the following batched multisend
+              transaction:
             </Text>
             <Text>Approve the {safeType} address as a module on the Safe.</Text>
             <Text>
               Approve the {safeType} address as the guard on the Safe.
             </Text>
             <br />
-            <Text>Multisig signers must execute these transactions.</Text>
+            <Text>
+              This is a multisig transaction needing the required number of
+              signers to execute. This step initiates the transaction with you
+              as first signer.
+            </Text>
           </>
         </>
       )}
-      {data && !isPending && (
+      {!isPending && isSuccessTwo && (
         <TransactionDetails
           data={data}
           transactionData={transactionData}

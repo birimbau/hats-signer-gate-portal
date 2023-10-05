@@ -6,11 +6,8 @@ import {
   SafeSignature,
 } from '@safe-global/safe-core-sdk-types';
 
-// why don't these populate correctly when i want to import autmatically?
-
-// TODO - console log the data structures of the two things I want to submit.
-// TODO - identify if I should be combining the transactions into one submit. "MultiSend transactions - from Safe docs.
-/// Maybe use "signTransactionHash" instead of the "signTypedData" for EIP-712
+// TODO - revert to a previous version where the batch transaction occured correctly and identify why the current set up is not working!
+// Add error rendering
 
 async function connectSafeToHSG(
   existingHSGAddress: EthereumAddress,
@@ -38,10 +35,22 @@ async function connectSafeToHSG(
   });
 
   console.log('inside connectSafeToHSG');
-  console.log('SafeAddress: ', SafeAddress.substring(0, 8));
-  console.log('existingHSGAddress: ', existingHSGAddress.substring(0, 8));
-  console.log('signerAddress: ', connectedAddress.substring(0, 8));
+  console.log('SafeAddress: ', SafeAddress);
+  console.log('existingHSGAddress: ', existingHSGAddress);
+  console.log('signerAddress: ', connectedAddress);
+  console.log(
+    'SafeAddress HARD: ',
+    '0xc2bd60183b54cc628df709c7a78ec67a7b6dc827'
+  );
+  console.log('existingHSGAddress HARD: ', 'NONE');
+  console.log(
+    'signerAddress HARD: ',
+    '0xc56a789558a0dec88b99c11a887460301d016cf7'
+  );
 
+  // SafeAddress = '0xc2bd60183b54cc628df709c7a78ec67a7b6dc827';
+  // const existingHSGAddress2 = '0x9b61d5b849c51f7df88f3618ef0eb3d5a00bbe27';
+  // const connectedAddress2 = '0xc56a789558a0dec88b99c11a887460301d016cf7';
   if (!connectedAddress) {
     throw new Error('No address connected');
   }
@@ -67,7 +76,10 @@ async function connectSafeToHSG(
     const enableModuleTx = await safeSdk.createEnableModuleTx(
       existingHSGAddress
     );
+    console.log('enableModuleTx: ', enableModuleTx);
+
     const enableGuardTx = await safeSdk.createEnableGuardTx(existingHSGAddress);
+    console.log('enableGuardTx: ', enableGuardTx);
 
     const safeTransactionData: MetaTransactionData[] = [
       {
@@ -83,20 +95,24 @@ async function connectSafeToHSG(
         // you can add operation if needed, but it's optional
       },
     ];
+    console.log('safeTransactionData: ', safeTransactionData);
 
     // 2. Use the `createTransaction` function for MultiSend transactions
     const batchedTransaction = await safeSdk.createTransaction({
       safeTransactionData,
     });
+    console.log('batchedTransaction: ', batchedTransaction);
 
     // 3. Sign the batched transaction
     const signedBatchedTx = await safeSdk.signTransaction(
       batchedTransaction,
       'eth_signTypedData_v4'
     );
+    console.log('signedBatchedTx: ', signedBatchedTx);
 
     // 4. Execute the batched transaction
     const txResponse = await safeSdk.executeTransaction(signedBatchedTx);
+    console.log('txResponse1', txResponse);
     await txResponse.transactionResponse?.wait();
     console.log(
       'Batched transaction executed successfully. Response:',
@@ -160,6 +176,8 @@ export async function handleConnect(
   console.log('inside handleConnect');
   try {
     await connectSafeToHSG(existingHSGAddress, connectedAddress);
+    console.log('successTwo set to TRUE');
+
     setIsSuccessTwo(true);
   } catch (error) {
     if (error instanceof Error) {

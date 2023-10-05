@@ -35,7 +35,8 @@ const HSG = () => {
 
   // This is extracted form the HSG factory response and connected to the existing safe
   const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
-  const [tranOneIsSuccess, setTranOneIsSuccess] = useState(false);
+  const [isSuccessOne, setIsSuccessOne] = useState(false);
+  const [isSuccessTwo, setIsSuccessTwo] = useState(false);
   const [data, setData] = useState(undefined);
   const [transactionData, setTransactionData] = useState(undefined);
 
@@ -59,10 +60,10 @@ const HSG = () => {
       </VStack>
     </>
   );
-  console.log('isPending', isPending);
-  console.log('hsgAddress', hsgAddress);
-  console.log('canAttachSafe', canAttachSafe);
-  console.log('tranOneIsSuccess', tranOneIsSuccess);
+  // console.log('isPending', isPending);
+  // console.log('hsgAddress', hsgAddress);
+  // console.log('canAttachSafe', canAttachSafe);
+  // console.log('isSuccessOne', isSuccessOne);
 
   const headerThree = () => {
     // Initial phases of reading the Safe address
@@ -105,7 +106,7 @@ const HSG = () => {
       );
 
     // Third phase - if a hsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
-    if (hsgAddress && tranOneIsSuccess)
+    if (hsgAddress && isSuccessOne)
       return (
         <SafeAttachMessage
           text="HSG Created"
@@ -115,7 +116,7 @@ const HSG = () => {
       );
 
     // Fourth phase - transaction complete
-    if (tranOneIsSuccess && !isPending)
+    if (isSuccessOne && !isPending)
       return (
         <SafeAttachMessage
           text="Transaction Complete"
@@ -145,7 +146,7 @@ const HSG = () => {
           setFormData={setFormData}
           formData={formData}
           setHsgAddress={setHsgAddress}
-          setTranOneIsSuccess={setTranOneIsSuccess}
+          setIsSuccessOne={setIsSuccessOne}
           setData={setData}
           setTransactionData={setTransactionData}
         />
@@ -163,6 +164,8 @@ const HSG = () => {
       transactionData={transactionData}
       formData={formData}
       isPending={isPending}
+      setIsSuccessTwo={setIsSuccessTwo}
+      isSuccessTwo={isSuccessTwo}
     />
   );
 
