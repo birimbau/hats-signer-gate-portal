@@ -88,7 +88,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
           }
           isDisabled={isLoading}
         />
-        <MultiInput
+        {/* <MultiInput
           values={p.formData._signersHatIds}
           width="372px"
           label="Signer Hat IDs"
@@ -119,7 +119,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
               ),
             });
           }}
-        />
+        /> */}
         <Input
           label="Min Threshold (integer)"
           width="340px"

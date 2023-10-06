@@ -10,9 +10,9 @@ export const CONTRACTS = {
   multiHatsSignerGate: {
     contractAddress: '0xca9d698adb4052ac7751019d69582950b1e42b43',
   },
+  GnosisSafeL2: {
+    contractAddress: '0x3e5c63644e683549055b9be8653de26e0b4cd36e',
+  },
 };
 
-export const SUPPORTED_NETWORKS = {
-  goerli,
-  optimism,
-};
+export const SUPPORTED_NETWORKS = [goerli, optimism];

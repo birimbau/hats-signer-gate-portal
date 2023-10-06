@@ -44,7 +44,8 @@ export const components: ComponentsP = {
       </VStack>
     );
     const contentOne = () => <Deploy />;
-    const contentTwo = () => <HatsSignerGateForm />;
+    const contentTwo = () => <></>; // Removed as the components are successfully developed
+
     return {
       headerOne,
       contentOne,
