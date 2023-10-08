@@ -12,7 +12,11 @@ import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { EthereumAddress } from '../utils/ReadForm';
-import { hatIntSchema } from '../utils/validation';
+import {
+  hatIntSchema,
+  minThresholdValidation,
+  targetThresholdValidation,
+} from '../utils/validation';
 import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 
 interface Props {
@@ -80,38 +84,13 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     },
   });
 
-  // // This only runs if "hash" is defined
-  // // Use this to detect isLoading state in transaction
-  // const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
-  //   hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
-  //   onSuccess(data) {
-  //     const response = decodeEventLog({
-  //       abi: HatsSignerGateFactoryAbi,
-  //       data: data.logs[8].data,
-  //       topics: data.logs[8].topics,
-  //     });
-
-  //     setTransactionData(data);
-  //     setData(response.args);
-  //     console.log('Transaction Success');
-  //   },
-  // });
-
   // Yup Validation Schema is already used in this project.
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
     _signerHatId: hatIntSchema,
-    _minThreshold: hatIntSchema.when('_targetThreshold', {
-      is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
-      then: (hatIntSchema) => hatIntSchema.lessThanTarget(),
-      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
-    }),
-    _targetThreshold: hatIntSchema.when('_maxSigners', {
-      is: (value: any) => Boolean(value && value !== ''), // Checks if _maxSigners has a value
-      then: (hatIntSchema) => hatIntSchema.betweenMinAndMax(),
-      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _maxSigners doesn't have a value
-    }),
+    _minThreshold: minThresholdValidation(hatIntSchema),
+    _targetThreshold: targetThresholdValidation(hatIntSchema),
     _maxSigners: hatIntSchema.greaterThanTarget(),
   });
 
