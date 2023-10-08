@@ -11,6 +11,7 @@ import { getBlockExplorerUrl } from '../../../utils/utils';
 import { useNetwork } from 'wagmi';
 import { DeployConfigHSGWF } from '../../../components/Deployers/forms/types/forms';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
+import { SafeAttachMessage } from '../../../components/Deployers/forms/utils/SafeAttachMessage';
 
 const HSGWF = () => {
   const { chain } = useNetwork();
@@ -38,20 +39,37 @@ const HSGWF = () => {
   );
   const headerThree = () => (
     <>
-      {isPending && <Text as="b">Transaction Pending...</Text>}
-      {data && !isPending && <Text as="b">Transaction Complete</Text>}
+      {isPending && (
+        <SafeAttachMessage
+          text="Transaction pending..."
+          color="black"
+          safeData=""
+        />
+      )}
+      {data && !isPending && (
+        <SafeAttachMessage
+          text="Transaction complete"
+          color="black"
+          safeData=""
+        />
+      )}
     </>
   );
   const contentOne = () => <Deploy active={DEPLOY_ACTIONS.DEPLOY_HSG_W_S} />;
   const contentTwo = () => (
-    <HatsSignerGateAndSafeForm
-      setIsPending={setIsPending}
-      setData={setData}
-      setTransactionData={setTransactionData}
-      formData={formData}
-      setFormData={setFormData}
-      isPending={isPending}
-    />
+    <>
+      {/* Once a successful transaction is complete, remove input fields */}
+      {!data && (
+        <HatsSignerGateAndSafeForm
+          setIsPending={setIsPending}
+          setData={setData}
+          setTransactionData={setTransactionData}
+          formData={formData}
+          setFormData={setFormData}
+          isPending={isPending}
+        />
+      )}
+    </>
   );
 
   const contentThree = () => (

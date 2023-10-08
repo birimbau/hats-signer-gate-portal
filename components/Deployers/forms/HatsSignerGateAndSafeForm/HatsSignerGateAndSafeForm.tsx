@@ -13,6 +13,7 @@ import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { EthereumAddress } from '../utils/ReadForm';
 import { hatIntSchema } from '../utils/validation';
+import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -56,21 +57,45 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   } = useContractWrite(config);
 
   // This only runs if "hash" is defined
-  // Use this to detect isLoading state in transaction
+  // Use this to detect isLoading state in transaction and update user interface
   const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
     onSuccess(data) {
-      const response = decodeEventLog({
-        abi: HatsSignerGateFactoryAbi,
-        data: data.logs[8].data,
-        topics: data.logs[8].topics,
-      });
+      if (data && data.logs && data.logs.length > 8 && data.logs[8]) {
+        const response = decodeEventLog({
+          abi: HatsSignerGateFactoryAbi,
+          data: data.logs[8].data,
+          topics: data.logs[8].topics,
+        });
 
-      setTransactionData(data);
-      setData(response.args);
+        setTransactionData(data);
+        setData(response.args);
+        console.log('Transaction Success');
+      } else {
+        console.error('Unexpected data structure:', data);
+      }
+
+      // setData(response.args);
       console.log('Transaction Success');
     },
   });
+
+  // // This only runs if "hash" is defined
+  // // Use this to detect isLoading state in transaction
+  // const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
+  //   hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
+  //   onSuccess(data) {
+  //     const response = decodeEventLog({
+  //       abi: HatsSignerGateFactoryAbi,
+  //       data: data.logs[8].data,
+  //       topics: data.logs[8].topics,
+  //     });
+
+  //     setTransactionData(data);
+  //     setData(response.args);
+  //     console.log('Transaction Success');
+  //   },
+  // });
 
   // Yup Validation Schema is already used in this project.
   // Custom Validations are in one file for maintainability "validation.tsx"
@@ -187,13 +212,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
             />
 
             <Button
+              leftIcon={<AiOutlineDeploymentUnit />}
               type="submit"
               // Will be grey during submit and after success
               // props.dirty comes from formik and makes the button clickable once values are inputted
               isDisabled={
                 !props.dirty || !isConnected || isPending || isSuccess
               }
-              width={'140px'}
+              paddingInline={'30px'}
             >
               Deploy
             </Button>

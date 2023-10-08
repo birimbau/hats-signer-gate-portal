@@ -12,9 +12,6 @@ import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
 import { safe } from '../../../../pages/deploy/hsg';
 import { useAccount } from 'wagmi';
 
-// TODO - Loading state!!!!!!
-// todo - move the attach button to the correct location = curretnly in HSGform just at the end.
-
 interface Props {
   setCanAttachSafe: (value: number) => void;
   formData: DeployConfigHSG | DeployConfigMHSG;
