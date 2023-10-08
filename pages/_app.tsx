@@ -4,27 +4,51 @@ import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { configureChains, createConfig, WagmiConfig, Connector } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
 import Layout from '../components/Layout/Layout';
 import { WalletConnectionProvider } from '../context/WalletConnectionContext';
 import '../styles/globals.css';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
 
+// import { SafeConnector } from 'wagmi/dist/connectors/safe';
+// declare module '@wagmi/dist/connectors/safe';
+
+// import { SafeConnector } from '@wagmi/connectors/safe';
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  Object.values(SUPPORTED_NETWORKS),
-  [publicProvider()]
+  SUPPORTED_NETWORKS,
+  [
+    // alchemyProvider({ apiKey: 'yourAlchemyApiKey' }), // TODO - ADD ALCHEMY TO PREVENT RATE LIMITING
+    publicProvider(),
+  ]
+  // { stallTimeout: 5000 } // TODO - used to delay time between trying providers
 );
 
+// Every dApp that relies on WalletConnect now needs to obtain a projectId & Name from WalletConnect Cloud.
+// They are for security only.
 const { connectors } = getDefaultWallets({
   appName: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_NAME || '',
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '',
   chains,
 });
 
+// Add Safe Connector for safe-apps-sdk
+let allConnectors: Connector[] = [
+  ...connectors(),
+  // new SafeConnector({
+  //   chains,
+  //   // options: {
+  //   //   allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
+  //   //   debug: false,
+  //   // },
+  // }),
+];
+
 const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
+  // autoConnect: true, // Removed for safe-apps-sdk
+  connectors: allConnectors,
   publicClient,
   webSocketPublicClient,
 });
@@ -49,7 +73,7 @@ const colors = {
 const styles = {
   global: {
     body: {
-      fontFamily: "inter",
+      fontFamily: 'inter',
       fontWeight: 500,
     },
   },

@@ -12,10 +12,7 @@ export const CONTRACTS = {
   },
   GnosisSafeL2: {
     contractAddress: '0x3e5c63644e683549055b9be8653de26e0b4cd36e',
-  }
+  },
 };
 
-export const SUPPORTED_NETWORKS = {
-  goerli,
-  optimism,
-};
+export const SUPPORTED_NETWORKS = [goerli, optimism];

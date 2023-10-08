@@ -9,14 +9,14 @@ import { FiCopy } from 'react-icons/fi';
 import { BsCardList, BsSafe } from 'react-icons/bs';
 import { getBlockExplorerUrl } from '../../../utils/utils';
 import { useNetwork } from 'wagmi';
-import { DeployConfigHSG_String } from '../../../components/Deployers/forms/types/forms';
+import { DeployConfigHSGWF } from '../../../components/Deployers/forms/types/forms';
 import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 
 const HSGWF = () => {
   const { chain } = useNetwork();
   const [isPending, setIsPending] = useState<boolean>(false);
   const [data, setData] = useState(undefined);
-  const [formData, setFormData] = useState<DeployConfigHSG_String>({
+  const [formData, setFormData] = useState<DeployConfigHSGWF>({
     _ownerHatId: '',
     _signerHatId: '',
     _minThreshold: '',

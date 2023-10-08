@@ -7,19 +7,18 @@ import { useDeployHSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
-import { DeployConfigHSG_String } from '../types/forms';
+import { DeployConfigHSGWF } from '../types/forms';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
+import { EthereumAddress } from '../utils/ReadForm';
+import { hatIntSchema } from '../utils/validation';
 
-// TODO - CHECK  if the hash needs to have "0x" at the front of it
-// TODO - Discuss responsive designs / styling (errors/ entry field widths / mobile)
-// TODO - Error handling, print the smart contract error to user display.
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
   setTransactionData: (data: any) => void;
-  formData: DeployConfigHSG_String; // This now has it's own type and the initialised values are strings
+  formData: DeployConfigHSGWF; // This now has it's own type and the initialised values are strings
   setFormData: (formData: any) => void;
   isPending: boolean;
 }
@@ -35,22 +34,26 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
     isPending,
   } = props;
 
-  const [hash, setHash] = useState<`0x${string}` | ''>('');
-
-  // Used only for the useContractWrite, These do NOT update state (Their types would clash)
-  const args = useRef({
-    _ownerHatId: BigInt(0),
-    _signerHatId: BigInt(0),
-    _minThreshold: BigInt(0),
-    _targetThreshold: BigInt(0),
-    _maxSigners: BigInt(0),
-  });
+  const [hash, setHash] = useState<EthereumAddress | ''>('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [refetchNow, setRefetchNow] = useState(false);
 
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const { config } = useDeployHSGwSafe(args.current);
-  const { data: contractData, isLoading, write } = useContractWrite(config);
+  const { config, refetch } = useDeployHSGwSafe({
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signerHatId: BigInt(formData._signerHatId),
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
+  });
+  const {
+    data: contractData,
+    isLoading,
+    write,
+    isError,
+  } = useContractWrite(config);
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction
@@ -70,86 +73,21 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   });
 
   // Yup Validation Schema is already used in this project.
-  // It's usual to use Yup with Formik
-  // These are subject to change if we know more info
+  // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
-    _ownerHatId: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt(),
-    _signerHatId: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt(),
-    _minThreshold: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt()
-      .test(
-        'is-less-than-target',
-        'Min Threshold must be less than or equal to Target Threshold',
-        function (value) {
-          // This checks for the type of value to ensure strings are being used
-          // Serves to guard against undefined values
-          const targetThreshold = this.parent._targetThreshold;
-          if (
-            typeof value === 'string' &&
-            typeof targetThreshold === 'string'
-          ) {
-            return BigInt(value) <= BigInt(targetThreshold);
-          }
-          return this.createError({
-            message: 'Invalid input type',
-          });
-        }
-      ),
-    _targetThreshold: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt()
-      .test(
-        'is-between-min-and-max',
-        'Target Threshold must be between Min Threshold and Max Signers',
-        function (value) {
-          // Serves to guard against undefined values
-          const minThreshold = this.parent._minThreshold;
-          const maxSigners = this.parent._maxSigners;
-          if (
-            typeof value === 'string' &&
-            typeof minThreshold === 'string' &&
-            typeof maxSigners === 'string'
-          ) {
-            return (
-              BigInt(minThreshold) <= BigInt(value) &&
-              BigInt(value) <= BigInt(maxSigners)
-            );
-          }
-          return this.createError({
-            message: 'Invalid input type',
-          });
-        }
-      ),
-    _maxSigners: Yup.string()
-      .required('Required')
-      .max(77, 'Must be 77 characters or less')
-      .bigInt()
-      .test(
-        'is-greater-than-target',
-        'Max Signers must be greater than or equal to Target Threshold',
-        function (value) {
-          // Serves to guard against undefined values
-          const targetThreshold = this.parent._targetThreshold;
-          if (
-            typeof value === 'string' &&
-            typeof targetThreshold === 'string'
-          ) {
-            return BigInt(value) >= BigInt(targetThreshold);
-          }
-          return this.createError({
-            message: 'Invalid input type',
-          });
-        }
-      ),
+    _ownerHatId: hatIntSchema,
+    _signerHatId: hatIntSchema,
+    _minThreshold: hatIntSchema.when('_targetThreshold', {
+      is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
+      then: (hatIntSchema) => hatIntSchema.lessThanTarget(),
+      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
+    }),
+    _targetThreshold: hatIntSchema.when('_maxSigners', {
+      is: (value: any) => Boolean(value && value !== ''), // Checks if _maxSigners has a value
+      then: (hatIntSchema) => hatIntSchema.betweenMinAndMax(),
+      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _maxSigners doesn't have a value
+    }),
+    _maxSigners: hatIntSchema.greaterThanTarget(),
   });
 
   // This is used to update the parent's display status
@@ -158,25 +96,48 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   }, [isLoading, transationPending, setIsPending, hash]);
 
   // The hash changes when the user clicks submit.
-  // This triggers the "Transaction is progress" status
+  // This triggers the "useWaitForTransaction"
   useEffect(() => {
     if (contractData) {
       setHash(contractData.hash);
     }
   }, [contractData]);
+
+  // LOGIC FOR RUNNING CONTRACTS AFTER CLICKING FORMIK'S OnSubmit
+  // This only runs once on user submit, avoiding unnecessary calls to hooks.
+  useEffect(() => {
+    if (isSubmitted) {
+      if (refetchNow) {
+        setRefetchNow(false);
+        refetch();
+      }
+
+      if (write) {
+        setIsSubmitted(false);
+        write?.();
+      }
+    }
+  }, [isSubmitted, refetchNow, refetch, write]);
+
+  // If user aborts transaction, reset status
+  useEffect(() => {
+    setIsSubmitted(false);
+  }, [isError]);
   return (
     // Note: We have to use <Formik> wrapper for error handling
     // ** Be aware that <Field>, <FastField>, <ErrorMessage>, connect(),
     // and <FieldArray> will NOT work with useFormik() as they all require React Context **
 
-    // Formik is going to automagically keep the state of our Form for us
     <Formik
       initialValues={formData}
       validationSchema={validationSchema}
-      onSubmit={(values: DeployConfigHSG_String, actions) => {
+      onSubmit={(values: DeployConfigHSGWF, actions) => {
         // e.preventDefault(); - This line is now handled by Formik
 
-        // Update the data for use in the parent file -> index.jsx
+        // What happens here?
+        //    The formData is updates state in the parent file -> index.jsx,
+        //    this component re-renders, the updated state is used in
+        //    'useDeployHSGwSafe()' and this creates a valid 'write()'.
         setFormData({
           _ownerHatId: values._ownerHatId,
           _signerHatId: values._signerHatId,
@@ -185,60 +146,45 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
           _maxSigners: values._maxSigners,
         });
 
-        args.current = {
-          _ownerHatId: BigInt(values._ownerHatId),
-          _signerHatId: BigInt(values._signerHatId),
-          _minThreshold: BigInt(values._minThreshold),
-          _targetThreshold: BigInt(values._targetThreshold),
-          _maxSigners: BigInt(values._maxSigners),
-        };
-
-        // write has access to the args.current
-        write?.();
+        // This ensures that write() and refetch behave as expected.
+        setIsSubmitted(true);
+        setRefetchNow(true);
       }}
     >
       {(props) => (
         <Form>
           <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_ownerHatId"
-                label="Owner Hat ID (integer)"
-                placeholder="26950000000000000000000000004196..."
-              />
-            </Flex>
+            <CustomInputWrapper
+              name="_ownerHatId"
+              label="Owner Hat ID (integer)"
+              placeholder="26950000000000000000000000004196..."
+              width={80}
+            />
+            <CustomInputWrapper
+              name="_signerHatId"
+              label="Signer Hat ID (integer)"
+              placeholder="26960000000000000000000000003152..."
+              width={80}
+            />
+            <CustomInputWrapper
+              name="_minThreshold"
+              label="Min Threshold (integer)"
+              placeholder="3"
+              width={60}
+            />
+            <CustomInputWrapper
+              name="_targetThreshold"
+              label="Max Threshold (integer)"
+              placeholder="5"
+              width={60}
+            />
 
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_signerHatId"
-                label="Signer Hat ID (integer)"
-                placeholder="26960000000000000000000000003152..."
-              />
-            </Flex>
-
-            <Flex flexDirection={'column'} gap={0} w={'80%'}>
-              <CustomInputWrapper
-                name="_minThreshold"
-                label="Min Threshold (integer)"
-                placeholder="3"
-              />
-            </Flex>
-
-            <Flex flexDirection={'column'} gap={0} w={'60%'}>
-              <CustomInputWrapper
-                name="_targetThreshold"
-                label="Max Threshold (integer)"
-                placeholder="5"
-              />
-            </Flex>
-
-            <Flex flexDirection={'column'} gap={0} w={'60%'}>
-              <CustomInputWrapper
-                name="_maxSigners"
-                label="Max Signers (integer)"
-                placeholder="9"
-              />
-            </Flex>
+            <CustomInputWrapper
+              name="_maxSigners"
+              label="Max Signers (integer)"
+              placeholder="9"
+              width={60}
+            />
 
             <Button
               type="submit"

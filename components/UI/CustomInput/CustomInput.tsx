@@ -17,11 +17,12 @@ type OptionalFieldProps = {
 type P = {
   label?: string;
   extra?: React.ReactNode;
+  multi?: boolean;
 } & InputProps &
   OptionalFieldProps;
 
 const Input: React.FC<P> = (p) => {
-  const { label, width, field, ...rest } = p;
+  const { multi, label, width, field, ...rest } = p;
 
   return (
     <Box display={'flex'} flexDirection="column" width={width || undefined}>
@@ -50,6 +51,7 @@ const Input: React.FC<P> = (p) => {
           placeholdercolor="button.gray"
           background={'gray.50'}
           height={'40px'}
+          width={multi ? '80%' : '100%'}
           _placeholderShown={{
             textOverflow: 'ellipsis',
           }}
