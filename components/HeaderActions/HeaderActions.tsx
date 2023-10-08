@@ -4,7 +4,7 @@ import { AiOutlineDeploymentUnit, AiOutlineSetting } from 'react-icons/ai';
 import { BiBlock } from 'react-icons/bi';
 import { CgUserRemove } from 'react-icons/cg';
 import { LiaCopySolid } from 'react-icons/lia';
-import { LuEdit } from 'react-icons/lu';
+import { LuFileEdit } from 'react-icons/lu';
 import { HEADER_ACTIONS } from '../../context/SelectedActionContext';
 import { useWalletConnectionContext } from '../../context/WalletConnectionContext';
 import Button from '../UI/CustomButton/CustomButton';
@@ -18,7 +18,6 @@ const HeaderActions: React.FC<P> = (p) => {
   const onClickHandler = (action: HEADER_ACTIONS) => {
     router.replace(`/${action.toLowerCase()}`);
   };
-
   return (
     <Flex alignItems='center' height='72px' padding='16px 24px' gap='16px'>
       <Button
@@ -59,7 +58,7 @@ const HeaderActions: React.FC<P> = (p) => {
       <Button
         isDisabled={!isReadyToUse}
         isActive={p.selectedAction === HEADER_ACTIONS.CLAIM}
-        leftIcon={<LuEdit />}
+        leftIcon={<LuFileEdit />}
         onClick={() => onClickHandler(HEADER_ACTIONS.CLAIM)}
       >
         Claim

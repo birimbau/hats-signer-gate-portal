@@ -47,13 +47,13 @@ const useCheckTransaction = (args: {
     },
   });
 
-const useClaimSigner = () =>
+const useClaimSigner = (address?: string) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: address ||  contract,
     functionName: "claimSigner",
-
+    enabled: false,
     onSuccess: (data) => {
       console.log(data);
     },
@@ -184,12 +184,12 @@ const useCountValidSignatures = (args: {
     },
   });
 
-const useGetHatsContract = () =>
+const useGetHatsContract = (address?: string) =>
   useContractRead({
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "getHatsContract",
-
+    enabled: false,
     onSuccess: (data) => {
       console.log(data);
     },

@@ -51,11 +51,11 @@ const useCheckTransaction = (args: {
     args: Array.from(Object.values(args)),
   });
 
-const useClaimSigner = (args: { _hatId: AbiTypeToPrimitiveType<"uint256"> }) =>
+const useClaimSigner = (args: { _hatId: AbiTypeToPrimitiveType<"uint256"> }, address?: string) =>
   usePrepareContractWrite({
     chainId,
     abi: MultiHatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "claimSigner",
     args: Array.from(Object.values(args)),
   });
@@ -161,11 +161,12 @@ const useCountValidSignatures = (args: {
     },
   });
 
-const useGetHatsContract = () =>
+const useGetHatsContract = (address?: string) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "getHatsContract",
+    enabled: false,
     onSuccess: (data) => {
       console.log(data);
     },
@@ -301,15 +302,14 @@ const useValidSignerCount = () =>
 
 const useValidSignerHats = (args: {
   input: AbiTypeToPrimitiveType<"uint256">;
-}) =>
+}, address?: string) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
-    address: contract,
-    functionName: "ValidSignerHats",
+    address: address || contract,
+    functionName: "validSignerHats",
     args: Array.from(Object.values(args)),
-    onSuccess: (data) => {
-      console.log(data);
-    },
+    enabled: false,
+  
     onError: (error) => {
       console.log(error);
     },
