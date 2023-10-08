@@ -20,6 +20,7 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigHSG } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 import { extractHsgAddress } from '../utils/extractHsgAddress';
+import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -29,7 +30,6 @@ interface Props {
   setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
   setIsSuccessOne: (isSuccess: boolean) => void;
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
 }
 
 export default function HatsSignerGateForm(props: Props) {
@@ -42,7 +42,6 @@ export default function HatsSignerGateForm(props: Props) {
     setHsgAddress,
     setIsSuccessOne,
     setData,
-    setTransactionData,
   } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
@@ -75,15 +74,13 @@ export default function HatsSignerGateForm(props: Props) {
           data: data.logs[3].data,
           topics: data.logs[3].topics,
         });
-        // rest of your code
-        setTransactionData(data);
+
         setData(response.args);
         console.log('Transaction Success');
       } else {
         console.error('Unexpected data structure:', data);
       }
 
-      // setTransactionData(data);
       // setData(response.args);
       console.log('Transaction Success');
     },
@@ -186,6 +183,7 @@ export default function HatsSignerGateForm(props: Props) {
               width={60}
             />
             <Button
+              leftIcon={<AiOutlineDeploymentUnit />}
               type="submit"
               // Will be grey during submit and after success
               // props.dirty comes from formik and makes the button clickable once values are inputted
@@ -196,7 +194,7 @@ export default function HatsSignerGateForm(props: Props) {
                 isPending ||
                 isSuccess
               }
-              width={'140px'}
+              paddingInline={'30px'}
             >
               Deploy
             </Button>

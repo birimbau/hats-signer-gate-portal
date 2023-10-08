@@ -26,6 +26,7 @@ const useDeployHSG = (formData: DeployConfigHSG) => {
   };
 
   return usePrepareContractWrite({
+    enabled: false, // This means that the contract does not get called on every render until refetch is called.
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,

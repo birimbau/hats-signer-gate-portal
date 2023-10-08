@@ -84,6 +84,7 @@ function ReadForm(props: Props) {
               type="submit"
               leftIcon={<AiOutlineRead />}
               isDisabled={isLoading || !isConnected}
+              paddingInline={'30px'}
             >
               Read
             </Button>

@@ -1,10 +1,16 @@
-import { VStack, Text, Button } from '@chakra-ui/react';
+import { VStack, Text } from '@chakra-ui/react';
 import { safe } from '../../../../pages/deploy/hsg';
 import VariableExplanations from './VariableExplainations';
 import TransactionDetails from './TransactionDetails';
 import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
 import { EthereumAddress } from './ReadForm';
 import { handleConnect } from './connectSafeToHSG';
+import { AiOutlinePaperClip } from 'react-icons/ai';
+import Button from '../../../UI/CustomButton/CustomButton';
+import { useWaitForTransaction } from 'wagmi';
+import { useEffect, useState } from 'react';
+import { AbiTypeToPrimitiveType } from 'abitype';
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 
 interface SafeInstructionsProps {
   canAttachSafe: number;
@@ -12,11 +18,12 @@ interface SafeInstructionsProps {
   connectedAddress: EthereumAddress | undefined;
   safeType: string;
   data: any; // Adjust the type accordingly
-  transactionData: any; // Adjust the type accordingly
   formData: DeployConfigHSG | DeployConfigMHSG;
   isPending: boolean;
   setIsSuccessTwo: (isSuccess: boolean) => void;
   isSuccessTwo: boolean;
+  setIsPending_HsgAttachSafe: (isSuccess: boolean) => void;
+  isPending_HsgAttachSafe: boolean;
 }
 
 const SafeInstructions: React.FC<SafeInstructionsProps> = ({
@@ -25,12 +32,45 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
   connectedAddress,
   safeType,
   data,
-  transactionData,
   formData,
   isPending,
   setIsSuccessTwo,
   isSuccessTwo,
+  setIsPending_HsgAttachSafe,
+  isPending_HsgAttachSafe,
 }) => {
+  const [transactionHash, setTransactionHash] = useState<string | undefined>(
+    undefined
+  );
+  const [isSigningExecuting, setIsSigningExecuting] = useState(false);
+
+  console.log('transactionHash INSIDE : ', transactionHash);
+
+  const { isSuccess, isLoading, isError } = useWaitForTransaction({
+    hash: transactionHash as AbiTypeToPrimitiveType<'address'>,
+    onSuccess() {
+      console.log('Transaction Successfulll');
+    },
+  });
+
+  // After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
+  useEffect(() => {
+    console.log('isSuccessTwo: ', isSuccess);
+    setIsSuccessTwo(isSuccess);
+  }, [setIsSuccessTwo, isSuccess]);
+
+  // This is used to update the parent's display status
+  useEffect(() => {
+    setIsPending_HsgAttachSafe(isLoading && !!transactionHash);
+  }, [isLoading, setIsPending_HsgAttachSafe, transactionHash]);
+
+  // // This is used to update the parent's display status
+  // useEffect(() => {
+  //   setIsSigningExecuting(false);
+  // }, [isError, setIsSigningExecuting]);
+
+  console.log('!!transactionHash', !!transactionHash);
+
   return (
     <>
       {canAttachSafe === safe.UNSET && (
@@ -72,21 +112,26 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
       {canAttachSafe === safe.CAN_ATTACH && hsgAddress && !isSuccessTwo && (
         <>
           <Button
-            isDisabled={!connectedAddress}
+            leftIcon={<AiOutlinePaperClip />}
+            isDisabled={!connectedAddress || isSigningExecuting}
             onClick={() => {
+              setIsSigningExecuting(true);
               if (connectedAddress && hsgAddress) {
                 handleConnect(
                   hsgAddress,
                   connectedAddress,
                   formData._safe,
-                  setIsSuccessTwo
+                  setTransactionHash,
+                  setIsSigningExecuting
                 );
               }
             }}
-            width={'140px'}
           >
             Attach {safeType} to Safe
           </Button>
+          <br></br>
+          <br></br>
+
           <>
             <Text>
               Now that the {safeType} has successfully been created, it needs to
@@ -106,13 +151,16 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
           </>
         </>
       )}
-      {!isPending && isSuccessTwo && (
-        <TransactionDetails
-          data={data}
-          transactionData={transactionData}
-          formData={formData}
-        />
-      )}
+      {!isPending &&
+        isSuccessTwo &&
+        transactionHash &&
+        !isPending_HsgAttachSafe && (
+          <TransactionDetails
+            data={data}
+            transactionHash={transactionHash}
+            formData={formData}
+          />
+        )}
     </>
   );
 };

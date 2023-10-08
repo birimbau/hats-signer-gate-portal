@@ -1,5 +1,5 @@
 import React from 'react';
-import { VStack, Button, Text } from '@chakra-ui/react';
+import { VStack, Text } from '@chakra-ui/react';
 import { FiCopy } from 'react-icons/fi';
 import { BsCardList, BsSafe } from 'react-icons/bs';
 import { useNetwork } from 'wagmi';
@@ -8,16 +8,17 @@ import {
   getSafeAppUrlPrefix,
 } from '../../../../utils/utils';
 import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
+import Button from '../../../UI/CustomButton/CustomButton';
 
 interface TransactionDetailsProps {
   data: any; // TODO
-  transactionData: any; // TODO
+  transactionHash: string;
   formData: DeployConfigHSG | DeployConfigMHSG;
 }
 
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   data,
-  transactionData,
+  transactionHash,
   formData,
 }) => {
   const { chain } = useNetwork();
@@ -26,12 +27,10 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
     <VStack height="100%" alignItems="flex-start" gap={'24px'}>
       <Button
         leftIcon={<FiCopy />}
+        minWidth={'60%'}
         onClick={() => {
           window.open(
-            `${getBlockExplorerUrl(chain?.id)}/tx/${
-              (transactionData as unknown as { transactionHash: string })
-                .transactionHash
-            }`
+            `${getBlockExplorerUrl(chain?.id)}/tx/${transactionHash}`
           );
         }}
       >
@@ -39,6 +38,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
       </Button>
       <Button
         leftIcon={<BsCardList />}
+        minWidth={'60%'}
         onClick={() => {
           window.open(
             `${getBlockExplorerUrl(chain?.id)}/address/${
@@ -51,6 +51,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
       </Button>
       <Button
         leftIcon={<BsSafe />}
+        minWidth={'60%'}
         onClick={() => {
           window.open(
             `${getSafeAppUrlPrefix(chain?.id)}${

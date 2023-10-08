@@ -24,6 +24,8 @@ export enum safe {
 
 const HSG = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
+  const [isPending_HsgAttachSafe, setIsPending_HsgAttachSafe] =
+    useState<boolean>(false);
   const [formData, setFormData] = useState<DeployConfigHSG>({
     _ownerHatId: '',
     _signerHatId: '',
@@ -64,6 +66,7 @@ const HSG = () => {
   // console.log('hsgAddress', hsgAddress);
   // console.log('canAttachSafe', canAttachSafe);
   // console.log('isSuccessOne', isSuccessOne);
+  console.log('isPending_HsgAttachSafe', isPending_HsgAttachSafe);
 
   const headerThree = () => {
     // Initial phases of reading the Safe address
@@ -106,7 +109,7 @@ const HSG = () => {
       );
 
     // Third phase - if a hsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
-    if (hsgAddress && isSuccessOne)
+    if (hsgAddress && isSuccessOne && !isSuccessTwo && !isPending_HsgAttachSafe)
       return (
         <SafeAttachMessage
           text="HSG Created"
@@ -116,7 +119,16 @@ const HSG = () => {
       );
 
     // Fourth phase - transaction complete
-    if (isSuccessOne && !isPending)
+    if (isPending_HsgAttachSafe && !isSuccessTwo)
+      return (
+        <SafeAttachMessage
+          text="Attaching HSG to Safe..."
+          color="black"
+          safeData=""
+        />
+      );
+    // Fifth phase - transaction complete
+    if (isSuccessTwo && !isPending_HsgAttachSafe)
       return (
         <SafeAttachMessage
           text="Transaction Complete"
@@ -139,7 +151,7 @@ const HSG = () => {
           setFormData={setFormData}
         />
       )}
-      {canAttachSafe === safe.CAN_ATTACH && (
+      {canAttachSafe === safe.CAN_ATTACH && !isSuccessTwo && (
         <HatsSignerGateForm
           setIsPending={setIsPending}
           isPending={isPending}
@@ -148,7 +160,6 @@ const HSG = () => {
           setHsgAddress={setHsgAddress}
           setIsSuccessOne={setIsSuccessOne}
           setData={setData}
-          setTransactionData={setTransactionData}
         />
       )}
     </>
@@ -160,11 +171,12 @@ const HSG = () => {
       connectedAddress={connectedAddress}
       safeType="HSG" // or "MHSG"
       data={data}
-      transactionData={transactionData}
       formData={formData}
       isPending={isPending}
       setIsSuccessTwo={setIsSuccessTwo}
       isSuccessTwo={isSuccessTwo}
+      setIsPending_HsgAttachSafe={setIsPending_HsgAttachSafe}
+      isPending_HsgAttachSafe={isPending_HsgAttachSafe}
     />
   );
 

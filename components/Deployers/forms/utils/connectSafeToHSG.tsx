@@ -3,8 +3,9 @@ import Web3 from 'web3';
 import Safe, { Web3Adapter } from '@safe-global/protocol-kit';
 import {
   MetaTransactionData,
-  SafeSignature,
+  TransactionResult,
 } from '@safe-global/safe-core-sdk-types';
+import { useWaitForTransaction } from 'wagmi';
 
 // TODO - revert to a previous version where the batch transaction occured correctly and identify why the current set up is not working!
 // Add error rendering
@@ -12,8 +13,10 @@ import {
 async function connectSafeToHSG(
   existingHSGAddress: EthereumAddress,
   connectedAddress: EthereumAddress,
-  safeAddress: EthereumAddress
-): Promise<void> {
+  safeAddress: EthereumAddress,
+  setTransactionHash: (transactionHash?: string) => void,
+  setIsSigningExecuting: (isSigningExecuting: boolean) => void
+): Promise<boolean> {
   if (typeof window.ethereum === 'undefined') {
     throw new Error('MetaMask is not installed!');
   }
@@ -67,7 +70,7 @@ async function connectSafeToHSG(
     console.log('safeSdk: ', safeSdk);
   } catch (error) {
     console.error('Error creating Safe instance:', error);
-    return;
+    return false;
   }
 
   try {
@@ -117,8 +120,17 @@ async function connectSafeToHSG(
       'Batched transaction executed successfully. Response:',
       txResponse
     );
+
+    // 5. Pass new data back to parents
+    if (txResponse.hash) setTransactionHash(txResponse.hash);
+
+    return true;
   } catch (error) {
+    // Enables the user to click the submit button again.
+    setIsSigningExecuting(false);
+
     console.error('Error in batched transaction:', error);
+    return false;
   }
 
   // try {
@@ -171,16 +183,31 @@ export async function handleConnect(
   existingHSGAddress: EthereumAddress,
   connectedAddress: EthereumAddress,
   safeAddress: EthereumAddress,
-
-  setIsSuccessTwo: (isSuccess: boolean) => void
+  setTransactionHash: (transactionHash?: string) => void,
+  setIsSigningExecuting: (isSigningExecuting: boolean) => void
 ): Promise<void> {
   console.log('inside handleConnect');
-  try {
-    await connectSafeToHSG(existingHSGAddress, connectedAddress, safeAddress);
-    console.log('successTwo set to TRUE');
 
-    setIsSuccessTwo(true);
+  try {
+    await connectSafeToHSG(
+      existingHSGAddress,
+      connectedAddress,
+      safeAddress,
+      setTransactionHash,
+      setIsSigningExecuting
+    ); // <-- Get the return value (True/False)
+
+    // if (success) {
+    //   console.log('successTwo set to TRUE');
+    // } else {
+    //   console.log('Transaction was not successful');
+    //   // console.log('successTwo set to FALSE');
+    //   // setIsSuccessTwo(false);
+    // }
   } catch (error) {
+    // Enables the user to click the submit button again.
+    setIsSigningExecuting(false);
+
     if (error instanceof Error) {
       console.error('Error connecting Safe to HSG:', error.message);
     } else {
