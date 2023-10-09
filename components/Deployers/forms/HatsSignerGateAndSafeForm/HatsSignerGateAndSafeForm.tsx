@@ -22,7 +22,7 @@ import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
+  setTransactionHash: (data: any) => void;
   formData: DeployConfigHSGWF; // This now has it's own type and the initialised values are strings
   setFormData: (formData: any) => void;
   isPending: boolean;
@@ -33,7 +33,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   const {
     setIsPending,
     setData,
-    setTransactionData,
+    setTransactionHash,
     formData,
     setFormData,
     isPending,
@@ -72,7 +72,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
           topics: data.logs[8].topics,
         });
 
-        setTransactionData(data);
+        setTransactionHash(data);
         setData(response.args);
         console.log('Transaction Success');
       } else {

@@ -4,8 +4,11 @@ import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSigne
 import { CONTRACTS } from '../constants';
 import {
   DeployConfigHSG,
+  DeployConfigHSGWF,
   DeployConfigMHSG,
+  DeployConfigMHSGWF,
   HSG_Args,
+  MHSGWS_Args,
   MHSG_Args,
 } from '../../components/Deployers/forms/types/forms';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
@@ -88,13 +91,14 @@ const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
   });
 };
 
-const useDeployMultiHatSGwSafe = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}) => {
+const useDeployMultiHatSGwSafe = (formData: DeployConfigMHSGWF) => {
+  const args: MHSGWS_Args = {
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
+  };
   return usePrepareContractWrite({
     enabled: false,
     chainId,

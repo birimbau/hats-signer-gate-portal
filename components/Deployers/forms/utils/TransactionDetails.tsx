@@ -7,16 +7,27 @@ import {
   getBlockExplorerUrl,
   getSafeAppUrlPrefix,
 } from '../../../../utils/utils';
-import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
+import {
+  DeployConfigHSG,
+  DeployConfigHSGWF,
+  DeployConfigMHSG,
+  DeployConfigMHSGWF,
+} from '../types/forms';
 import Button from '../../../UI/CustomButton/CustomButton';
 
 interface TransactionDetailsProps {
+  type: string;
   data: any; // TODO
   transactionHash: string;
-  formData: DeployConfigHSG | DeployConfigMHSG;
+  formData:
+    | DeployConfigHSG
+    | DeployConfigHSGWF
+    | DeployConfigMHSG
+    | DeployConfigMHSGWF;
 }
 
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({
+  type,
   data,
   transactionHash,
   formData,
@@ -47,7 +58,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
           );
         }}
       >
-        View HSG Contract
+        View {type} Contract
       </Button>
       <Button
         leftIcon={<BsSafe />}

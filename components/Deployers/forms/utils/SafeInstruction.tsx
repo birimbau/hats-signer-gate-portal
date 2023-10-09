@@ -156,6 +156,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
         transactionHash &&
         !isPending_HsgAttachSafe && (
           <TransactionDetails
+            type={safeType.toUpperCase()}
             data={data}
             transactionHash={transactionHash}
             formData={formData}

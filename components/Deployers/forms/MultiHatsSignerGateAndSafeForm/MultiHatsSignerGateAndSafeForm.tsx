@@ -12,6 +12,7 @@ import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFa
 import { DeployConfigMHSGWF } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 import {
+  arrayOfHatStrings,
   hatIntSchema,
   minThresholdValidation,
   targetThresholdValidation,
@@ -23,10 +24,10 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { Form, Formik } from 'formik';
 
 // TODO - CHANGE THE INPUT OF DATA FOR HSGwF TO SIMPLIFY AND COPY THIS ONE. useDeployMultiHatSG
-
+// TODO - TEST ALL DATA INPUTS TO SEE IF THEY RUN CORRECTLY.
 interface P {
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
+  setTransactionHash: (data: any) => void;
   setFormData: (data: any) => void;
   formData: DeployConfigMHSGWF;
   setIsPending: (isPending: boolean) => void;
@@ -37,7 +38,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
   // Destructure Props for ease of use & visibility within this function
   const {
     setData,
-    setTransactionData,
+    setTransactionHash,
     setFormData,
     formData,
     setIsPending,
@@ -71,7 +72,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
           topics: data.logs[8].topics,
         });
 
-        setTransactionData(data);
+        setTransactionHash(data.transactionHash);
         setData(response.args);
         console.log('Transaction Success');
       } else {
@@ -87,11 +88,12 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
-    _signerHatId: hatIntSchema,
+    _signersHatIds: arrayOfHatStrings,
     _minThreshold: minThresholdValidation(hatIntSchema),
     _targetThreshold: targetThresholdValidation(hatIntSchema),
     _maxSigners: hatIntSchema.greaterThanTarget(),
   });
+
   // This is used to update the parent's display status
   useEffect(() => {
     setIsPending((isLoading || transationPending) && hash !== '');
@@ -134,6 +136,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
       initialValues={formData}
       validationSchema={validationSchema}
       onSubmit={(values: DeployConfigMHSGWF, actions) => {
+        console.log('submit');
         // What happens here?
         //    The formData is updates state in the parent file -> index.jsx,
         //    this component re-renders, the updated state is used in
