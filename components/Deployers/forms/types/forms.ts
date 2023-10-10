@@ -65,3 +65,10 @@ export interface HSG_Args {
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }
+export interface HSGWS_Args {
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+}

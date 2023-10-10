@@ -7,6 +7,7 @@ import {
   DeployConfigHSGWF,
   DeployConfigMHSG,
   DeployConfigMHSGWF,
+  HSGWS_Args,
   HSG_Args,
   MHSGWS_Args,
   MHSG_Args,
@@ -44,14 +45,15 @@ const useDeployHSG = (formData: DeployConfigHSG) => {
   });
 };
 
-const useDeployHSGwSafe = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}) =>
-  usePrepareContractWrite({
+const useDeployHSGwSafe = (formData: DeployConfigHSGWF) => {
+  const args: HSGWS_Args = {
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signerHatId: BigInt(formData._signerHatId),
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
+  };
+  return usePrepareContractWrite({
     enabled: false, // This means that the contract does not get called on every render until refetch is called.
     chainId,
     abi: HatsSignerGateFactoryAbi,
@@ -65,6 +67,7 @@ const useDeployHSGwSafe = (args: {
       console.log(error);
     },
   });
+};
 
 const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
   const args: MHSG_Args = {
