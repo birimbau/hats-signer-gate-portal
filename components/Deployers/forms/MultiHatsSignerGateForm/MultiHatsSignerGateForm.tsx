@@ -93,8 +93,8 @@ export default function MultiHatsSignerGateForm(props: Props) {
       console.log('MhsgContractAddress: ', MhsgContractAddress);
       setMhsgAddress(MhsgContractAddress);
     }
-  }, [transactionData]);
-  console.log('inside hsgForm - render');
+  }, [transactionData, setMhsgAddress]);
+  // console.log('inside hsgForm - render');
 
   const handleFormSubmit = useRefetchWrite({
     write,

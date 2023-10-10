@@ -47,7 +47,7 @@ export const useRefetchWrite = ({
       console.log('inside useRefetchWrite - write()');
       write?.();
     }
-  }, [write, contractPrepared]);
+  }, [write, contractPrepared, submitCount]);
 
   // if the user exits the transaction, allow proper handling of deploy button.
   useEffect(() => {
