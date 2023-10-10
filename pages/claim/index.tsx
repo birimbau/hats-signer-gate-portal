@@ -18,8 +18,8 @@ import HSGMaxThreshold from "../view/components/HSGView/components/MaxThreshold/
 import HSGMinThreshold from "../view/components/HSGView/components/MinThreshold/MinThreshold";
 
 const Claim = () => {
-    const [result, setResult] = useState(undefined);
-    const [address, setAddress] = useState(undefined);
+    const [result, setResult] = useState<undefined | { isHsg: boolean, isMhsg: boolean }>(undefined);
+    const [address, setAddress] = useState<undefined | `0x${string}`>(undefined);
     const [isPending, setIsPending] = useState(false);
     const [transaction, setTransaction] = useState(undefined);
     const { chain } = useNetwork();

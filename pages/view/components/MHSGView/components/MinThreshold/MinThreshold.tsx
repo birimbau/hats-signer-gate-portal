@@ -1,7 +1,7 @@
 import { useMinThreshold } from "../../../../../../utils/hooks/MultiHatsSignerGate";
 
 interface P {
-    address: string;
+    address?: `0x${string}`;
 }
 
 const MinThreshold: React.FC<P> = (p) => {

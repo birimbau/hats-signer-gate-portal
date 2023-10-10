@@ -16,17 +16,17 @@ interface P {
   }: {
     isMhsg: boolean;
     isHsg: boolean;
-  }, address: string) => void;
+  }, address: `0x${string}`) => void;
 }
 
 const CheckHatsContract: React.FC<P> = p => { 
     const [formData, setFormData] = useState({
-        contractAddress: '',
+        contractAddress: '' as `0x${string}`,
       });
 
       // Used to check if its a MHSG
       const { refetch: checkMHSG, isLoading: checkMHSGIsLoading } = useValidSignerHats({
-        input: 0
+        input: BigInt(0)
       }, formData.contractAddress);
 
       // Used to check if its a HSG
@@ -39,7 +39,7 @@ const CheckHatsContract: React.FC<P> = p => {
     return <Formik
       initialValues={formData}
       validationSchema={validationSchema}
-      onSubmit={(values, actions) => {
+      onSubmit={(values) => {
         setFormData(values);
         checkMHSG?.().then((mhsgResult) => {
           if (mhsgResult.data === undefined) {

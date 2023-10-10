@@ -1,7 +1,7 @@
 import { useMaxSigners } from "../../../../../../utils/hooks/HatsSignerGate";
 
 interface P {
-    address: string;
+    address?: string;
 }
 
 const MaxSigners: React.FC<P> = (p) => {

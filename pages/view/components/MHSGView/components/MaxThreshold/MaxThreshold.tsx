@@ -1,7 +1,7 @@
 import { useTargetThreshold } from "../../../../../../utils/hooks/MultiHatsSignerGate";
 
 interface P {
-    address: string;
+    address?: `0x${string}`;
 }
 
 const MaxThreshold: React.FC<P> = (p) => {

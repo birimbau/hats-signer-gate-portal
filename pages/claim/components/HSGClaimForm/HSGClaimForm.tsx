@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 
 interface P {
-    address: string;
+    address?: string;
     onLoading: (value: boolean) => void;
     onTransationComplete: (transation: any) => void;
 }

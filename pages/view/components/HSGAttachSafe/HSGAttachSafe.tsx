@@ -5,9 +5,7 @@ import CustomInputWrapper from '../../../../components/Deployers/forms/utils/Cus
 import Button from '../../../../components/UI/CustomButton/CustomButton';
 import { AiOutlineRead } from 'react-icons/ai';
 import { useIsValidSigner } from '../../../../utils/hooks/HatsSignerGate';
-import { useEffect, useState } from 'react';
-import { useContractWrite } from 'wagmi';
-import { useCanAttachHSG2Safe } from '../../../../utils/hooks/HatsSignerGateFactory';
+import { useState } from 'react';
 
 
 interface P {
@@ -17,7 +15,7 @@ interface P {
 const HSGAttachSafe:React.FC<P> = (p) => {
     const [result, setResult] = useState<any>(null);
     const [formData, setFormData] = useState({
-        _account: '',
+        _account: '' as `0x${string}`,
       });
     
     const validationSchema = Yup.object().shape({
@@ -26,13 +24,11 @@ const HSGAttachSafe:React.FC<P> = (p) => {
     
       const {refetch, data, isLoading, isSuccess} = useIsValidSigner(formData, p.address);
 
-
-
     return <><Formik
     initialValues={{ _account: '' }}
     validationSchema={validationSchema}
     onSubmit={(values) => {
-      setFormData(values);
+      setFormData(values as ({ _account: `0x${string}` }));
       refetch?.().then((data) => {
         setResult(data.data);
       });

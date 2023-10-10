@@ -1,19 +1,14 @@
 import { BsSafe } from "react-icons/bs";
 import Button from "../../../../components/UI/CustomButton/CustomButton";
-import { getBlockExplorerUrl } from "../../../../utils/utils";
 import { useSafe as useHSGSafe } from "../../../../utils/hooks/HatsSignerGate";
 import { useSafe as useMHSGSafe } from "../../../../utils/hooks/MultiHatsSignerGate";
 
 interface P {
-    address: string;
+    address?: `0x${string}`;
     type: "HSG" | "MHSG";
 }
 
-
-
-
 const SafeButton:React.FC<P> = (p) => {
-
     if (p.type === "HSG") { 
         return <HSGSafeButton address={p.address}></HSGSafeButton>
     } else {
@@ -22,7 +17,7 @@ const SafeButton:React.FC<P> = (p) => {
 }
 
 interface HSGSafeButtonP {
-    address: string;
+    address?: `0x${string}`;
 }
 
 const HSGSafeButton: React.FC<HSGSafeButtonP> = p => {

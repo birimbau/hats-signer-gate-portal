@@ -27,7 +27,7 @@ const HSGView: React.FC<P> = (p) => {
             </VStack>
             <VStack alignItems="flex-start"> 
                 <Text as='b'>Safe Address</Text>
-                <a href={`https://app.safe.global/home?safe=gor:${safeData}`} target="_blank">{safeData}</a>
+                <a href={`https://app.safe.global/home?safe=gor:${safeData}`} target="_blank">{safeData as string}</a>
             </VStack>
             <VStack alignItems="flex-start">
                 <Text as='b'>Owner Hat ID</Text>

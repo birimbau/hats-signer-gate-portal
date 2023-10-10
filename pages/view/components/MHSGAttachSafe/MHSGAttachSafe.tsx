@@ -11,13 +11,13 @@ import { useIsValidSigner } from '../../../../utils/hooks/MultiHatsSignerGate';
 
 
 interface P {
-    address: string;
+    address: `0x${string}`;
 }
 
 const MHSGAttachSafe:React.FC<P> = (p) => {
     const [result, setResult] = useState<any>(null);
     const [formData, setFormData] = useState({
-        _account: '',
+        _account: '' as `0x${string}`,
       });
     
     const validationSchema = Yup.object().shape({
@@ -30,7 +30,7 @@ const MHSGAttachSafe:React.FC<P> = (p) => {
     initialValues={{ _account: '' }}
     validationSchema={validationSchema}
     onSubmit={(values) => {
-      setFormData(values);
+      setFormData(values as ({ _account: `0x${string}` }));
       refetch?.().then((data) => {
         setResult(data.data);
       });

@@ -51,7 +51,7 @@ const useCheckTransaction = (args: {
     args: Array.from(Object.values(args)),
   });
 
-const useClaimSigner = (args: { _hatId: AbiTypeToPrimitiveType<"uint256"> }, address?: string) =>
+const useClaimSigner = (args: { _hatId: AbiTypeToPrimitiveType<"uint256"> }, address?: `0x${string}`) =>
   usePrepareContractWrite({
     chainId,
     abi: MultiHatsSignerGateAbi,
@@ -161,7 +161,7 @@ const useCountValidSignatures = (args: {
     },
   });
 
-const useGetHatsContract = (address?: string) =>
+const useGetHatsContract = (address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,
@@ -177,7 +177,7 @@ const useGetHatsContract = (address?: string) =>
 
 const useIsValidSigner = (args: {
   _account: AbiTypeToPrimitiveType<"address">;
-}, address?: string) =>
+}, address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,
@@ -207,7 +207,7 @@ const useIsValidSignerHat = (args: {
     },
   });
 
-const useMaxSigners = (address: string) =>
+const useMaxSigners = (address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,
@@ -220,10 +220,10 @@ const useMaxSigners = (address: string) =>
     },
   });
 
-const useMinThreshold = (address?: string) =>
+const useMinThreshold = (address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "minThreshold",
     onSuccess: (data) => {
       console.log(data);
@@ -233,10 +233,10 @@ const useMinThreshold = (address?: string) =>
     },
   });
 
-const useOwnerHat = () =>
+const useOwnerHat = (address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "ownerHat",
     onSuccess: (data) => {
       console.log(data);
@@ -246,7 +246,7 @@ const useOwnerHat = () =>
     },
   });
 
-const useSafe = (address?: string) =>
+const useSafe = (address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,
@@ -274,7 +274,7 @@ const useSupportsInterface = (args: {
       console.log(error);
     },
   });
-const useTargetThreshold = (address?: string) =>
+const useTargetThreshold = (address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,
@@ -287,7 +287,7 @@ const useTargetThreshold = (address?: string) =>
     },
   });
 
-const useValidSignerCount = (address?: string) =>
+const useValidSignerCount = (address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,
@@ -302,7 +302,7 @@ const useValidSignerCount = (address?: string) =>
 
 const useValidSignerHats = (args: {
   input: AbiTypeToPrimitiveType<"uint256">;
-}, address?: string) =>
+}, address?: `0x${string}`) =>
   useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,

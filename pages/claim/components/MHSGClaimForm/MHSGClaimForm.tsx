@@ -9,7 +9,7 @@ import { VStack } from "@chakra-ui/react";
 import * as Yup from 'yup';
 
 interface P {
-    address: string;
+    address?: `0x${string}`;
     onLoading: (value: boolean) => void;
     onTransationComplete: (transation: any) => void;
 }
