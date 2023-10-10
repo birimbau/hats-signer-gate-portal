@@ -32,6 +32,7 @@ const MHSG = () => {
   const [isSuccessOne, setIsSuccessOne] = useState(false);
   const [isSuccessTwo, setIsSuccessTwo] = useState(false);
   const [data, setData] = useState(undefined);
+  const [safeOwnerAddress, setSafeOwnerAddress] = useState(['']);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
@@ -71,6 +72,14 @@ const MHSG = () => {
             text="This is not a valid safe address"
             color="red"
             safeData={formData._safe}
+          />
+        );
+      } else if (canAttachSafe === safe.WRONG_ADDRESS) {
+        return (
+          <SafeAttachMessage
+            text="You are using the wrong address"
+            color="red"
+            safeData=""
           />
         );
       } else if (canAttachSafe === safe.CAN_ATTACH) {
@@ -136,11 +145,13 @@ const MHSG = () => {
     <>
       {(canAttachSafe === safe.UNSET ||
         canAttachSafe === safe.CANNOT_ATTACH ||
+        canAttachSafe === safe.WRONG_ADDRESS ||
         canAttachSafe === safe.INVALID_ADDRESS) && (
         <ReadForm
           setCanAttachSafe={setCanAttachSafe}
           formData={formData}
           setFormData={setFormData}
+          setSafeOwnerAddress={setSafeOwnerAddress}
         />
       )}
       {canAttachSafe === safe.CAN_ATTACH && !isSuccessTwo && (

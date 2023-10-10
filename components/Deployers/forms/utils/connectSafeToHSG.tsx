@@ -31,29 +31,11 @@ async function connectSafeToHSG(
     signerAddress: accounts[0], // Use the first account from MetaMask
   });
 
-  // console.log('inside connectSafeToHSG');
-  // console.log('SafeAddress: ', safeAddress);
-  // console.log('existingHSGAddress: ', existingHSGAddress);
-  // console.log('signerAddress: ', connectedAddress);
-  // console.log(
-  //   'SafeAddress HARD: ',
-  //   '0xc2bd60183b54cc628df709c7a78ec67a7b6dc827'
-  // );
-  // console.log('existingHSGAddress HARD: ', 'NONE');
-  // console.log(
-  //   'signerAddress HARD: ',
-  //   '0xc56a789558a0dec88b99c11a887460301d016cf7'
-  // );
-
-  // SafeAddress = '0xc2bd60183b54cc628df709c7a78ec67a7b6dc827';
-  // const existingHSGAddress2 = '0x9b61d5b849c51f7df88f3618ef0eb3d5a00bbe27';
-  // const connectedAddress2 = '0xc56a789558a0dec88b99c11a887460301d016cf7';
   if (!connectedAddress) {
     throw new Error('No address connected');
   }
 
   // I need to use the EthersAdapter to connect to the @safe-global/protocol-kit SDK.
-
   // To use 'Ethers' for the EthersAdapter, we must use V5. Because this project uses Ethers V6, I opted for a Web3 implementation instead.
   let safeSdk;
   try {
@@ -127,51 +109,6 @@ async function connectSafeToHSG(
     console.error('Error in batched transaction:', error);
     return false;
   }
-
-  // try {
-  //   const enableModuleTx = await safeSdk.createEnableModuleTx(
-  //     existingHSGAddress
-  //   );
-  //   console.log('enableModuleTx', enableModuleTx);
-
-  //   const signedSafeTx = await safeSdk.signTransaction(
-  //     enableModuleTx,
-  //     'eth_signTypedData_v4'
-  //   );
-  //   console.log('signedSafeTx', signedSafeTx);
-
-  //   const moduleTxResponse = await safeSdk.executeTransaction(signedSafeTx);
-
-  //   await moduleTxResponse.transactionResponse?.wait();
-  //   console.log(
-  //     'Module transaction executed successfully. Response: ',
-  //     moduleTxResponse
-  //   );
-  // } catch (error) {
-  //   console.error('Error in module transaction:', error);
-  // }
-
-  // try {
-  //   const enableGuardTx = await safeSdk.createEnableGuardTx(existingHSGAddress);
-  //   console.log('enableGuardTx', enableGuardTx);
-
-  //   const signedSafeTx = await safeSdk.signTransaction(
-  //     enableGuardTx,
-  //     'eth_signTypedData_v4'
-  //   );
-
-  //   const guardTxResponse = await safeSdk.executeTransaction(signedSafeTx);
-
-  //   console.log('guardTxResponse', guardTxResponse);
-
-  //   await guardTxResponse.transactionResponse?.wait();
-  //   console.log(
-  //     'Guard transaction executed successfully. Response: ',
-  //     guardTxResponse
-  //   );
-  // } catch (error) {
-  //   console.error('Error in guard transaction:', error);
-  // }
 }
 
 export async function handleConnect(
@@ -191,14 +128,6 @@ export async function handleConnect(
       setTransactionHash,
       setIsSigningExecuting
     ); // <-- Get the return value (True/False)
-
-    // if (success) {
-    //   console.log('successTwo set to TRUE');
-    // } else {
-    //   console.log('Transaction was not successful');
-    //   // console.log('successTwo set to FALSE');
-    //   // setIsSuccessTwo(false);
-    // }
   } catch (error) {
     // Enables the user to click the submit button again.
     setIsSigningExecuting(false);
