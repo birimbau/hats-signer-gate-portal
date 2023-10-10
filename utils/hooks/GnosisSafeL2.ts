@@ -1,9 +1,9 @@
 import { AbiTypeToPrimitiveType } from 'abitype';
-import { useContractRead, usePrepareContractWrite } from 'wagmi';
+import { useContractRead } from 'wagmi';
 import { GnosisSafeL2Abi } from '../abi/GnosisSafeL2/GnosisSafeL2';
 import { CONTRACTS } from '../constants';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
-import { start } from 'repl';
+import { safe } from '../../pages/deploy/hsg';
 
 const contract = CONTRACTS.GnosisSafeL2.contractAddress as EthereumAddress;
 const chainId = process.env.ENVIROMENT === 'production' ? 1 : 5;
@@ -45,4 +45,27 @@ const useGetModulesPaginated = (safeAddress: EthereumAddress) => {
   });
 };
 
-export { useGetModulesPaginated };
+const useGetOwners = (safeAddress: EthereumAddress) => {
+  // console.log('safeAddress: ', safeAddress);
+  // useContractRead<TAbi, TFunctionName, TSelectData> - Generic types
+  // ContractResponse is the generic which is passed in
+  return useContractRead<typeof GnosisSafeL2Abi, 'getOwners', ContractResponse>(
+    {
+      abi: GnosisSafeL2Abi,
+      address: safeAddress || contract,
+      functionName: 'getOwners',
+      args: [], // No arguments required for the getOwners function
+      enabled: false,
+      chainId,
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+  // console.log('response.data: ', response.data);
+};
+
+export { useGetModulesPaginated, useGetOwners };

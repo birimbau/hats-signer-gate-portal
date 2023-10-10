@@ -10,7 +10,6 @@ import Button from '../../../UI/CustomButton/CustomButton';
 import { useWaitForTransaction } from 'wagmi';
 import { useEffect, useState } from 'react';
 import { AbiTypeToPrimitiveType } from 'abitype';
-import { ConsoleSqlOutlined } from '@ant-design/icons';
 
 interface SafeInstructionsProps {
   canAttachSafe: number;
@@ -24,6 +23,7 @@ interface SafeInstructionsProps {
   isSuccessTwo: boolean;
   setIsPending_HsgAttachSafe: (isSuccess: boolean) => void;
   isPending_HsgAttachSafe: boolean;
+  ownerArray?: string[];
 }
 
 const SafeInstructions: React.FC<SafeInstructionsProps> = ({
@@ -38,13 +38,12 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
   isSuccessTwo,
   setIsPending_HsgAttachSafe,
   isPending_HsgAttachSafe,
+  ownerArray,
 }) => {
   const [transactionHash, setTransactionHash] = useState<string | undefined>(
     undefined
   );
   const [isSigningExecuting, setIsSigningExecuting] = useState(false);
-
-  console.log('transactionHash INSIDE : ', transactionHash);
 
   const { isSuccess, isLoading, isError } = useWaitForTransaction({
     hash: transactionHash as AbiTypeToPrimitiveType<'address'>,
@@ -55,7 +54,6 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 
   // After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
   useEffect(() => {
-    console.log('isSuccessTwo: ', isSuccess);
     setIsSuccessTwo(isSuccess);
   }, [setIsSuccessTwo, isSuccess]);
 
@@ -68,8 +66,6 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
   // useEffect(() => {
   //   setIsSigningExecuting(false);
   // }, [isError, setIsSigningExecuting]);
-
-  console.log('!!transactionHash', !!transactionHash);
 
   return (
     <>
@@ -94,6 +90,33 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
           <br></br>
 
           <Text>&lt;&lt; Check another safe address</Text>
+        </VStack>
+      )}
+      {canAttachSafe === safe.WRONG_ADDRESS && (
+        <VStack
+          justifyContent="flex-start"
+          height="100%"
+          alignItems="flex-start"
+        >
+          <br></br>
+
+          <Text>
+            You are using the wrong wallet address. You must use the same
+            address that owns the Safe.
+          </Text>
+
+          <Text>Here is a list of the owner(s):</Text>
+
+          {/* Display the owner(s) of the Safe */}
+          {ownerArray && (
+            <ul>
+              {ownerArray.map((str, index) => (
+                <li key={index}>
+                  <Text wordBreak="break-word">{str}</Text>
+                </li>
+              ))}
+            </ul>
+          )}
         </VStack>
       )}
       {canAttachSafe === safe.INVALID_ADDRESS && (

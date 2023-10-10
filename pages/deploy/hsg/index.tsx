@@ -20,6 +20,7 @@ export enum safe {
   INVALID_ADDRESS = 2,
   CANNOT_ATTACH = 3,
   CAN_ATTACH = 4,
+  WRONG_ADDRESS = 5,
 }
 
 const HSG = () => {
@@ -41,6 +42,7 @@ const HSG = () => {
   const [isSuccessOne, setIsSuccessOne] = useState(false);
   const [isSuccessTwo, setIsSuccessTwo] = useState(false);
   const [data, setData] = useState(undefined);
+  const [safeOwnerAddress, setSafeOwnerAddress] = useState(['']);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
@@ -85,6 +87,14 @@ const HSG = () => {
             text="This is not a valid safe address"
             color="red"
             safeData={formData._safe}
+          />
+        );
+      } else if (canAttachSafe === safe.WRONG_ADDRESS) {
+        return (
+          <SafeAttachMessage
+            text="You are using the wrong address"
+            color="red"
+            safeData=""
           />
         );
       } else if (canAttachSafe === safe.CAN_ATTACH) {
@@ -142,13 +152,16 @@ const HSG = () => {
   const contentOne = () => <Deploy active={DEPLOY_ACTIONS.DEPLOY_HSG} />;
   const contentTwo = () => (
     <>
+      {/* {canAttachSafe === !safe.CAN_ATTACH */}
       {(canAttachSafe === safe.UNSET ||
         canAttachSafe === safe.CANNOT_ATTACH ||
+        canAttachSafe === safe.WRONG_ADDRESS ||
         canAttachSafe === safe.INVALID_ADDRESS) && (
         <ReadForm
           setCanAttachSafe={setCanAttachSafe}
           formData={formData}
           setFormData={setFormData}
+          setSafeOwnerAddress={setSafeOwnerAddress}
         />
       )}
       {canAttachSafe === safe.CAN_ATTACH && !isSuccessTwo && (
@@ -177,6 +190,7 @@ const HSG = () => {
       isSuccessTwo={isSuccessTwo}
       setIsPending_HsgAttachSafe={setIsPending_HsgAttachSafe}
       isPending_HsgAttachSafe={isPending_HsgAttachSafe}
+      ownerArray={safeOwnerAddress}
     />
   );
 

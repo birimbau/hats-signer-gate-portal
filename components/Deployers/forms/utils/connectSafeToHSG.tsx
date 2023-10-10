@@ -1,13 +1,8 @@
 import { EthereumAddress } from './ReadForm';
 import Web3 from 'web3';
 import Safe, { Web3Adapter } from '@safe-global/protocol-kit';
-import {
-  MetaTransactionData,
-  TransactionResult,
-} from '@safe-global/safe-core-sdk-types';
-import { useWaitForTransaction } from 'wagmi';
+import { MetaTransactionData } from '@safe-global/safe-core-sdk-types';
 
-// TODO - revert to a previous version where the batch transaction occured correctly and identify why the current set up is not working!
 // Add error rendering
 
 async function connectSafeToHSG(
@@ -36,19 +31,19 @@ async function connectSafeToHSG(
     signerAddress: accounts[0], // Use the first account from MetaMask
   });
 
-  console.log('inside connectSafeToHSG');
-  console.log('SafeAddress: ', safeAddress);
-  console.log('existingHSGAddress: ', existingHSGAddress);
-  console.log('signerAddress: ', connectedAddress);
-  console.log(
-    'SafeAddress HARD: ',
-    '0xc2bd60183b54cc628df709c7a78ec67a7b6dc827'
-  );
-  console.log('existingHSGAddress HARD: ', 'NONE');
-  console.log(
-    'signerAddress HARD: ',
-    '0xc56a789558a0dec88b99c11a887460301d016cf7'
-  );
+  // console.log('inside connectSafeToHSG');
+  // console.log('SafeAddress: ', safeAddress);
+  // console.log('existingHSGAddress: ', existingHSGAddress);
+  // console.log('signerAddress: ', connectedAddress);
+  // console.log(
+  //   'SafeAddress HARD: ',
+  //   '0xc2bd60183b54cc628df709c7a78ec67a7b6dc827'
+  // );
+  // console.log('existingHSGAddress HARD: ', 'NONE');
+  // console.log(
+  //   'signerAddress HARD: ',
+  //   '0xc56a789558a0dec88b99c11a887460301d016cf7'
+  // );
 
   // SafeAddress = '0xc2bd60183b54cc628df709c7a78ec67a7b6dc827';
   // const existingHSGAddress2 = '0x9b61d5b849c51f7df88f3618ef0eb3d5a00bbe27';
