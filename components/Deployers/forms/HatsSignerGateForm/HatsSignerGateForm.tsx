@@ -20,6 +20,7 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigHSG } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 import { extractHsgAddress } from '../utils/extractHsgAddress';
+import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
@@ -29,7 +30,6 @@ interface Props {
   setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
   setIsSuccessOne: (isSuccess: boolean) => void;
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
 }
 
 export default function HatsSignerGateForm(props: Props) {
@@ -42,7 +42,6 @@ export default function HatsSignerGateForm(props: Props) {
     setHsgAddress,
     setIsSuccessOne,
     setData,
-    setTransactionData,
   } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
@@ -52,13 +51,18 @@ export default function HatsSignerGateForm(props: Props) {
 
   // console.log('inside hsgForm - formData: ', formData);
 
-  const { config, refetch } = useDeployHSG(formData);
+  const {
+    config,
+    refetch,
+    isSuccess: contractPrepared,
+  } = useDeployHSG(formData);
   const {
     data: contractData,
     isLoading,
     write,
     isError,
   } = useContractWrite(config);
+  console.log(contractData?.hash);
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction and update user interface
@@ -75,15 +79,13 @@ export default function HatsSignerGateForm(props: Props) {
           data: data.logs[3].data,
           topics: data.logs[3].topics,
         });
-        // rest of your code
-        setTransactionData(data);
+
         setData(response.args);
         console.log('Transaction Success');
       } else {
         console.error('Unexpected data structure:', data);
       }
 
-      // setTransactionData(data);
       // setData(response.args);
       console.log('Transaction Success');
     },
@@ -97,9 +99,14 @@ export default function HatsSignerGateForm(props: Props) {
       setHsgAddress(HsgContractAddress);
     }
   }, [transactionData]);
-  // console.log('inside hsgForm - render');
+  console.log('HatsSignerGateForm - render');
 
-  const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
+  const handleFormSubmit = useRefetchWrite({
+    write,
+    refetch,
+    isError,
+    contractPrepared,
+  });
 
   // This is used to update the parent's display status
   useEffect(() => {
@@ -145,6 +152,8 @@ export default function HatsSignerGateForm(props: Props) {
           _targetThreshold: values._targetThreshold,
           _maxSigners: values._maxSigners,
         });
+        console.log('Submit');
+
         handleFormSubmit();
       }}
     >
@@ -186,6 +195,7 @@ export default function HatsSignerGateForm(props: Props) {
               width={60}
             />
             <Button
+              leftIcon={<AiOutlineDeploymentUnit />}
               type="submit"
               // Will be grey during submit and after success
               // props.dirty comes from formik and makes the button clickable once values are inputted
@@ -196,7 +206,7 @@ export default function HatsSignerGateForm(props: Props) {
                 isPending ||
                 isSuccess
               }
-              width={'140px'}
+              paddingInline={'30px'}
             >
               Deploy
             </Button>

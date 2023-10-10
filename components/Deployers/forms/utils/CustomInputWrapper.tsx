@@ -19,11 +19,15 @@ const CustomInputWrapper: React.FC<CustomFieldProps> = ({
   width = 80,
 }) => {
   return (
-    <Flex flexDirection={'column'} gap={0} w={`${width}%`}>
-      <Field name={name}>
+    <Flex flexDirection={'column'} gap={0} width={'100%'}>
+      <Field name={name} width={'100%'}>
         {({ field, form }: FieldProps) => (
-          <FormControl isInvalid={!!(form.errors[name] && form.touched[name])}>
+          <FormControl
+            isInvalid={!!(form.errors[name] && form.touched[name])}
+            width={'100%'}
+          >
             <Input
+              width={`${width}%`}
               label={label}
               placeholder={placeholder}
               field={field}

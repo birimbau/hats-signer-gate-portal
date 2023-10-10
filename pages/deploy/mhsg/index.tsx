@@ -2,17 +2,21 @@ import { VStack, Text } from '@chakra-ui/react';
 import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
 import MainContent from '../../../components/MainContent/MainContent';
 import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
-import ReadForm from '../../../components/Deployers/forms/utils/ReadForm';
+import ReadForm, {
+  EthereumAddress,
+} from '../../../components/Deployers/forms/utils/ReadForm';
 import { useState } from 'react';
-import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 import { DeployConfigMHSG } from '../../../components/Deployers/forms/types/forms';
-
-// TODO - APPLY TO THE HSG
+import { safe } from '../hsg';
+import { SafeAttachMessage } from '../../../components/Deployers/forms/utils/SafeAttachMessage';
+import SafeInstructions from '../../../components/Deployers/forms/utils/SafeInstruction';
+import { useAccount } from 'wagmi';
 
 const MHSG = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
-  const [data, setData] = useState(undefined);
+  const [isPending_HsgAttachSafe, setIsPending_HsgAttachSafe] =
+    useState<boolean>(false);
   const [formData, setFormData] = useState<DeployConfigMHSG>({
     _ownerHatId: '',
     _signersHatIds: [''],
@@ -22,10 +26,18 @@ const MHSG = () => {
     _safe: '0x',
   });
 
-  const [transactionData, setTransactionData] = useState(undefined);
+  // This is extracted form the HSG factory response and connected to the existing safe
+  const [mhsgAddress, setMhsgAddress] = useState<EthereumAddress | null>(null);
+
+  const [isSuccessOne, setIsSuccessOne] = useState(false);
+  const [isSuccessTwo, setIsSuccessTwo] = useState(false);
+  const [data, setData] = useState(undefined);
+  const [safeOwnerAddress, setSafeOwnerAddress] = useState(['']);
 
   // Use this state for conditional rendering
-  const [canAttachSafe, setCanAttachSafe] = useState(1);
+  const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
+
+  const { address: connectedAddress } = useAccount();
 
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
@@ -43,70 +55,133 @@ const MHSG = () => {
     </>
   );
 
-  const headerThree = () => (
-    <>
-      {/* {canAttachSafe === false && ( */}
-      {canAttachSafe && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text as="b" color="red">
-            No the Safe cannot be attached
-          </Text>
-          <Text>{formData._safe}</Text>
-        </VStack>
-      )}
-      {/* {canAttachSafe === true && ( */}
-      {canAttachSafe && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text as="b" color="green">
-            Safe can be attached
-          </Text>
-          <Text>{formData._safe}</Text>
-        </VStack>
-      )}
-    </>
-  );
+  const headerThree = () => {
+    // Initial phases of reading the Safe address
+    if (!isPending && !mhsgAddress) {
+      if (canAttachSafe === safe.CANNOT_ATTACH) {
+        return (
+          <SafeAttachMessage
+            text="This safe cannot be attached"
+            color="red"
+            safeData={formData._safe}
+          />
+        );
+      } else if (canAttachSafe === safe.INVALID_ADDRESS) {
+        return (
+          <SafeAttachMessage
+            text="This is not a valid safe address"
+            color="red"
+            safeData={formData._safe}
+          />
+        );
+      } else if (canAttachSafe === safe.WRONG_ADDRESS) {
+        return (
+          <SafeAttachMessage
+            text="You are using the wrong address"
+            color="red"
+            safeData=""
+          />
+        );
+      } else if (canAttachSafe === safe.CAN_ATTACH) {
+        return (
+          <SafeAttachMessage
+            text="Safe can be attached"
+            color="green"
+            safeData={formData._safe}
+          />
+        );
+      }
+    }
+
+    // Secondary phase, during transaction
+    if (isPending && !mhsgAddress)
+      return (
+        <SafeAttachMessage
+          text="Transaction pending..."
+          color="black"
+          safeData=""
+        />
+      );
+
+    // Third phase - if a mhsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
+    if (
+      mhsgAddress &&
+      isSuccessOne &&
+      !isSuccessTwo &&
+      !isPending_HsgAttachSafe
+    )
+      return (
+        <SafeAttachMessage
+          text="HSG Created"
+          color="black"
+          safeData='Click "Attach HSG to Safe"'
+        />
+      );
+
+    // Fourth phase - transaction complete
+    if (isPending_HsgAttachSafe && !isSuccessTwo)
+      return (
+        <SafeAttachMessage
+          text="Attaching HSG to Safe..."
+          color="black"
+          safeData=""
+        />
+      );
+    // Fifth phase - transaction complete
+    if (isSuccessTwo && !isPending_HsgAttachSafe)
+      return (
+        <SafeAttachMessage
+          text="Transaction Complete"
+          color="black"
+          safeData=""
+        />
+      );
+
+    return null; // Default return if none of the conditions above are met
+  };
 
   const contentOne = () => <Deploy active={DEPLOY_ACTIONS.DEPLOY_MHSG} />;
   const contentTwo = () => (
     <>
-      {!canAttachSafe && (
+      {(canAttachSafe === safe.UNSET ||
+        canAttachSafe === safe.CANNOT_ATTACH ||
+        canAttachSafe === safe.WRONG_ADDRESS ||
+        canAttachSafe === safe.INVALID_ADDRESS) && (
         <ReadForm
           setCanAttachSafe={setCanAttachSafe}
           formData={formData}
           setFormData={setFormData}
+          setSafeOwnerAddress={setSafeOwnerAddress}
         />
       )}
-      {canAttachSafe && (
+      {canAttachSafe === safe.CAN_ATTACH && !isSuccessTwo && (
         <MultiHatsSignerGateForm
           setIsPending={setIsPending}
-          setData={setData}
-          setTransactionData={setTransactionData}
-          formData={formData}
-          setFormData={setFormData}
           isPending={isPending}
+          setFormData={setFormData}
+          formData={formData}
+          setMhsgAddress={setMhsgAddress}
+          setIsSuccessOne={setIsSuccessOne}
+          setData={setData}
+          // setTransactionHash={setTransactionHash}
         />
       )}
     </>
   );
   const contentThree = () => (
-    <>
-      {canAttachSafe === undefined && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text>
-            This step will check if your existing safe can be attached to the
-            MHSG you are creating.
-          </Text>
-        </VStack>
-      )}
-      {/* {canAttachSafe === false && ( */}
-      {canAttachSafe && (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text>&lt;&lt; Check another safe address</Text>
-        </VStack>
-      )}
-      {/* // {canAttachSafe === true && <VariableExplanations />} */}
-      {canAttachSafe && <VariableExplanations />}
-    </>
+    <SafeInstructions
+      canAttachSafe={canAttachSafe}
+      hsgAddress={mhsgAddress}
+      connectedAddress={connectedAddress}
+      safeType="MHSG"
+      data={data}
+      formData={formData}
+      isPending={isPending}
+      setIsSuccessTwo={setIsSuccessTwo}
+      isSuccessTwo={isSuccessTwo}
+      setIsPending_HsgAttachSafe={setIsPending_HsgAttachSafe}
+      isPending_HsgAttachSafe={isPending_HsgAttachSafe}
+    />
   );
 
   return (

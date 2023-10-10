@@ -12,12 +12,17 @@ import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { EthereumAddress } from '../utils/ReadForm';
-import { hatIntSchema } from '../utils/validation';
+import {
+  hatIntSchema,
+  minThresholdValidation,
+  targetThresholdValidation,
+} from '../utils/validation';
+import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
+  setTransactionHash: (data: any) => void;
   formData: DeployConfigHSGWF; // This now has it's own type and the initialised values are strings
   setFormData: (formData: any) => void;
   isPending: boolean;
@@ -28,7 +33,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   const {
     setIsPending,
     setData,
-    setTransactionData,
+    setTransactionHash,
     formData,
     setFormData,
     isPending,
@@ -56,18 +61,25 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   } = useContractWrite(config);
 
   // This only runs if "hash" is defined
-  // Use this to detect isLoading state in transaction
+  // Use this to detect isLoading state in transaction and update user interface
   const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
     onSuccess(data) {
-      const response = decodeEventLog({
-        abi: HatsSignerGateFactoryAbi,
-        data: data.logs[8].data,
-        topics: data.logs[8].topics,
-      });
+      if (data && data.logs && data.logs.length > 8 && data.logs[8]) {
+        const response = decodeEventLog({
+          abi: HatsSignerGateFactoryAbi,
+          data: data.logs[8].data,
+          topics: data.logs[8].topics,
+        });
 
-      setTransactionData(data);
-      setData(response.args);
+        setTransactionHash(data);
+        setData(response.args);
+        console.log('Transaction Success');
+      } else {
+        console.error('Unexpected data structure:', data);
+      }
+
+      // setData(response.args);
       console.log('Transaction Success');
     },
   });
@@ -77,16 +89,8 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   const validationSchema = Yup.object().shape({
     _ownerHatId: hatIntSchema,
     _signerHatId: hatIntSchema,
-    _minThreshold: hatIntSchema.when('_targetThreshold', {
-      is: (value: any) => Boolean(value && value !== ''), // Checks if _targetThreshold has a value
-      then: (hatIntSchema) => hatIntSchema.lessThanTarget(),
-      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _targetThreshold doesn't have a value
-    }),
-    _targetThreshold: hatIntSchema.when('_maxSigners', {
-      is: (value: any) => Boolean(value && value !== ''), // Checks if _maxSigners has a value
-      then: (hatIntSchema) => hatIntSchema.betweenMinAndMax(),
-      otherwise: (hatIntSchema) => hatIntSchema, // Fallback to the default schema if _maxSigners doesn't have a value
-    }),
+    _minThreshold: minThresholdValidation(hatIntSchema),
+    _targetThreshold: targetThresholdValidation(hatIntSchema),
     _maxSigners: hatIntSchema.greaterThanTarget(),
   });
 
@@ -187,13 +191,14 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
             />
 
             <Button
+              leftIcon={<AiOutlineDeploymentUnit />}
               type="submit"
               // Will be grey during submit and after success
               // props.dirty comes from formik and makes the button clickable once values are inputted
               isDisabled={
                 !props.dirty || !isConnected || isPending || isSuccess
               }
-              width={'140px'}
+              paddingInline={'30px'}
             >
               Deploy
             </Button>
