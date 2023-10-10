@@ -1,11 +1,9 @@
 import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { useEffect, useRef, useState } from 'react';
-import { BsPen } from 'react-icons/bs';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { useDeployMultiHatSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import Button from '../../../UI/CustomButton/CustomButton';
-import Input from '../../../UI/CustomInput/CustomInput';
 import MultiInput from '../../../UI/MultiInput/MultiInput';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
@@ -23,8 +21,6 @@ import { AiOutlineDeploymentUnit } from 'react-icons/ai';
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { Form, Formik } from 'formik';
 
-// TODO - CHANGE THE INPUT OF DATA FOR HSGwF TO SIMPLIFY AND COPY THIS ONE. useDeployMultiHatSG
-// TODO - TEST ALL DATA INPUTS TO SEE IF THEY RUN CORRECTLY.
 interface P {
   setData: (data: any) => void;
   setTransactionHash: (data: any) => void;
@@ -136,7 +132,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
       initialValues={formData}
       validationSchema={validationSchema}
       onSubmit={(values: DeployConfigMHSGWF, actions) => {
-        console.log('submit');
+        // console.log('submit');
         // What happens here?
         //    The formData is updates state in the parent file -> index.jsx,
         //    this component re-renders, the updated state is used in
@@ -207,92 +203,6 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
       )}
     </Formik>
   );
-  //   return (
-  //     <form onSubmit={onSubmit} noValidate>
-  //       <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
-  //         <Input
-  //           label="Owner Hat ID (integer)"
-  //           placeholder="26950000000000000000000000004196..."
-  //           name="_ownerHatId"
-  //           value={p.formData._ownerHatId}
-  //           width="340px"
-  //           onChange={(e) =>
-  //             p.setFormData({ ...p.formData, _ownerHatId: e.target.value })
-  //           }
-  //           isDisabled={isLoading}
-  //         />
-
-  //         {/* <MultiInput
-  //           values={p.formData._signersHatIds}
-  //           width="372px"
-  //           label="Signer Hat IDs"
-  //           name="_signersHatIds"
-  //           countLabel="Id"
-  //           placeholder="26960000000000000000000000003152..."
-  //           onChange={(_value, index, e) => {
-  //             p.setFormData({
-  //               ...p.formData,
-  //               _signersHatIds: p.formData._signersHatIds.map(
-  //                 (v: string, i: number) => {
-  //                   return i === index ? e.target.value : v;
-  //                 }
-  //               ),
-  //             });
-  //           }}
-  //           onClickAdd={(value, _index) => {
-  //             p.setFormData({
-  //               ...p.formData,
-  //               _signersHatIds: [...p.formData._signersHatIds, ''],
-  //             });
-  //           }}
-  //           onClickRemove={(_value, index) => {
-  //             p.setFormData({
-  //               ...p.formData,
-  //               _signersHatIds: p.formData._signersHatIds.filter(
-  //                 (_v: string, i: number) => i !== index
-  //               ),
-  //             });
-  //           }}
-  //         /> */}
-  //         <Input
-  //           label="Min Threshold (integer)"
-  //           width="340px"
-  //           placeholder="3"
-  //           name="_minThreshold"
-  //           value={p.formData._minThreshold}
-  //           onChange={(e) =>
-  //             p.setFormData({ ...p.formData, _minThreshold: e.target.value })
-  //           }
-  //           isDisabled={isLoading}
-  //         />
-  //         <Input
-  //           label="Max Threshold (integer)"
-  //           width="340px"
-  //           placeholder="5"
-  //           name="_targetThreshold"
-  //           value={p.formData._targetThreshold}
-  //           onChange={(e) =>
-  //             p.setFormData({ ...p.formData, _targetThreshold: e.target.value })
-  //           }
-  //           isDisabled={isLoading}
-  //         />
-  //         <Input
-  //           label="Max Signers (integer)"
-  //           width="340px"
-  //           placeholder="9"
-  //           name="_maxSigners"
-  //           value={p.formData._maxSigners}
-  //           onChange={(e) =>
-  //             p.setFormData({ ...p.formData, _maxSigners: e.target.value })
-  //           }
-  //           isDisabled={isLoading}
-  //         />
-  //         <Button isDisabled={isLoading} type="submit" leftIcon={<BsPen />}>
-  //           Write
-  //         </Button>
-  //       </VStack>
-  //     </form>
-  //   );
 };
 
 export default MultiHatsSignerGateAndSafeForm;

@@ -46,13 +46,8 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const { config, refetch } = useDeployHSGwSafe({
-    _ownerHatId: BigInt(formData._ownerHatId),
-    _signerHatId: BigInt(formData._signerHatId),
-    _minThreshold: BigInt(formData._minThreshold),
-    _targetThreshold: BigInt(formData._targetThreshold),
-    _maxSigners: BigInt(formData._maxSigners),
-  });
+  const { config, refetch } = useDeployHSGwSafe(formData);
+
   const {
     data: contractData,
     isLoading,

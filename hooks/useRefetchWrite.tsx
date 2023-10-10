@@ -26,14 +26,14 @@ export const useRefetchWrite = ({
   const submitRef = useRef(false);
   const writeRef = useRef(false);
   const [submitCount, setSubmitCount] = useState(0);
-  console.log('inside useRefetchWrite');
+  // console.log('inside useRefetchWrite');
 
   // onSubmit, call refetch() so write can update
   useEffect(() => {
     if (submitRef.current) {
       submitRef.current = false;
       writeRef.current = true;
-      console.log('inside useRefetchWrite - refetch()');
+      // console.log('inside useRefetchWrite - refetch()');
 
       refetch();
       setSubmitCount((prevCount) => prevCount + 1);
@@ -44,21 +44,21 @@ export const useRefetchWrite = ({
   useEffect(() => {
     if (writeRef.current && contractPrepared) {
       writeRef.current = false;
-      console.log('inside useRefetchWrite - write()');
+      // console.log('inside useRefetchWrite - write()');
       write?.();
     }
-  }, [write, contractPrepared]);
+  }, [write, contractPrepared, submitCount]);
 
   // if the user exits the transaction, allow proper handling of deploy button.
   useEffect(() => {
     if (isError) {
-      console.log('inside useRefetchWrite - error');
+      // console.log('inside useRefetchWrite - error');
       submitRef.current = false;
     }
   }, [isError]);
 
   const handleFormSubmit = () => {
-    console.log('inside handleFormSubmit function (increase setSubmitCount)');
+    // console.log('inside handleFormSubmit function (increase setSubmitCount)');
     submitRef.current = true;
     setSubmitCount((prevCount) => prevCount + 1);
   };

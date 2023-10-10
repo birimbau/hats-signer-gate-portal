@@ -1,4 +1,4 @@
-import { VStack, Text, Button } from '@chakra-ui/react';
+import { VStack, Text } from '@chakra-ui/react';
 import Deploy from '../../../components/MainContent/components/Deploy/Deploy';
 import MainContent from '../../../components/MainContent/MainContent';
 import { DEPLOY_ACTIONS } from '../../../context/DeployContext';
@@ -6,13 +6,10 @@ import ReadForm, {
   EthereumAddress,
 } from '../../../components/Deployers/forms/utils/ReadForm';
 import { useState } from 'react';
-import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 import { DeployConfigHSG } from '../../../components/Deployers/forms/types/forms';
 import HatsSignerGateForm from '../../../components/Deployers/forms/HatsSignerGateForm/HatsSignerGateForm';
 import { SafeAttachMessage } from '../../../components/Deployers/forms/utils/SafeAttachMessage';
 import { useAccount } from 'wagmi';
-import { handleConnect } from '../../../components/Deployers/forms/utils/connectSafeToHSG';
-import TransactionDetails from '../../../components/Deployers/forms/utils/TransactionDetails';
 import SafeInstructions from '../../../components/Deployers/forms/utils/SafeInstruction';
 
 export enum safe {

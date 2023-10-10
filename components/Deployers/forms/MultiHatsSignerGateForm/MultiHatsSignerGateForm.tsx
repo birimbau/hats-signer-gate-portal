@@ -64,7 +64,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
     isError,
   } = useContractWrite(config);
 
-  console.log('contractData.hash', contractData?.hash);
+  // console.log('contractData.hash', contractData?.hash);
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction
@@ -90,11 +90,11 @@ export default function MultiHatsSignerGateForm(props: Props) {
   useEffect(() => {
     if (transactionData) {
       const MhsgContractAddress = extractMhsgAddress(transactionData);
-      console.log('MhsgContractAddress: ', MhsgContractAddress);
+      // console.log('MhsgContractAddress: ', MhsgContractAddress);
       setMhsgAddress(MhsgContractAddress);
     }
-  }, [transactionData]);
-  console.log('inside hsgForm - render');
+  }, [transactionData, setMhsgAddress]);
+  // console.log('inside hsgForm - render');
 
   const handleFormSubmit = useRefetchWrite({
     write,

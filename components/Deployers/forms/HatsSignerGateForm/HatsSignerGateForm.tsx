@@ -62,7 +62,7 @@ export default function HatsSignerGateForm(props: Props) {
     write,
     isError,
   } = useContractWrite(config);
-  console.log(contractData?.hash);
+  // console.log(contractData?.hash);
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction and update user interface
@@ -85,9 +85,6 @@ export default function HatsSignerGateForm(props: Props) {
       } else {
         console.error('Unexpected data structure:', data);
       }
-
-      // setData(response.args);
-      console.log('Transaction Success');
     },
   });
 
@@ -95,11 +92,11 @@ export default function HatsSignerGateForm(props: Props) {
   useEffect(() => {
     if (transactionData) {
       const HsgContractAddress = extractHsgAddress(transactionData);
-      console.log('HsgContractAddress: ', HsgContractAddress);
+      // console.log('HsgContractAddress: ', HsgContractAddress);
       setHsgAddress(HsgContractAddress);
     }
   }, [transactionData]);
-  console.log('HatsSignerGateForm - render');
+  // console.log('HatsSignerGateForm - render');
 
   const handleFormSubmit = useRefetchWrite({
     write,
@@ -152,7 +149,6 @@ export default function HatsSignerGateForm(props: Props) {
           _targetThreshold: values._targetThreshold,
           _maxSigners: values._maxSigners,
         });
-        console.log('Submit');
 
         handleFormSubmit();
       }}
