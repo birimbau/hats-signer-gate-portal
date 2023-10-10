@@ -51,13 +51,18 @@ export default function HatsSignerGateForm(props: Props) {
 
   // console.log('inside hsgForm - formData: ', formData);
 
-  const { config, refetch } = useDeployHSG(formData);
+  const {
+    config,
+    refetch,
+    isSuccess: contractPrepared,
+  } = useDeployHSG(formData);
   const {
     data: contractData,
     isLoading,
     write,
     isError,
   } = useContractWrite(config);
+  console.log(contractData?.hash);
 
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction and update user interface
@@ -94,9 +99,14 @@ export default function HatsSignerGateForm(props: Props) {
       setHsgAddress(HsgContractAddress);
     }
   }, [transactionData]);
-  // console.log('inside hsgForm - render');
+  console.log('HatsSignerGateForm - render');
 
-  const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
+  const handleFormSubmit = useRefetchWrite({
+    write,
+    refetch,
+    isError,
+    contractPrepared,
+  });
 
   // This is used to update the parent's display status
   useEffect(() => {
@@ -142,6 +152,8 @@ export default function HatsSignerGateForm(props: Props) {
           _targetThreshold: values._targetThreshold,
           _maxSigners: values._maxSigners,
         });
+        console.log('Submit');
+
         handleFormSubmit();
       }}
     >

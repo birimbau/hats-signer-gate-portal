@@ -51,7 +51,12 @@ export default function MultiHatsSignerGateForm(props: Props) {
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const { config, refetch } = useDeployMultiHatSG(formData);
+  const {
+    config,
+    refetch,
+    isSuccess: contractPrepared,
+  } = useDeployMultiHatSG(formData);
+
   const {
     data: contractData,
     isLoading,
@@ -91,7 +96,12 @@ export default function MultiHatsSignerGateForm(props: Props) {
   }, [transactionData]);
   console.log('inside hsgForm - render');
 
-  const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
+  const handleFormSubmit = useRefetchWrite({
+    write,
+    refetch,
+    isError,
+    contractPrepared,
+  });
 
   // This is used to update the parent's display status
   useEffect(() => {

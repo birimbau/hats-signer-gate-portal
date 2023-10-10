@@ -36,7 +36,7 @@ const useDeployHSG = (formData: DeployConfigHSG) => {
     functionName: 'deployHatsSignerGate',
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
-      console.log(data);
+      console.log('prepare Contract: ', data);
     },
     onError: (error) => {
       console.log(error);

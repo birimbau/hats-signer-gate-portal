@@ -14,24 +14,26 @@ interface SubmitHookProps {
   write: (() => void) | undefined;
   refetch: Function;
   isError: boolean;
+  contractPrepared: boolean;
 }
 
 export const useRefetchWrite = ({
   write,
   refetch,
   isError,
+  contractPrepared,
 }: SubmitHookProps) => {
   const submitRef = useRef(false);
   const writeRef = useRef(false);
   const [submitCount, setSubmitCount] = useState(0);
-  // console.log('inside useRefetchWrite');
+  console.log('inside useRefetchWrite');
 
   // onSubmit, call refetch() so write can update
   useEffect(() => {
     if (submitRef.current) {
       submitRef.current = false;
       writeRef.current = true;
-      // console.log('inside useRefetchWrite - refetch()');
+      console.log('inside useRefetchWrite - refetch()');
 
       refetch();
       setSubmitCount((prevCount) => prevCount + 1);
@@ -40,23 +42,23 @@ export const useRefetchWrite = ({
 
   // now write is upto date, call it.
   useEffect(() => {
-    if (writeRef.current) {
+    if (writeRef.current && contractPrepared) {
       writeRef.current = false;
-      // console.log('inside useRefetchWrite - write()');
+      console.log('inside useRefetchWrite - write()');
       write?.();
     }
-  }, [write, submitCount]);
+  }, [write, contractPrepared]);
 
   // if the user exits the transaction, allow proper handling of deploy button.
   useEffect(() => {
     if (isError) {
-      // console.log('inside useRefetchWrite - error');
+      console.log('inside useRefetchWrite - error');
       submitRef.current = false;
     }
   }, [isError]);
 
   const handleFormSubmit = () => {
-    // console.log('inside handleFormSubmit function (increase setSubmitCount)');
+    console.log('inside handleFormSubmit function (increase setSubmitCount)');
     submitRef.current = true;
     setSubmitCount((prevCount) => prevCount + 1);
   };
