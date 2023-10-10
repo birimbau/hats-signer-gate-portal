@@ -1,7 +1,7 @@
-import { Flex, VStack } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { Form, Formik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { decodeEventLog } from 'viem';
 import * as Yup from 'yup';
@@ -22,17 +22,16 @@ import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigMHSG } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
 import { AiOutlineDeploymentUnit } from 'react-icons/ai';
-import { extractHsgAddress } from '../utils/extractHsgAddress';
+import { extractMhsgAddress } from '../utils/extractMhsgAddress';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
-  setTransactionHash: (data: any) => void;
   formData: DeployConfigMHSG;
   setFormData: (formData: any) => void;
   isPending: boolean;
   setIsSuccessOne: (isSuccessOne: boolean) => void;
-  setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
+  setMhsgAddress: (hsgAddress: EthereumAddress | null) => void;
 }
 
 export default function MultiHatsSignerGateForm(props: Props) {
@@ -40,12 +39,11 @@ export default function MultiHatsSignerGateForm(props: Props) {
   const {
     setIsPending,
     setData,
-    setTransactionHash,
     formData,
     setFormData,
     isPending,
     setIsSuccessOne,
-    setHsgAddress,
+    setMhsgAddress,
   } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
@@ -78,7 +76,6 @@ export default function MultiHatsSignerGateForm(props: Props) {
         topics: data.logs[3].topics,
       });
 
-      setTransactionHash(data.transactionHash);
       setData(response.args);
       console.log('Transaction Success');
     },
@@ -87,9 +84,9 @@ export default function MultiHatsSignerGateForm(props: Props) {
   // Get the HsgAddress from the HsgFactory response
   useEffect(() => {
     if (transactionData) {
-      const MhsgContractAddress = extractHsgAddress(transactionData);
+      const MhsgContractAddress = extractMhsgAddress(transactionData);
       console.log('MhsgContractAddress: ', MhsgContractAddress);
-      setHsgAddress(MhsgContractAddress);
+      setMhsgAddress(MhsgContractAddress);
     }
   }, [transactionData]);
   console.log('inside hsgForm - render');

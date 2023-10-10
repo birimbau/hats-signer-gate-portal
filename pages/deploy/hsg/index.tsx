@@ -37,10 +37,10 @@ const HSG = () => {
 
   // This is extracted form the HSG factory response and connected to the existing safe
   const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
+
   const [isSuccessOne, setIsSuccessOne] = useState(false);
   const [isSuccessTwo, setIsSuccessTwo] = useState(false);
   const [data, setData] = useState(undefined);
-  const [transactionData, setTransactionData] = useState(undefined);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
@@ -66,7 +66,7 @@ const HSG = () => {
   // console.log('hsgAddress', hsgAddress);
   // console.log('canAttachSafe', canAttachSafe);
   // console.log('isSuccessOne', isSuccessOne);
-  console.log('isPending_HsgAttachSafe', isPending_HsgAttachSafe);
+  // console.log('isPending_HsgAttachSafe', isPending_HsgAttachSafe);
 
   const headerThree = () => {
     // Initial phases of reading the Safe address

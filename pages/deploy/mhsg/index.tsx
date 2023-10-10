@@ -6,7 +6,6 @@ import ReadForm, {
   EthereumAddress,
 } from '../../../components/Deployers/forms/utils/ReadForm';
 import { useState } from 'react';
-import VariableExplanations from '../../../components/Deployers/forms/utils/VariableExplainations';
 import MultiHatsSignerGateForm from '../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm';
 import { DeployConfigMHSG } from '../../../components/Deployers/forms/types/forms';
 import { safe } from '../hsg';
@@ -18,7 +17,6 @@ const MHSG = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isPending_HsgAttachSafe, setIsPending_HsgAttachSafe] =
     useState<boolean>(false);
-  const [data, setData] = useState(undefined);
   const [formData, setFormData] = useState<DeployConfigMHSG>({
     _ownerHatId: '',
     _signersHatIds: [''],
@@ -29,12 +27,11 @@ const MHSG = () => {
   });
 
   // This is extracted form the HSG factory response and connected to the existing safe
-  const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
+  const [mhsgAddress, setMhsgAddress] = useState<EthereumAddress | null>(null);
 
   const [isSuccessOne, setIsSuccessOne] = useState(false);
   const [isSuccessTwo, setIsSuccessTwo] = useState(false);
-
-  const [transactionHash, setTransactionHash] = useState(undefined);
+  const [data, setData] = useState(undefined);
 
   // Use this state for conditional rendering
   const [canAttachSafe, setCanAttachSafe] = useState(safe.UNSET);
@@ -59,7 +56,7 @@ const MHSG = () => {
 
   const headerThree = () => {
     // Initial phases of reading the Safe address
-    if (!isPending && !hsgAddress) {
+    if (!isPending && !mhsgAddress) {
       if (canAttachSafe === safe.CANNOT_ATTACH) {
         return (
           <SafeAttachMessage
@@ -88,7 +85,7 @@ const MHSG = () => {
     }
 
     // Secondary phase, during transaction
-    if (isPending && !hsgAddress)
+    if (isPending && !mhsgAddress)
       return (
         <SafeAttachMessage
           text="Transaction pending..."
@@ -97,8 +94,13 @@ const MHSG = () => {
         />
       );
 
-    // Third phase - if a hsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
-    if (hsgAddress && isSuccessOne && !isSuccessTwo && !isPending_HsgAttachSafe)
+    // Third phase - if a mhsgAddress exists, it's been successfully extracted from the HSGfactory response -> so display next stage.
+    if (
+      mhsgAddress &&
+      isSuccessOne &&
+      !isSuccessTwo &&
+      !isPending_HsgAttachSafe
+    )
       return (
         <SafeAttachMessage
           text="HSG Created"
@@ -144,13 +146,13 @@ const MHSG = () => {
       {canAttachSafe === safe.CAN_ATTACH && !isSuccessTwo && (
         <MultiHatsSignerGateForm
           setIsPending={setIsPending}
-          setData={setData}
-          setTransactionHash={setTransactionHash}
-          formData={formData}
-          setFormData={setFormData}
           isPending={isPending}
+          setFormData={setFormData}
+          formData={formData}
+          setMhsgAddress={setMhsgAddress}
           setIsSuccessOne={setIsSuccessOne}
-          setHsgAddress={setHsgAddress}
+          setData={setData}
+          // setTransactionHash={setTransactionHash}
         />
       )}
     </>
@@ -158,7 +160,7 @@ const MHSG = () => {
   const contentThree = () => (
     <SafeInstructions
       canAttachSafe={canAttachSafe}
-      hsgAddress={hsgAddress}
+      hsgAddress={mhsgAddress}
       connectedAddress={connectedAddress}
       safeType="MHSG"
       data={data}
