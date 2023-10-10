@@ -21,17 +21,18 @@ import MultiInput from '../../../UI/MultiInput/MultiInput';
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigMHSG } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
-
-// TODO - Implement blue button selection corrections - get the right state sorted out.
-// TODO - finalise connecting "attach MHSG TO SAFE" - READ DOCS!
+import { AiOutlineDeploymentUnit } from 'react-icons/ai';
+import { extractHsgAddress } from '../utils/extractHsgAddress';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
+  setTransactionHash: (data: any) => void;
   formData: DeployConfigMHSG;
   setFormData: (formData: any) => void;
   isPending: boolean;
+  setIsSuccessOne: (isSuccessOne: boolean) => void;
+  setHsgAddress: (hsgAddress: EthereumAddress | null) => void;
 }
 
 export default function MultiHatsSignerGateForm(props: Props) {
@@ -39,10 +40,12 @@ export default function MultiHatsSignerGateForm(props: Props) {
   const {
     setIsPending,
     setData,
-    setTransactionData,
+    setTransactionHash,
     formData,
     setFormData,
     isPending,
+    setIsSuccessOne,
+    setHsgAddress,
   } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
@@ -58,22 +61,38 @@ export default function MultiHatsSignerGateForm(props: Props) {
     isError,
   } = useContractWrite(config);
 
+  console.log('contractData.hash', contractData?.hash);
+
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction
-  const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
+  const {
+    isSuccess,
+    isLoading: transationPending,
+    data: transactionData,
+  } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
     onSuccess(data) {
       const response = decodeEventLog({
         abi: HatsSignerGateFactoryAbi,
-        data: data.logs[8].data,
-        topics: data.logs[8].topics,
+        data: data.logs[3].data,
+        topics: data.logs[3].topics,
       });
 
-      setTransactionData(data);
+      setTransactionHash(data.transactionHash);
       setData(response.args);
       console.log('Transaction Success');
     },
   });
+
+  // Get the HsgAddress from the HsgFactory response
+  useEffect(() => {
+    if (transactionData) {
+      const MhsgContractAddress = extractHsgAddress(transactionData);
+      console.log('MhsgContractAddress: ', MhsgContractAddress);
+      setHsgAddress(MhsgContractAddress);
+    }
+  }, [transactionData]);
+  console.log('inside hsgForm - render');
 
   const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
 
@@ -89,6 +108,11 @@ export default function MultiHatsSignerGateForm(props: Props) {
       setHash(contractData.hash);
     }
   }, [contractData]);
+
+  // After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
+  useEffect(() => {
+    setIsSuccessOne(isSuccess);
+  }, [setIsSuccessOne, isSuccess]);
 
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
@@ -161,6 +185,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
             />
 
             <Button
+              leftIcon={<AiOutlineDeploymentUnit />}
               type="submit"
               // Will be grey during submit and after success
               // props.dirty comes from formik and makes the button clickable once values are inputted
@@ -171,7 +196,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
                 isPending ||
                 isSuccess
               }
-              width={'140px'}
+              paddingInline={'30px'}
             >
               Deploy
             </Button>
