@@ -18,32 +18,28 @@ const MHSGClaimForm: React.FC<P> = p => {
     const [formData, setFormData] = useState({
         _hatId: BigInt(0),
       });
-    const args = useRef({
-        _hatId: BigInt(0),
-      });
-    const { config } = useClaimSigner(formData, p.address);
-    const { data: transationData, isLoading, error, write } = useContractWrite(config);
 
-    useEffect(() => {
-        p.onLoading(isLoading);
+    const { config, refetch } = useClaimSigner(formData, p.address);
+    const { data: transationData, isLoading, error, writeAsync } = useContractWrite(config);
 
-        if (transationData) {
-            p.onTransationComplete(transationData);
-        }
 
-        if (error) {
-            alert(error);
-        }
-    }, [isLoading, transationData, error]);
     const validationSchema = Yup.object().shape({
-        contractAddress: Yup.string().required('Required'),
+        _hatId: Yup.string().required('Required'),
       })
     return <Formik
     initialValues={formData}
     validationSchema={validationSchema}
     onSubmit={(values, _actions) => {
       setFormData(values);
-        write?.();
+      refetch?.().then(data => {
+        if (data.status === 'error') {
+            alert(data.error.message);
+        } else {
+            writeAsync?.().then((data) => {
+                p.onTransationComplete(data.hash);
+            });
+        }
+    });
     }}
   >
   {(props) => (

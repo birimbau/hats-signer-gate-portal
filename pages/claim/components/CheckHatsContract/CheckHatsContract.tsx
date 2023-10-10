@@ -33,7 +33,7 @@ const CheckHatsContract: React.FC<P> = p => {
       const { refetch: checkHSG, isLoading: checkHSGIsLoading } = useGetHatsContract(formData.contractAddress);
 
       const validationSchema = Yup.object().shape({
-        contractAddress: Yup.string().required('Required'),
+        contractAddress: Yup.string().required('Required').ethereumAddress(),
       })
 
     return <Formik
@@ -48,12 +48,12 @@ const CheckHatsContract: React.FC<P> = p => {
                 p.onResult({
                   isMhsg: false,
                   isHsg: true
-                }, formData.contractAddress);
+                }, values.contractAddress);
               } else {
                 p.onResult({
                   isMhsg: false,
                   isHsg: false
-                }, formData.contractAddress);
+                }, values.contractAddress);
               }
             });
           } else {

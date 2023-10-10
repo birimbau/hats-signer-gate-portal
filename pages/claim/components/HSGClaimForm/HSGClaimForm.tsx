@@ -3,6 +3,7 @@ import Button from "../../../../components/UI/CustomButton/CustomButton";
 import { LuEdit } from 'react-icons/lu';
 import { useClaimSigner } from "../../../../utils/hooks/HatsSignerGate";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface P {
     address: string;
@@ -11,30 +12,23 @@ interface P {
 }
 
 const HSGClaimForm: React.FC<P> = (p) => {
-    const { config } = useClaimSigner(p.address);
-    const { data: transationData, isLoading, error, write } = useContractWrite(config);
-
-    useEffect(() => {
-        p.onLoading(isLoading);
-
-        if (transationData) {
-            p.onTransationComplete(transationData);
-        }
-
-        if (error) {
-            alert(error);
-        }
-    }, [isLoading, transationData, error]);
+    const { config, refetch } = useClaimSigner(p.address);
+    const { writeAsync } = useContractWrite(config);
 
     return <>
         <Button
         leftIcon={<LuEdit />}
         onClick={() => {
-            write?.();
-        }}
-        
-        
-        >Claim</Button>
+            refetch?.().then(data => {
+                if (data.status === 'error') {
+                    alert(data.error.message);
+                } else {
+                    writeAsync?.().then((data) => {
+                        p.onTransationComplete(data.hash);
+                    });
+                }
+            });
+        }}>Claim</Button>
     </>
 }
 

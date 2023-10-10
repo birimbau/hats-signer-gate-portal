@@ -9,6 +9,13 @@ import { FiCopy } from "react-icons/fi";
 import { BsCardList } from "react-icons/bs";
 import HSGClaimForm from "./components/HSGClaimForm/HSGClaimForm";
 import MHSGClaimForm from "./components/MHSGClaimForm/MHSGClaimForm";
+import SafeButton from "./components/SafeButton/SafeButton";
+import MHSGMaxSigners from "../view/components/MHSGView/components/MaxSigners/MaxSigners";
+import MHSGMaxThreshold from "../view/components/MHSGView/components/MaxThreshold/MaxThreshold";
+import MHSGMinThreshold from "../view/components/MHSGView/components/MinThreshold/MinThreshold";
+import HSGMaxSigners from "../view/components/HSGView/components/MaxSigners/MaxSigners";
+import HSGMaxThreshold from "../view/components/HSGView/components/MaxThreshold/MaxThreshold";
+import HSGMinThreshold from "../view/components/HSGView/components/MinThreshold/MinThreshold";
 
 const Claim = () => {
     const [result, setResult] = useState(undefined);
@@ -79,7 +86,11 @@ const Claim = () => {
             <Button
               leftIcon={<FiCopy />}
               onClick={() => {
-                
+                window.open(
+                    `${getBlockExplorerUrl(chain?.id || 1)}/address/${
+                        transaction
+                    }`
+                  );
               }}
             >
               View Transaction
@@ -96,6 +107,19 @@ const Claim = () => {
             >
               View {result?.isMhsg ? `MHSG` : `HSG`} Contract
             </Button>
+
+            <SafeButton address={address} type={result?.isMhsg ? 'MHSG' : 'HSG'}></SafeButton>
+            {result?.isMhsg && <>
+                <MHSGMaxSigners address={address} />
+                <MHSGMaxThreshold address={address} />
+                <MHSGMinThreshold address={address} />
+            </>}
+            {result?.isHsg && <>
+                <HSGMaxSigners address={address} />
+                <HSGMaxThreshold address={address} />
+                <HSGMinThreshold address={address} />
+            </>}
+
           </VStack>
         }
 

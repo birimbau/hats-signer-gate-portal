@@ -51,9 +51,9 @@ const useClaimSigner = (address?: string) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
-    address: address ||  contract,
+    address: address || contract,
     functionName: "claimSigner",
-    enabled: false,
+    // enabled: false,
     onSuccess: (data) => {
       console.log(data);
     },
@@ -200,41 +200,13 @@ const useGetHatsContract = (address?: string) =>
 
 const useIsValidSigner = (args: {
   _account: AbiTypeToPrimitiveType<"address">;
-}) =>
+}, address?: string) =>
   useContractRead({
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "isValidSigner",
     args: Array.from(Object.values(args)),
-  });
-
-const useMaxSigners = () =>
-  useContractRead({
-    abi: HatsSignerGateAbi,
-    address: contract,
-    functionName: "maxSigners",
-  });
-
-const useMinThreshold = () =>
-  useContractRead({
-    abi: HatsSignerGateAbi,
-    address: contract,
-    functionName: "minThreshold",
-  });
-
-const useOwnerHat = () =>
-  useContractRead({
-    abi: HatsSignerGateAbi,
-    address: contract,
-    functionName: "ownerHat",
-  });
-
-const useSafe = () =>
-  useContractRead({
-    abi: HatsSignerGateAbi,
-    address: contract,
-    functionName: "safe",
-
+    enabled: false,
     onSuccess: (data) => {
       console.log(data);
     },
@@ -243,10 +215,56 @@ const useSafe = () =>
     },
   });
 
-const useSignersHatId = () =>
+const useMaxSigners = (address?: string) =>
   useContractRead({
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
+    functionName: "maxSigners",
+  });
+
+const useMinThreshold = (address?: string) =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: address || contract,
+    functionName: "minThreshold",
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+const useOwnerHat = (address?: string) =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: address || contract,
+    functionName: "ownerHat",
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+const useSafe = (address?: string) =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: address || contract,
+    functionName: "safe",
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+const useSignersHatId = (address?: string) =>
+  useContractRead({
+    abi: HatsSignerGateAbi,
+    address: address || contract,
     functionName: "signersHatId",
 
     onSuccess: (data) => {
@@ -273,12 +291,11 @@ const useSupportsInterface = (args: {
     },
   });
 
-const useTargetThreshold = () =>
+const useTargetThreshold = (address?: string) =>
   useContractRead({
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "targetThreshold",
-
     onSuccess: (data) => {
       console.log(data);
     },
@@ -287,12 +304,11 @@ const useTargetThreshold = () =>
     },
   });
 
-const useValidSignerCount = () =>
+const useValidSignerCount = (adress?: string) =>
   useContractRead({
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: adress || contract,
     functionName: "validSignerCount",
-
     onSuccess: (data) => {
       console.log(data);
     },

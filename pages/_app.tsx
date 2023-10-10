@@ -1,54 +1,32 @@
+import '../styles/globals.css';
+import '@rainbow-me/rainbowkit/styles.css';
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import type { AppProps } from 'next/app';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { publicProvider } from 'wagmi/providers/public';
 import { CacheProvider } from '@chakra-ui/next-js';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import '@rainbow-me/rainbowkit/styles.css';
-import type { AppProps } from 'next/app';
-import { Inter } from 'next/font/google';
-import { configureChains, createConfig, WagmiConfig, Connector } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import Layout from '../components/Layout/Layout';
-import { WalletConnectionProvider } from '../context/WalletConnectionContext';
-import '../styles/globals.css';
+import { SelectedActionProvider } from '../context/SelectedActionContext';
+import { DeployProvider } from '../context/DeployContext';
 import { SUPPORTED_NETWORKS } from '../utils/constants';
-
-// import { SafeConnector } from 'wagmi/dist/connectors/safe';
-// declare module '@wagmi/dist/connectors/safe';
-
-// import { SafeConnector } from '@wagmi/connectors/safe';
+import { WalletConnectionProvider } from '../context/WalletConnectionContext';
+import { Inter } from 'next/font/google';
+import Layout from '../components/Layout/Layout';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  SUPPORTED_NETWORKS,
-  [
-    // alchemyProvider({ apiKey: 'yourAlchemyApiKey' }), // TODO - ADD ALCHEMY TO PREVENT RATE LIMITING
-    publicProvider(),
-  ]
-  // { stallTimeout: 5000 } // TODO - used to delay time between trying providers
+  Object.values(SUPPORTED_NETWORKS),
+  [publicProvider()]
 );
 
-// Every dApp that relies on WalletConnect now needs to obtain a projectId & Name from WalletConnect Cloud.
-// They are for security only.
 const { connectors } = getDefaultWallets({
   appName: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_NAME || '',
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '',
   chains,
 });
 
-// Add Safe Connector for safe-apps-sdk
-let allConnectors: Connector[] = [
-  ...connectors(),
-  // new SafeConnector({
-  //   chains,
-  //   // options: {
-  //   //   allowedDomains: [/gnosis-safe.io$/, /app.safe.global$/],
-  //   //   debug: false,
-  //   // },
-  // }),
-];
-
 const wagmiConfig = createConfig({
-  // autoConnect: true, // Removed for safe-apps-sdk
-  connectors: allConnectors,
+  autoConnect: true,
+  connectors,
   publicClient,
   webSocketPublicClient,
 });
@@ -57,7 +35,6 @@ const colors = {
   cyan: {
     100: '#C4F1F9',
     700: '#0987A0',
-    900: '#065666',
   },
   gray: {
     700: '#2D3748',
