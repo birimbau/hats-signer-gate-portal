@@ -44,7 +44,7 @@ async function connectSafeToHSG(
       ethAdapter,
       safeAddress: safeAddress,
     });
-    console.log('safeSdk: ', safeSdk);
+    // console.log('safeSdk: ', safeSdk);
   } catch (error) {
     console.error('Error creating Safe instance:', error);
     return false;
@@ -55,10 +55,10 @@ async function connectSafeToHSG(
     const enableModuleTx = await safeSdk.createEnableModuleTx(
       existingHSGAddress
     );
-    console.log('enableModuleTx: ', enableModuleTx);
+    // console.log('enableModuleTx: ', enableModuleTx);
 
     const enableGuardTx = await safeSdk.createEnableGuardTx(existingHSGAddress);
-    console.log('enableGuardTx: ', enableGuardTx);
+    // console.log('enableGuardTx: ', enableGuardTx);
 
     const safeTransactionData: MetaTransactionData[] = [
       {
@@ -74,29 +74,29 @@ async function connectSafeToHSG(
         // you can add operation if needed, but it's optional
       },
     ];
-    console.log('safeTransactionData: ', safeTransactionData);
+    // console.log('safeTransactionData: ', safeTransactionData);
 
     // 2. Use the `createTransaction` function for MultiSend transactions
     const batchedTransaction = await safeSdk.createTransaction({
       safeTransactionData,
     });
-    console.log('batchedTransaction: ', batchedTransaction);
+    // console.log('batchedTransaction: ', batchedTransaction);
 
     // 3. Sign the batched transaction
     const signedBatchedTx = await safeSdk.signTransaction(
       batchedTransaction,
       'eth_signTypedData_v4'
     );
-    console.log('signedBatchedTx: ', signedBatchedTx);
+    // console.log('signedBatchedTx: ', signedBatchedTx);
 
     // 4. Execute the batched transaction
     const txResponse = await safeSdk.executeTransaction(signedBatchedTx);
-    console.log('txResponse1', txResponse);
+    // console.log('txResponse1', txResponse);
     await txResponse.transactionResponse?.wait();
-    console.log(
-      'Batched transaction executed successfully. Response:',
-      txResponse
-    );
+    // console.log(
+    //   'Batched transaction executed successfully. Response:',
+    //   txResponse
+    // );
 
     // 5. Pass new data back to parents
     if (txResponse.hash) setTransactionHash(txResponse.hash);
@@ -118,7 +118,7 @@ export async function handleConnect(
   setTransactionHash: (transactionHash?: string) => void,
   setIsSigningExecuting: (isSigningExecuting: boolean) => void
 ): Promise<void> {
-  console.log('inside handleConnect');
+  // console.log('inside handleConnect');
 
   try {
     await connectSafeToHSG(

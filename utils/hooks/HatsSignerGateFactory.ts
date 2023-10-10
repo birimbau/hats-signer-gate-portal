@@ -86,7 +86,6 @@ const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
       console.log(data);
     },
     onError: (error) => {
-      console.log('useDeployMultiHatSG error:');
       console.log(error);
     },
   });
