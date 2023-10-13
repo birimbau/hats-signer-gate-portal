@@ -89,6 +89,11 @@ const HSGRemoveForm: React.FC<P> = (p) => {
       // Handle the error from useRemoveSigner
       if (error) {
         console.error('Error from useContractWrite:', error);
+
+        // Reset error states to their default
+        setIsErrorOne(false);
+        setIsErrorTwo(false);
+
         if (error.message.includes('StillWearsSignerHat')) {
           setIsErrorOne(true);
         } else if (error.message.includes('FailedExecRemoveSigner')) {
