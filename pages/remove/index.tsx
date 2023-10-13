@@ -17,6 +17,7 @@ import HSGMaxSigners from '../view/components/HSGView/components/MaxSigners/MaxS
 import HSGMaxThreshold from '../view/components/HSGView/components/MaxThreshold/MaxThreshold';
 import HSGMinThreshold from '../view/components/HSGView/components/MinThreshold/MinThreshold';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
+import { SafeAttachMessage } from '../../components/Deployers/forms/utils/SafeAttachMessage';
 
 const Remove = () => {
   const [result, setResult] = useState<
@@ -28,6 +29,9 @@ const Remove = () => {
   const [isPending, setIsPending] = useState(false);
   const [transaction, setTransaction] = useState(undefined);
   const { chain } = useNetwork();
+  const [isErrorOne, setIsErrorOne] = useState(false);
+  const [isErrorTwo, setIsErrorTwo] = useState(false);
+  const [isErrorThree, setIsErrorThree] = useState(false);
 
   let definedContractAddress: EthereumAddress = '0x';
   if (address !== undefined) definedContractAddress = address;
@@ -83,6 +87,8 @@ const Remove = () => {
           onTransationComplete={(transation) => {
             setTransaction(transation);
           }}
+          setIsErrorOne={setIsErrorOne}
+          setIsErrorTwo={setIsErrorTwo}
         />
       );
     }
@@ -92,17 +98,21 @@ const Remove = () => {
   const headerThree = () => {
     if (isPending) {
       return (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text as="b">Transaction Pending...</Text>
-        </VStack>
+        <SafeAttachMessage
+          text="Transaction Pending..."
+          color="black"
+          safeData=""
+        />
       );
     }
 
     if (!isPending && transaction) {
       return (
-        <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text as="b">Transaction Complete!</Text>
-        </VStack>
+        <SafeAttachMessage
+          text="Transaction Complete"
+          color="black"
+          safeData=""
+        />
       );
     }
 
@@ -153,6 +163,58 @@ const Remove = () => {
             </>
           )}
         </VStack>
+      );
+    }
+
+    if (isErrorOne) {
+      return (
+        <SafeAttachMessage
+          text="Transaction Failed: 'StillWearsSignerHat'"
+          color="red"
+          safeData="The Signer address must first renounce the associated hat in the app."
+          justifyStart={true}
+        />
+      );
+    }
+    // if (isErrorTwo) {
+    //   return (
+    //     <SafeAttachMessage
+    //       text="Transaction Failed: 'NotSignerHatWearer'"
+    //       color="red"
+    //       safeData="The Signer address is not wearing the relevant hat"
+    //     />
+    //   );
+    // }
+    if (isErrorTwo) {
+      return (
+        <>
+          <SafeAttachMessage
+            text="Transaction Failed: 'FailedExecRemoveSigner'"
+            color="red"
+            safeData="The address is invalid, below are potential reasons why:"
+            justifyStart={true}
+          >
+            <ul>
+              <li>
+                <Text>The address you&apos;ve entered is incorrect.</Text>
+              </li>
+              <li>
+                <Text>
+                  The address you&apos;ve entered is not wearing the relevant
+                  hat.
+                </Text>
+              </li>
+              <li>
+                <Text>
+                  The signer address has not claimed singing authority.
+                </Text>
+              </li>
+              <li>
+                <Text>Singing authority has already been removed.</Text>
+              </li>
+            </ul>
+          </SafeAttachMessage>
+        </>
       );
     }
 

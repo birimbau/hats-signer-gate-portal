@@ -15,6 +15,8 @@ interface P {
   hsgAddress: EthereumAddress;
   onLoading: (value: boolean) => void;
   onTransationComplete: (transation: any) => void;
+  setIsErrorOne: (value: boolean) => void;
+  setIsErrorTwo: (value: boolean) => void;
 }
 
 interface StateType {
@@ -22,6 +24,7 @@ interface StateType {
 }
 
 const HSGRemoveForm: React.FC<P> = (p) => {
+  const { setIsErrorOne, setIsErrorTwo } = p;
   const [formData, setFormData] = useState<StateType>({
     _signer: '0x',
   });
@@ -31,14 +34,16 @@ const HSGRemoveForm: React.FC<P> = (p) => {
 
   const value = useRef(submitCount);
 
-  console.log('p.hsgAddress: ', p.hsgAddress);
-  console.log('formData._signer: ', formData._signer);
-  const { config, refetch } = useRemoveSigner(p.hsgAddress, formData._signer);
+  // console.log('p.hsgAddress: ', p.hsgAddress);
+  // console.log('formData._signer: ', formData._signer);
+  const { config, refetch, error } = useRemoveSigner(
+    p.hsgAddress,
+    formData._signer
+  );
 
   const {
     data: transationData,
     isLoading,
-    error,
     writeAsync,
   } = useContractWrite(config);
 
@@ -48,19 +53,50 @@ const HSGRemoveForm: React.FC<P> = (p) => {
 
   // LOGIC FOR RUNNING CONTRACTS AFTER CLICKING FORMIK'S OnSubmit
   // This only runs once on user submit, avoiding unnecessary calls to hooks.
-  useEffect(() => {
-    if (isSubmitted) {
-      if (refetchNow) {
-        setRefetchNow(false);
-        refetch();
-      }
+  // useEffect(() => {
+  //   if (isSubmitted) {
+  //     if (refetchNow) {
+  //       setRefetchNow(false);
+  //       refetch();
+  //     }
 
-      if (writeAsync) {
-        setIsSubmitted(false);
-        writeAsync?.();
+  //     if (writeAsync) {
+  //       setIsSubmitted(false);
+  //       writeAsync?.();
+  //     }
+  //   }
+  // }, [isSubmitted, refetchNow, refetch, writeAsync]);
+
+  // useEffect for handling refetch
+  useEffect(() => {
+    if (isSubmitted && refetchNow) {
+      setRefetchNow(false);
+      refetch();
+    }
+  }, [isSubmitted, refetchNow, refetch]);
+
+  // useEffect for handling writeAsync
+  useEffect(() => {
+    if (isSubmitted && writeAsync) {
+      setIsSubmitted(false);
+      writeAsync?.();
+    }
+  }, [isSubmitted, writeAsync]);
+
+  // useEffect for handling error
+  useEffect(() => {
+    if (isSubmitted && error) {
+      // Handle the error from useRemoveSigner
+      if (error) {
+        console.error('Error from useContractWrite:', error);
+        if (error.message.includes('StillWearsSignerHat')) {
+          setIsErrorOne(true);
+        } else if (error.message.includes('FailedExecRemoveSigner')) {
+          setIsErrorTwo(true);
+        }
       }
     }
-  }, [isSubmitted, refetchNow, refetch, writeAsync]);
+  }, [isSubmitted, error, setIsErrorOne, setIsErrorTwo]);
 
   return (
     <Formik
@@ -69,18 +105,10 @@ const HSGRemoveForm: React.FC<P> = (p) => {
       onSubmit={(values, _actions) => {
         console.log('submit');
         setFormData(values);
+
         // This ensures that write() and refetch behave as expected.
         setIsSubmitted(true);
         setRefetchNow(true);
-        // refetch?.().then((data) => {
-        //   if (data.status === 'error') {
-        //     alert(data.error.message);
-        //   } else {
-        //     writeAsync?.().then((data) => {
-        //       p.onTransationComplete(data.hash);
-        //     });
-        //   }
-        // });
       }}
     >
       {(props) => (
