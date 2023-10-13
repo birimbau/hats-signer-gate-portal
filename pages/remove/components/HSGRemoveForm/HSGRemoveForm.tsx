@@ -2,7 +2,6 @@ import { useContractWrite, useWaitForTransaction } from 'wagmi';
 import Button from '../../../../components/UI/CustomButton/CustomButton';
 import { useRemoveSigner } from '../../../../utils/hooks/HatsSignerGate';
 import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 import { EthereumAddress } from '../../../../components/Deployers/forms/utils/ReadForm';
 import { CgUserRemove } from 'react-icons/cg';
 import * as Yup from 'yup';
@@ -89,7 +88,7 @@ const HSGRemoveForm: React.FC<P> = (p) => {
     }
   }, [isSubmitted, writeAsync, onTransationComplete]);
 
-  // useEffect for handling error
+  // useEffect for handling errors
   useEffect(() => {
     if (isSubmitted && error) {
       // Handle the error from useRemoveSigner

@@ -22,6 +22,7 @@ import { SafeAttachMessage } from '../../components/Deployers/forms/utils/SafeAt
 // Apply all logic to MHSG version
 // Check out the other patern for the submit from claim or view to see if the form submit can change
 // Should we be using writeAsync for all?
+// Adust teh initial state of formik so that the field is empty (Check the other instance of this first)
 
 const Remove = () => {
   const [result, setResult] = useState<
