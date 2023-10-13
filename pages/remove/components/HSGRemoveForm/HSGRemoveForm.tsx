@@ -1,4 +1,4 @@
-import { useContractWrite } from 'wagmi';
+import { useContractWrite, useWaitForTransaction } from 'wagmi';
 import Button from '../../../../components/UI/CustomButton/CustomButton';
 import { useRemoveSigner } from '../../../../utils/hooks/HatsSignerGate';
 import { useEffect, useRef, useState } from 'react';
@@ -10,13 +10,14 @@ import { Form, Formik } from 'formik';
 import { VStack } from '@chakra-ui/react';
 import CustomInputWrapper from '../../../../components/Deployers/forms/utils/CustomInputWrapper';
 import { ethAddressSchema } from '../../../../components/Deployers/forms/utils/validation';
+import { AbiTypeToPrimitiveType } from 'abitype';
 
 interface P {
   hsgAddress: EthereumAddress;
-  onLoading: (value: boolean) => void;
   onTransationComplete: (transation: any) => void;
   setIsErrorOne: (value: boolean) => void;
   setIsErrorTwo: (value: boolean) => void;
+  setIsPending: (isPending: boolean) => void;
 }
 
 interface StateType {
@@ -24,7 +25,8 @@ interface StateType {
 }
 
 const HSGRemoveForm: React.FC<P> = (p) => {
-  const { setIsErrorOne, setIsErrorTwo } = p;
+  const { setIsErrorOne, setIsErrorTwo, setIsPending, onTransationComplete } =
+    p;
   const [formData, setFormData] = useState<StateType>({
     _signer: '0x',
   });
@@ -42,31 +44,24 @@ const HSGRemoveForm: React.FC<P> = (p) => {
   );
 
   const {
-    data: transationData,
+    data: contractData,
     isLoading,
+    isError: isWriteError,
+    error: writeError,
     writeAsync,
   } = useContractWrite(config);
+
+  // This only runs if "hash" is defined
+  // Use this to detect isLoading state in transaction and update user interface
+  const { isLoading: transationPending } = useWaitForTransaction({
+    hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
+  });
 
   const validationSchema = Yup.object().shape({
     _signer: ethAddressSchema,
   });
 
   // LOGIC FOR RUNNING CONTRACTS AFTER CLICKING FORMIK'S OnSubmit
-  // This only runs once on user submit, avoiding unnecessary calls to hooks.
-  // useEffect(() => {
-  //   if (isSubmitted) {
-  //     if (refetchNow) {
-  //       setRefetchNow(false);
-  //       refetch();
-  //     }
-
-  //     if (writeAsync) {
-  //       setIsSubmitted(false);
-  //       writeAsync?.();
-  //     }
-  //   }
-  // }, [isSubmitted, refetchNow, refetch, writeAsync]);
-
   // useEffect for handling refetch
   useEffect(() => {
     if (isSubmitted && refetchNow) {
@@ -79,9 +74,20 @@ const HSGRemoveForm: React.FC<P> = (p) => {
   useEffect(() => {
     if (isSubmitted && writeAsync) {
       setIsSubmitted(false);
-      writeAsync?.();
+      writeAsync?.()
+        .then((data) => {
+          onTransationComplete(data.hash);
+        })
+        .catch((err) => {
+          // This catch is for a rejection of the transaction or other errors.
+          // if the user rejects, do nothing.
+          // if there is another error, alert user
+
+          if (err.message.includes('User rejected the request')) {
+          } else alert(err.message);
+        });
     }
-  }, [isSubmitted, writeAsync]);
+  }, [isSubmitted, writeAsync, onTransationComplete]);
 
   // useEffect for handling error
   useEffect(() => {
@@ -102,6 +108,29 @@ const HSGRemoveForm: React.FC<P> = (p) => {
       }
     }
   }, [isSubmitted, error, setIsErrorOne, setIsErrorTwo]);
+
+  // If user aborts transaction, reset status
+  useEffect(() => {
+    setIsSubmitted(false);
+  }, [isWriteError]);
+
+  // This is used to update the parent's display status
+  useEffect(() => {
+    setIsPending(isLoading || transationPending);
+  }, [isLoading, transationPending, setIsPending]);
+
+  useEffect(() => {
+    if (isWriteError && writeError) {
+      if (writeError.message.includes('User rejected the request')) {
+        // Handle the specific error here
+        console.log('Transaction was rejected by the user.');
+        // You can also set some state or trigger alerts/modals to inform the user
+      } else {
+        // Handle other types of errors here
+        console.error('An error occurred:', writeError.message);
+      }
+    }
+  }, [isWriteError, writeError]); // Monitor changes in isError and error properties
 
   return (
     <Formik
@@ -140,3 +169,17 @@ const HSGRemoveForm: React.FC<P> = (p) => {
 };
 
 export default HSGRemoveForm;
+// This only runs once on user submit, avoiding unnecessary calls to hooks.
+// useEffect(() => {
+//   if (isSubmitted) {
+//     if (refetchNow) {
+//       setRefetchNow(false);
+//       refetch();
+//     }
+
+//     if (writeAsync) {
+//       setIsSubmitted(false);
+//       writeAsync?.();
+//     }
+//   }
+// }, [isSubmitted, refetchNow, refetch, writeAsync]);

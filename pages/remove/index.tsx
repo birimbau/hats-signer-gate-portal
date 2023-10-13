@@ -18,6 +18,10 @@ import HSGMaxThreshold from '../view/components/HSGView/components/MaxThreshold/
 import HSGMinThreshold from '../view/components/HSGView/components/MinThreshold/MinThreshold';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
 import { SafeAttachMessage } from '../../components/Deployers/forms/utils/SafeAttachMessage';
+// Check the view transaction button - is the ethers address correct?
+// Apply all logic to MHSG version
+// Check out the other patern for the submit from claim or view to see if the form submit can change
+// Should we be using writeAsync for all?
 
 const Remove = () => {
   const [result, setResult] = useState<
@@ -31,7 +35,6 @@ const Remove = () => {
   const { chain } = useNetwork();
   const [isErrorOne, setIsErrorOne] = useState(false);
   const [isErrorTwo, setIsErrorTwo] = useState(false);
-  const [isErrorThree, setIsErrorThree] = useState(false);
 
   let definedContractAddress: EthereumAddress = '0x';
   if (address !== undefined) definedContractAddress = address;
@@ -83,12 +86,12 @@ const Remove = () => {
       return (
         <HSGRemoveForm
           hsgAddress={definedContractAddress}
-          onLoading={(value) => setIsPending(value)}
           onTransationComplete={(transation) => {
             setTransaction(transation);
           }}
           setIsErrorOne={setIsErrorOne}
           setIsErrorTwo={setIsErrorTwo}
+          setIsPending={setIsPending}
         />
       );
     }
@@ -166,7 +169,7 @@ const Remove = () => {
       );
     }
 
-    if (isErrorOne) {
+    if (!isPending && isErrorOne) {
       return (
         <SafeAttachMessage
           text="Transaction Failed: 'StillWearsSignerHat'"
@@ -185,7 +188,7 @@ const Remove = () => {
     //     />
     //   );
     // }
-    if (isErrorTwo) {
+    if (!isPending && isErrorTwo) {
       return (
         <>
           <SafeAttachMessage
