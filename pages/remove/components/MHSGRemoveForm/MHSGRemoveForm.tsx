@@ -1,5 +1,8 @@
 import { useContractWrite } from 'wagmi';
-import { useClaimSigner } from '../../../../utils/hooks/MultiHatsSignerGate';
+import {
+  useClaimSigner,
+  useRemoveSigner,
+} from '../../../../utils/hooks/MultiHatsSignerGate';
 import { useEffect, useRef, useState } from 'react';
 import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../../../../components/Deployers/forms/utils/CustomInputWrapper';
@@ -15,12 +18,12 @@ interface P {
   onTransationComplete: (transation: any) => void;
 }
 
-const MHSGClaimForm: React.FC<P> = (p) => {
+const MHSGRemoveForm: React.FC<P> = (p) => {
   const [formData, setFormData] = useState({
     _hatId: BigInt(0),
   });
 
-  const { config, refetch } = useClaimSigner(formData, p.address);
+  const { config, refetch } = useRemoveSigner(p.address);
   const {
     data: transationData,
     isLoading,
@@ -62,7 +65,7 @@ const MHSGClaimForm: React.FC<P> = (p) => {
               type="submit"
               disabled={!props.dirty || isLoading}
             >
-              Claim
+              Remove
             </Button>
           </VStack>
         </Form>
@@ -71,4 +74,4 @@ const MHSGClaimForm: React.FC<P> = (p) => {
   );
 };
 
-export default MHSGClaimForm;
+export default MHSGRemoveForm;

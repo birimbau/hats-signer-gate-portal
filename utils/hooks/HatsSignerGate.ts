@@ -78,13 +78,16 @@ const useReconsileSignerCount = () =>
     },
   });
 
-const useRemoveSigner = (args: {
-  _signer: AbiTypeToPrimitiveType<'address'>;
-}) =>
-  usePrepareContractWrite({
+const useRemoveSigner = (
+  HsgContractAddress: AbiTypeToPrimitiveType<'address'>,
+  _signer?: AbiTypeToPrimitiveType<'address'>
+) => {
+  const args = { _signer: _signer };
+  return usePrepareContractWrite({
+    enabled: false,
     chainId,
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: HsgContractAddress || contract,
     functionName: 'removeSigner',
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
@@ -94,6 +97,7 @@ const useRemoveSigner = (args: {
       console.log(error);
     },
   });
+};
 
 const useSetMinThreshold = (args: {
   _minThreshold: AbiTypeToPrimitiveType<'uint256'>;

@@ -7,28 +7,34 @@ import { useNetwork } from 'wagmi';
 import { getBlockExplorerUrl } from '../../utils/utils';
 import { FiCopy } from 'react-icons/fi';
 import { BsCardList } from 'react-icons/bs';
-import HSGRemoveForm from './components/HSGClaimForm/HSGClaimForm';
-import MHSGRemoveForm from './components/MHSGClaimForm/MHSGClaimForm';
-import SafeButton from './components/SafeButton/SafeButton';
+import HSGRemoveForm from './components/HSGRemoveForm/HSGRemoveForm';
+import MHSGRemoveForm from './components/MHSGRemoveForm/MHSGRemoveForm';
+import SafeButton from '../claim/components/SafeButton/SafeButton';
 import MHSGMaxSigners from '../view/components/MHSGView/components/MaxSigners/MaxSigners';
 import MHSGMaxThreshold from '../view/components/MHSGView/components/MaxThreshold/MaxThreshold';
 import MHSGMinThreshold from '../view/components/MHSGView/components/MinThreshold/MinThreshold';
 import HSGMaxSigners from '../view/components/HSGView/components/MaxSigners/MaxSigners';
 import HSGMaxThreshold from '../view/components/HSGView/components/MaxThreshold/MaxThreshold';
 import HSGMinThreshold from '../view/components/HSGView/components/MinThreshold/MinThreshold';
+import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
 
-const Claim = () => {
+const Remove = () => {
   const [result, setResult] = useState<
     undefined | { isHsg: boolean; isMhsg: boolean }
   >(undefined);
-  const [address, setAddress] = useState<undefined | `0x${string}`>(undefined);
+  const [address, setAddress] = useState<undefined | EthereumAddress>(
+    undefined
+  );
   const [isPending, setIsPending] = useState(false);
   const [transaction, setTransaction] = useState(undefined);
   const { chain } = useNetwork();
 
+  let definedContractAddress: EthereumAddress = '0x';
+  if (address !== undefined) definedContractAddress = address;
+
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-      <Text as="b">Claim Signing Authority</Text>
+      <Text as="b">Remove Signing Authority</Text>
       <Text>Connect wallet with relevant hat, click ‘Fetch’</Text>
     </VStack>
   );
@@ -48,8 +54,8 @@ const Claim = () => {
     if (result?.isMhsg || result?.isHsg) {
       return (
         <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
-          <Text as="b">Claim Signer for Multisig</Text>
-          <Text>Click &rsquo;Claim&rsquo;</Text>
+          <Text as="b">Remove Signer from Safe App</Text>
+          <Text>Enter wallet address, Click &rsquo;Remove&rsquo;</Text>
         </VStack>
       );
     }
@@ -59,7 +65,7 @@ const Claim = () => {
   const contentTwo = () => {
     if (result?.isMhsg) {
       return (
-        <MHSGClaimForm
+        <MHSGRemoveForm
           address={address}
           onLoading={(value) => setIsPending(value)}
           onTransationComplete={(transation) => {
@@ -71,8 +77,8 @@ const Claim = () => {
 
     if (result?.isHsg) {
       return (
-        <HSGClaimForm
-          address={address}
+        <HSGRemoveForm
+          hsgAddress={definedContractAddress}
           onLoading={(value) => setIsPending(value)}
           onTransationComplete={(transation) => {
             setTransaction(transation);
@@ -165,4 +171,4 @@ const Claim = () => {
   );
 };
 
-export default Claim;
+export default Remove;
