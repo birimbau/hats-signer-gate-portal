@@ -24,6 +24,9 @@ import { SafeAttachMessage } from '../../components/Deployers/forms/utils/SafeAt
 // Should we be using writeAsync for all?
 // Adust teh initial state of formik so that the field is empty (Check the other instance of this first)
 
+// Add standardised "isNotConnected" to all button logics. WHOLE APP
+// -- WRONG NETWORK MESSAGE / NOT CONNECTED MESSAGE
+
 const Remove = () => {
   const [result, setResult] = useState<
     undefined | { isHsg: boolean; isMhsg: boolean }
