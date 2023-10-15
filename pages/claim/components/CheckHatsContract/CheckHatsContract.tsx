@@ -102,7 +102,7 @@ const CheckHatsContract: React.FC<P> = (p) => {
                 isMhsg: true,
                 isHsg: false,
               },
-              formData.contractAddress
+              values.contractAddress
             );
           }
         });

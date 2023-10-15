@@ -71,15 +71,24 @@ const useReconcileSignerCount = () =>
     functionName: 'reconcileSignerCount',
   });
 
-const useRemoveSigner = (_signer?: AbiTypeToPrimitiveType<'address'>) => {
+const useRemoveSigner = (
+  MhsgContractAddress: AbiTypeToPrimitiveType<'address'>,
+  _signer?: AbiTypeToPrimitiveType<'address'>
+) => {
   const args = { _signer: _signer };
   return usePrepareContractWrite({
-    // enabled: false,
+    enabled: false,
     chainId,
     abi: MultiHatsSignerGateAbi,
-    address: contract,
+    address: MhsgContractAddress || contract,
     functionName: 'removeSigner',
     args: Array.from(Object.values(args)),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 };
 

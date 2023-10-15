@@ -26,14 +26,15 @@ interface StateType {
 const HSGRemoveForm: React.FC<P> = (p) => {
   const { setIsErrorOne, setIsErrorTwo, setIsPending, onTransationComplete } =
     p;
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [refetchNow, setRefetchNow] = useState(false);
   const [formData, setFormData] = useState<StateType>({
     _signer: '' as EthereumAddress,
   });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [refetchNow, setRefetchNow] = useState(false);
 
-  // console.log('p.hsgAddress: ', p.hsgAddress);
-  // console.log('formData._signer: ', formData._signer);
+  console.log('p.hsgAddress: ', p.hsgAddress);
+  console.log('formData._signer: ', formData._signer);
   const { config, refetch, error } = useRemoveSigner(
     p.hsgAddress,
     formData._signer

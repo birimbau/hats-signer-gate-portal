@@ -22,7 +22,6 @@ import { SafeAttachMessage } from '../../components/Deployers/forms/utils/SafeAt
 // Apply all logic to MHSG version
 // Check out the other patern for the submit from claim or view to see if the form submit can change
 // Should we be using writeAsync for all?
-// Adust teh initial state of formik so that the field is empty (Check the other instance of this first)
 
 // Add standardised "isNotConnected" to all button logics. WHOLE APP
 // -- WRONG NETWORK MESSAGE / NOT CONNECTED MESSAGE
@@ -41,8 +40,11 @@ const Remove = () => {
   const [isErrorOne, setIsErrorOne] = useState(false);
   const [isErrorTwo, setIsErrorTwo] = useState(false);
 
+  // console.log('address: ', address);
   let definedContractAddress: EthereumAddress = '0x';
+  // console.log('definedContractAddress BEFORE: ', definedContractAddress);
   if (address !== undefined) definedContractAddress = address;
+  // console.log('definedContractAddress AFTER: ', definedContractAddress);
 
   const headerOne = () => (
     <VStack justifyContent="flex-end" height="100%" alignItems="flex-start">
@@ -55,11 +57,11 @@ const Remove = () => {
     return (
       <CheckHatsContract
         onResult={(result, address) => {
+          console.log(result);
           setResult(result);
           setAddress(address);
         }}
         setIsError={setIsErrorCheckHats}
-        setIsPending={setIsPending}
       />
     );
   };
@@ -77,14 +79,18 @@ const Remove = () => {
   };
 
   const contentTwo = () => {
+    console.log('result: ', result);
     if (result?.isMhsg) {
       return (
         <MHSGRemoveForm
-          address={address}
+          mhsgAddress={definedContractAddress}
           onLoading={(value) => setIsPending(value)}
           onTransationComplete={(transation) => {
             setTransaction(transation);
           }}
+          setIsErrorOne={setIsErrorOne}
+          setIsErrorTwo={setIsErrorTwo}
+          setIsPending={setIsPending}
         />
       );
     }
