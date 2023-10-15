@@ -146,6 +146,22 @@ const Remove = () => {
   };
 
   const contentThree = () => {
+    if (!transaction) {
+      return (
+        <>
+          <Text>
+            <b>Remove an Inactive Signer</b> that is no longer wearing the
+            signer hat.
+          </Text>
+          <br></br>
+          <Text>
+            Once a signer has renounced signer authority on the Hats app, this
+            maintenance step can be performed by any wallet, in order to sync
+            the multisig safe.
+          </Text>
+        </>
+      );
+    }
     if (!isPending && transaction) {
       return (
         <VStack height="100%" alignItems="flex-start" gap={'24px'}>
