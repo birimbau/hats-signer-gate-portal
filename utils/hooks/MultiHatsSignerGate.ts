@@ -312,18 +312,22 @@ const useValidSignerHats = (
     input: AbiTypeToPrimitiveType<'uint256'>;
   },
   address?: `0x${string}`
-) =>
-  useContractRead({
+) => {
+  console.log('useValidSignerHats');
+  return useContractRead({
     abi: MultiHatsSignerGateAbi,
     address: address || contract,
     functionName: 'validSignerHats',
     args: Array.from(Object.values(args)),
     enabled: false,
-
+    onSuccess: (data) => {
+      console.log(data);
+    },
     onError: (error) => {
       console.log(error);
     },
   });
+};
 
 const useVersion = () =>
   useContractRead({

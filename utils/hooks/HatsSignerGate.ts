@@ -189,8 +189,10 @@ const useCountValidSignatures = (args: {
     },
   });
 
-const useGetHatsContract = (address?: EthereumAddress) =>
-  useContractRead({
+const useGetHatsContract = (address?: EthereumAddress) => {
+  console.log('useValidSignerHats');
+
+  return useContractRead({
     abi: HatsSignerGateAbi,
     address: address || contract,
     functionName: 'getHatsContract',
@@ -202,6 +204,7 @@ const useGetHatsContract = (address?: EthereumAddress) =>
       console.log(error);
     },
   });
+};
 
 const useIsValidSigner = (
   args: {

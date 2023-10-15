@@ -37,6 +37,7 @@ const Remove = () => {
   const [isPending, setIsPending] = useState(false);
   const [transaction, setTransaction] = useState(undefined);
   const { chain } = useNetwork();
+  const [isErrorCheckHats, setIsErrorCheckHats] = useState(false);
   const [isErrorOne, setIsErrorOne] = useState(false);
   const [isErrorTwo, setIsErrorTwo] = useState(false);
 
@@ -57,6 +58,8 @@ const Remove = () => {
           setResult(result);
           setAddress(address);
         }}
+        setIsError={setIsErrorCheckHats}
+        setIsPending={setIsPending}
       />
     );
   };
@@ -118,6 +121,16 @@ const Remove = () => {
         <SafeAttachMessage
           text="Transaction Complete"
           color="black"
+          safeData=""
+        />
+      );
+    }
+
+    if (!isPending && isErrorCheckHats) {
+      return (
+        <SafeAttachMessage
+          text="Fetch Failed: Invalid HSG or MHSG address"
+          color="red"
           safeData=""
         />
       );
@@ -222,6 +235,17 @@ const Remove = () => {
             </ul>
           </SafeAttachMessage>
         </>
+      );
+    }
+
+    if (!isPending && isErrorCheckHats) {
+      return (
+        <SafeAttachMessage
+          text=""
+          color="black"
+          safeData="Check the entered address, make sure it is a valid HSG or MHSG address"
+          justifyStart={true}
+        />
       );
     }
 
