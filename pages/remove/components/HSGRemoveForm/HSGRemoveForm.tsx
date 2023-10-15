@@ -27,13 +27,10 @@ const HSGRemoveForm: React.FC<P> = (p) => {
   const { setIsErrorOne, setIsErrorTwo, setIsPending, onTransationComplete } =
     p;
   const [formData, setFormData] = useState<StateType>({
-    _signer: '0x',
+    _signer: '' as EthereumAddress,
   });
-  const [submitCount, setSubmitCount] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [refetchNow, setRefetchNow] = useState(false);
-
-  const value = useRef(submitCount);
 
   // console.log('p.hsgAddress: ', p.hsgAddress);
   // console.log('formData._signer: ', formData._signer);
@@ -125,7 +122,6 @@ const HSGRemoveForm: React.FC<P> = (p) => {
         console.log('Transaction was rejected by the user.');
         // You can also set some state or trigger alerts/modals to inform the user
       } else {
-        // Handle other types of errors here
         console.error('An error occurred:', writeError.message);
       }
     }
