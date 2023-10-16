@@ -58,6 +58,9 @@ const Remove = () => {
           setAddress(address);
         }}
         setIsError={setIsErrorCheckHats}
+        // Used to clear state to false.
+        setIsErrorOne={setIsErrorOne}
+        setIsErrorTwo={setIsErrorTwo}
       />
     );
   };
@@ -75,7 +78,6 @@ const Remove = () => {
   };
 
   const contentTwo = () => {
-    console.log('result: ', result);
     if (result?.isMhsg) {
       return (
         <MHSGRemoveForm
@@ -108,7 +110,35 @@ const Remove = () => {
   };
 
   const headerThree = () => {
-    if (isPending) {
+    if (!isPending && isErrorCheckHats) {
+      return (
+        <SafeAttachMessage
+          text="Fetch Failed: Invalid HSG or MHSG address"
+          color="red"
+          safeData=""
+        />
+      );
+    }
+
+    if (!isPending && isErrorOne) {
+      return (
+        <SafeAttachMessage
+          text="Transaction Failed: 'StillWearsSignerHat'"
+          color="red"
+          safeData=""
+        />
+      );
+    }
+    if (!isPending && isErrorTwo) {
+      return (
+        <SafeAttachMessage
+          text="Transaction Failed: 'FailedExecRemoveSigner'"
+          color="red"
+          safeData=""
+        />
+      );
+    }
+    if (!transaction && isPending) {
       return (
         <SafeAttachMessage
           text="Transaction Pending..."
@@ -128,20 +158,67 @@ const Remove = () => {
       );
     }
 
-    if (!isPending && isErrorCheckHats) {
-      return (
-        <SafeAttachMessage
-          text="Fetch Failed: Invalid HSG or MHSG address"
-          color="red"
-          safeData=""
-        />
-      );
-    }
-
     return <></>;
   };
 
   const contentThree = () => {
+    console.log('isErrorOne', isErrorOne);
+    console.log('isErrorTwo', isErrorTwo);
+    console.log('isPending', isPending);
+    console.log('isErrorCheckHats', isErrorCheckHats);
+    if (!isPending && isErrorCheckHats) {
+      return (
+        <SafeAttachMessage
+          text=""
+          color="black"
+          safeData="Check the entered address, make sure it is a valid HSG or MHSG address"
+          justifyStart={true}
+        />
+      );
+    }
+
+    if (!isPending && isErrorOne) {
+      return (
+        <SafeAttachMessage
+          text=""
+          color="red"
+          safeData="The Signer address must first renounce the associated hat in the app."
+          justifyStart={true}
+        />
+      );
+    }
+    if (!isPending && isErrorTwo) {
+      return (
+        <>
+          <SafeAttachMessage
+            text=""
+            color="red"
+            safeData="The address is invalid, below are potential reasons why:"
+            justifyStart={true}
+          >
+            <ul style={{ paddingInline: '24px' }}>
+              <li>
+                <Text>The address you&apos;ve entered is incorrect.</Text>
+              </li>
+              <li>
+                <Text>
+                  The address you&apos;ve entered is not wearing the relevant
+                  hat.
+                </Text>
+              </li>
+              <li>
+                <Text>
+                  The signer address has not claimed singing authority.
+                </Text>
+              </li>
+              <li>
+                <Text>Singing authority has already been removed.</Text>
+              </li>
+            </ul>
+          </SafeAttachMessage>
+        </>
+      );
+    }
     if (!transaction) {
       return (
         <>
@@ -201,69 +278,6 @@ const Remove = () => {
             </>
           )}
         </VStack>
-      );
-    }
-
-    if (!isPending && isErrorOne) {
-      return (
-        <SafeAttachMessage
-          text="Transaction Failed: 'StillWearsSignerHat'"
-          color="red"
-          safeData="The Signer address must first renounce the associated hat in the app."
-          justifyStart={true}
-        />
-      );
-    }
-    // if (isErrorTwo) {
-    //   return (
-    //     <SafeAttachMessage
-    //       text="Transaction Failed: 'NotSignerHatWearer'"
-    //       color="red"
-    //       safeData="The Signer address is not wearing the relevant hat"
-    //     />
-    //   );
-    // }
-    if (!isPending && isErrorTwo) {
-      return (
-        <>
-          <SafeAttachMessage
-            text="Transaction Failed: 'FailedExecRemoveSigner'"
-            color="red"
-            safeData="The address is invalid, below are potential reasons why:"
-            justifyStart={true}
-          >
-            <ul>
-              <li>
-                <Text>The address you&apos;ve entered is incorrect.</Text>
-              </li>
-              <li>
-                <Text>
-                  The address you&apos;ve entered is not wearing the relevant
-                  hat.
-                </Text>
-              </li>
-              <li>
-                <Text>
-                  The signer address has not claimed singing authority.
-                </Text>
-              </li>
-              <li>
-                <Text>Singing authority has already been removed.</Text>
-              </li>
-            </ul>
-          </SafeAttachMessage>
-        </>
-      );
-    }
-
-    if (!isPending && isErrorCheckHats) {
-      return (
-        <SafeAttachMessage
-          text=""
-          color="black"
-          safeData="Check the entered address, make sure it is a valid HSG or MHSG address"
-          justifyStart={true}
-        />
       );
     }
 

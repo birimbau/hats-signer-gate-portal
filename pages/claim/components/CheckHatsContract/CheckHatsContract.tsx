@@ -21,11 +21,13 @@ interface P {
     address: `0x${string}`
   ) => void;
   setIsError?(isError: boolean): void;
+  setIsErrorOne?(isErrorOne: boolean): void;
+  setIsErrorTwo?(isErrorTwo: boolean): void;
   setIsPending?(isPending: boolean): void;
 }
 
 const CheckHatsContract: React.FC<P> = (p) => {
-  const { setIsError, setIsPending } = p;
+  const { setIsError, setIsPending, setIsErrorOne, setIsErrorTwo } = p;
   const [formData, setFormData] = useState({
     contractAddress: '' as `0x${string}`,
   });
@@ -66,6 +68,8 @@ const CheckHatsContract: React.FC<P> = (p) => {
       initialValues={formData}
       validationSchema={validationSchema}
       onSubmit={(values) => {
+        if (setIsErrorOne) setIsErrorOne(false);
+        if (setIsErrorTwo) setIsErrorTwo(false);
         if (setIsError) setIsError(false);
 
         console.log('0');
