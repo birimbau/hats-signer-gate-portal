@@ -18,10 +18,6 @@ import HSGMaxThreshold from '../view/components/HSGView/components/MaxThreshold/
 import HSGMinThreshold from '../view/components/HSGView/components/MinThreshold/MinThreshold';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
 import { SafeAttachMessage } from '../../components/Deployers/forms/utils/SafeAttachMessage';
-// Check the view transaction button - is the ethers address correct?
-// Apply all logic to MHSG version
-// Check out the other patern for the submit from claim or view to see if the form submit can change
-// Should we be using writeAsync for all?
 
 // Add standardised "isNotConnected" to all button logics. WHOLE APP
 // -- WRONG NETWORK MESSAGE / NOT CONNECTED MESSAGE

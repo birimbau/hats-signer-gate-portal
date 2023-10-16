@@ -67,7 +67,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
           topics: data.logs[8].topics,
         });
 
-        setTransactionHash(data);
+        setTransactionHash(data.transactionHash);
         setData(response.args);
         console.log('Transaction Success');
       } else {
