@@ -1,163 +1,207 @@
 import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { useEffect, useRef, useState } from 'react';
-import { BsPen } from 'react-icons/bs';
-import { useContractWrite, useWaitForTransaction } from 'wagmi';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { useDeployMultiHatSGwSafe } from '../../../../utils/hooks/HatsSignerGateFactory';
 import Button from '../../../UI/CustomButton/CustomButton';
-import Input from '../../../UI/CustomInput/CustomInput';
 import MultiInput from '../../../UI/MultiInput/MultiInput';
 import { decodeEventLog } from 'viem';
 import { HatsSignerGateFactoryAbi } from '../../../../utils/abi/HatsSignerGateFactory/HatsSignerGateFactory';
+import { DeployConfigMHSGWF } from '../types/forms';
+import { EthereumAddress } from '../utils/ReadForm';
+import {
+  arrayOfHatStrings,
+  hatIntSchema,
+  minThresholdValidation,
+  targetThresholdValidation,
+} from '../utils/validation';
+import * as Yup from 'yup';
+import '../utils/validation'; // for Yup Validation
+import { AiOutlineDeploymentUnit } from 'react-icons/ai';
+import CustomInputWrapper from '../utils/CustomInputWrapper';
+import { Form, Formik } from 'formik';
+
 interface P {
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
+  setTransactionHash: (data: any) => void;
   setFormData: (data: any) => void;
-  formData: any;
+  formData: DeployConfigMHSGWF;
   setIsPending: (isPending: boolean) => void;
+  isPending: boolean;
 }
 
-const MultiHatsSignerGateAndSafeForm: React.FC<P> = (p) => {
-  const [hash, setHash] = useState<`0x${string}` | ''>('');
+const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
+  // Destructure Props for ease of use & visibility within this function
+  const {
+    setData,
+    setTransactionHash,
+    setFormData,
+    formData,
+    setIsPending,
+    isPending,
+  } = props;
 
-  const args = useRef({
-    _ownerHatId: BigInt(0),
-    _signersHatIds: [BigInt(0)],
-    _minThreshold: BigInt(0),
-    _targetThreshold: BigInt(0),
-    _maxSigners: BigInt(0),
-  });
+  const [hash, setHash] = useState<EthereumAddress | ''>('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [refetchNow, setRefetchNow] = useState(false);
 
-  const { config } = useDeployMultiHatSGwSafe(args.current);
+  // Used to prevent the user Deploying when not connected
+  const { isConnected } = useAccount();
 
-  const { data, isLoading, write } = useContractWrite({
-    ...config,
-  });
+  const { config, refetch } = useDeployMultiHatSGwSafe(formData);
+  const {
+    data: contractData,
+    isLoading,
+    write,
+    isError,
+  } = useContractWrite(config);
 
-  const { data: transactionData, isLoading: transationPending } =
-    useWaitForTransaction({
-      hash: hash as AbiTypeToPrimitiveType<'address'>,
-      onSuccess(data) {
+  // This only runs if "hash" is defined
+  // Use this to detect isLoading state in transaction and update user interface
+  const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
+    hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
+    onSuccess(data) {
+      if (data && data.logs && data.logs.length > 8 && data.logs[8]) {
         const response = decodeEventLog({
           abi: HatsSignerGateFactoryAbi,
           data: data.logs[8].data,
           topics: data.logs[8].topics,
         });
 
-        p.setTransactionData(data);
-        p.setData(response.args);
-        console.log('inside Success');
-      },
-    });
+        setTransactionHash(data.transactionHash);
+        setData(response.args);
+        console.log('Transaction Success');
+      } else {
+        console.error('Unexpected data structure:', data);
+      }
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+      // setData(response.args);
+      console.log('Transaction Success');
+    },
+  });
 
-    args.current = {
-      _ownerHatId: BigInt(p.formData._ownerHatId),
-      _signersHatIds: p.formData._signersHatIds.map((v: string) => BigInt(v)),
-      _minThreshold: BigInt(p.formData._minThreshold),
-      _targetThreshold: BigInt(p.formData._targetThreshold),
-      _maxSigners: BigInt(p.formData._maxSigners),
-    };
+  // Yup Validation Schema is already used in this project.
+  // Custom Validations are in one file for maintainability "validation.tsx"
+  const validationSchema = Yup.object().shape({
+    _ownerHatId: hatIntSchema,
+    _signersHatIds: arrayOfHatStrings,
+    _minThreshold: minThresholdValidation(hatIntSchema),
+    _targetThreshold: targetThresholdValidation(hatIntSchema),
+    _maxSigners: hatIntSchema.greaterThanTarget(),
+  });
 
-    write?.();
-  };
-
+  // This is used to update the parent's display status
   useEffect(() => {
-    if (data) {
-      setHash(data.hash);
+    setIsPending((isLoading || transationPending) && hash !== '');
+  }, [isLoading, transationPending, setIsPending, hash]);
+
+  // The hash changes when the user clicks submit.
+  // This triggers the "useWaitForTransaction"
+  useEffect(() => {
+    if (contractData) {
+      setHash(contractData.hash);
     }
-  }, [data]);
+  }, [contractData]);
 
+  // LOGIC FOR RUNNING CONTRACTS AFTER CLICKING FORMIK'S OnSubmit
+  // This only runs once on user submit, avoiding unnecessary calls to hooks.
   useEffect(() => {
-    p.setIsPending((isLoading || transationPending) && hash !== '');
-  }, [isLoading, transationPending, hash, p]);
+    if (isSubmitted) {
+      if (refetchNow) {
+        setRefetchNow(false);
+        refetch();
+      }
 
+      if (write) {
+        setIsSubmitted(false);
+        write?.();
+      }
+    }
+  }, [isSubmitted, refetchNow, refetch, write]);
+
+  // If user aborts transaction, reset status
+  useEffect(() => {
+    setIsSubmitted(false);
+  }, [isError]);
   return (
-    <form onSubmit={onSubmit} noValidate>
-      <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
-        <Input
-          label="Owner Hat ID (integer)"
-          placeholder="26950000000000000000000000004196..."
-          name="_ownerHatId"
-          value={p.formData._ownerHatId}
-          width="340px"
-          onChange={(e) =>
-            p.setFormData({ ...p.formData, _ownerHatId: e.target.value })
-          }
-          isDisabled={isLoading}
-        />
-        {/* <MultiInput
-          values={p.formData._signersHatIds}
-          width="372px"
-          label="Signer Hat IDs"
-          name="_signersHatIds"
-          countLabel="Id"
-          placeholder="26960000000000000000000000003152..."
-          onChange={(_value, index, e) => {
-            p.setFormData({
-              ...p.formData,
-              _signersHatIds: p.formData._signersHatIds.map(
-                (v: string, i: number) => {
-                  return i === index ? e.target.value : v;
-                }
-              ),
-            });
-          }}
-          onClickAdd={(value, _index) => {
-            p.setFormData({
-              ...p.formData,
-              _signersHatIds: [...p.formData._signersHatIds, ''],
-            });
-          }}
-          onClickRemove={(_value, index) => {
-            p.setFormData({
-              ...p.formData,
-              _signersHatIds: p.formData._signersHatIds.filter(
-                (_v: string, i: number) => i !== index
-              ),
-            });
-          }}
-        /> */}
-        <Input
-          label="Min Threshold (integer)"
-          width="340px"
-          placeholder="3"
-          name="_minThreshold"
-          value={p.formData._minThreshold}
-          onChange={(e) =>
-            p.setFormData({ ...p.formData, _minThreshold: e.target.value })
-          }
-          isDisabled={isLoading}
-        />
-        <Input
-          label="Max Threshold (integer)"
-          width="340px"
-          placeholder="5"
-          name="_targetThreshold"
-          value={p.formData._targetThreshold}
-          onChange={(e) =>
-            p.setFormData({ ...p.formData, _targetThreshold: e.target.value })
-          }
-          isDisabled={isLoading}
-        />
-        <Input
-          label="Max Signers (integer)"
-          width="340px"
-          placeholder="9"
-          name="_maxSigners"
-          value={p.formData._maxSigners}
-          onChange={(e) =>
-            p.setFormData({ ...p.formData, _maxSigners: e.target.value })
-          }
-          isDisabled={isLoading}
-        />
-        <Button isDisabled={isLoading} type="submit" leftIcon={<BsPen />}>
-          Write
-        </Button>
-      </VStack>
-    </form>
+    // Note: We have to use <Formik> wrapper for error handling
+    // ** Be aware that <Field>, <FastField>, <ErrorMessage>, connect(),
+    // and <FieldArray> will NOT work with useFormik() as they all require React Context **
+
+    <Formik
+      initialValues={formData}
+      validationSchema={validationSchema}
+      onSubmit={(values: DeployConfigMHSGWF, actions) => {
+        // console.log('submit');
+        // What happens here?
+        //    The formData is updates state in the parent file -> index.jsx,
+        //    this component re-renders, the updated state is used in
+        //    'useDeployHSGwSafe()' and this creates a valid 'write()'.
+        setFormData({
+          _ownerHatId: values._ownerHatId,
+          _signersHatIds: values._signersHatIds,
+          _minThreshold: values._minThreshold,
+          _targetThreshold: values._targetThreshold,
+          _maxSigners: values._maxSigners,
+        });
+
+        // This ensures that write() and refetch behave as expected.
+        setIsSubmitted(true);
+        setRefetchNow(true);
+      }}
+    >
+      {(props) => (
+        <Form>
+          <VStack width="100%" alignItems={'flex-start'} fontSize={14} gap={5}>
+            <CustomInputWrapper
+              name="_ownerHatId"
+              label="Owner Hat ID (integer)"
+              placeholder="26950000000000000000000000004196..."
+            />
+            <MultiInput
+              values={formData._signersHatIds}
+              width={'80%'}
+              label="Signer Hat IDs"
+              name="_signersHatIds"
+              countLabel="Id"
+              placeholder="26960000000000000000000000003152..."
+            />
+            <CustomInputWrapper
+              name="_minThreshold"
+              label="Min Threshold (integer)"
+              placeholder="3"
+              width={60}
+            />
+            <CustomInputWrapper
+              name="_targetThreshold"
+              label="Max Threshold (integer)"
+              placeholder="5"
+              width={60}
+            />
+
+            <CustomInputWrapper
+              name="_maxSigners"
+              label="Max Signers (integer)"
+              placeholder="9"
+              width={60}
+            />
+
+            <Button
+              leftIcon={<AiOutlineDeploymentUnit />}
+              type="submit"
+              // Will be grey during submit and after success
+              // props.dirty comes from formik and makes the button clickable once values are inputted
+              isDisabled={
+                !props.dirty || !isConnected || isPending || isSuccess
+              }
+              paddingInline={'30px'}
+            >
+              Deploy
+            </Button>
+          </VStack>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

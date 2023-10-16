@@ -17,6 +17,13 @@ export interface DeployConfigHSGWF {
   _targetThreshold: string;
   _maxSigners: string;
 }
+export interface DeployConfigMHSGWF {
+  _ownerHatId: string;
+  _signersHatIds: string[];
+  _minThreshold: string;
+  _targetThreshold: string;
+  _maxSigners: string;
+}
 export interface DeployConfigMHSG {
   _ownerHatId: string;
   _signersHatIds: string[];
@@ -43,10 +50,24 @@ export interface MHSG_Args {
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
 }
+export interface MHSGWS_Args {
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+}
 export interface HSG_Args {
   _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
   _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
   _safe: AbiTypeToPrimitiveType<'address'>;
+  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
+  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
+}
+export interface HSGWS_Args {
+  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
+  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
   _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
   _maxSigners: AbiTypeToPrimitiveType<'uint256'>;

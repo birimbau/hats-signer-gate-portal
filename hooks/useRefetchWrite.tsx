@@ -14,12 +14,14 @@ interface SubmitHookProps {
   write: (() => void) | undefined;
   refetch: Function;
   isError: boolean;
+  contractPrepared: boolean;
 }
 
 export const useRefetchWrite = ({
   write,
   refetch,
   isError,
+  contractPrepared,
 }: SubmitHookProps) => {
   const submitRef = useRef(false);
   const writeRef = useRef(false);
@@ -40,12 +42,12 @@ export const useRefetchWrite = ({
 
   // now write is upto date, call it.
   useEffect(() => {
-    if (writeRef.current) {
+    if (writeRef.current && contractPrepared) {
       writeRef.current = false;
       // console.log('inside useRefetchWrite - write()');
       write?.();
     }
-  }, [write, submitCount]);
+  }, [write, contractPrepared, submitCount]);
 
   // if the user exits the transaction, allow proper handling of deploy button.
   useEffect(() => {

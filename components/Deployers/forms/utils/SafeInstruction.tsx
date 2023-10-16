@@ -1,10 +1,15 @@
-import { VStack, Text, Button } from '@chakra-ui/react';
+import { VStack, Text } from '@chakra-ui/react';
 import { safe } from '../../../../pages/deploy/hsg';
 import VariableExplanations from './VariableExplainations';
 import TransactionDetails from './TransactionDetails';
 import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
 import { EthereumAddress } from './ReadForm';
 import { handleConnect } from './connectSafeToHSG';
+import { AiOutlinePaperClip } from 'react-icons/ai';
+import Button from '../../../UI/CustomButton/CustomButton';
+import { useWaitForTransaction } from 'wagmi';
+import { useEffect, useState } from 'react';
+import { AbiTypeToPrimitiveType } from 'abitype';
 
 interface SafeInstructionsProps {
   canAttachSafe: number;
@@ -12,11 +17,13 @@ interface SafeInstructionsProps {
   connectedAddress: EthereumAddress | undefined;
   safeType: string;
   data: any; // Adjust the type accordingly
-  transactionData: any; // Adjust the type accordingly
   formData: DeployConfigHSG | DeployConfigMHSG;
   isPending: boolean;
   setIsSuccessTwo: (isSuccess: boolean) => void;
   isSuccessTwo: boolean;
+  setIsPending_HsgAttachSafe: (isSuccess: boolean) => void;
+  isPending_HsgAttachSafe: boolean;
+  ownerArray?: string[];
 }
 
 const SafeInstructions: React.FC<SafeInstructionsProps> = ({
@@ -25,12 +32,41 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
   connectedAddress,
   safeType,
   data,
-  transactionData,
   formData,
   isPending,
   setIsSuccessTwo,
   isSuccessTwo,
+  setIsPending_HsgAttachSafe,
+  isPending_HsgAttachSafe,
+  ownerArray,
 }) => {
+  const [transactionHash, setTransactionHash] = useState<string | undefined>(
+    undefined
+  );
+  const [isSigningExecuting, setIsSigningExecuting] = useState(false);
+
+  const { isSuccess, isLoading, isError } = useWaitForTransaction({
+    hash: transactionHash as AbiTypeToPrimitiveType<'address'>,
+    onSuccess() {
+      console.log('Transaction Successfulll');
+    },
+  });
+
+  // After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
+  useEffect(() => {
+    setIsSuccessTwo(isSuccess);
+  }, [setIsSuccessTwo, isSuccess]);
+
+  // This is used to update the parent's display status
+  useEffect(() => {
+    setIsPending_HsgAttachSafe(isLoading && !!transactionHash);
+  }, [isLoading, setIsPending_HsgAttachSafe, transactionHash]);
+
+  // // This is used to update the parent's display status
+  // useEffect(() => {
+  //   setIsSigningExecuting(false);
+  // }, [isError, setIsSigningExecuting]);
+
   return (
     <>
       {canAttachSafe === safe.UNSET && (
@@ -56,6 +92,33 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
           <Text>&lt;&lt; Check another safe address</Text>
         </VStack>
       )}
+      {canAttachSafe === safe.WRONG_ADDRESS && (
+        <VStack
+          justifyContent="flex-start"
+          height="100%"
+          alignItems="flex-start"
+        >
+          <br></br>
+
+          <Text>
+            You are using the wrong wallet address. You must use the same
+            address that owns the Safe.
+          </Text>
+
+          <Text>Here is a list of the owner(s):</Text>
+
+          {/* Display the owner(s) of the Safe */}
+          {ownerArray && (
+            <ul>
+              {ownerArray.map((str, index) => (
+                <li key={index}>
+                  <Text wordBreak="break-word">{str}</Text>
+                </li>
+              ))}
+            </ul>
+          )}
+        </VStack>
+      )}
       {canAttachSafe === safe.INVALID_ADDRESS && (
         <VStack
           justifyContent="flex-start"
@@ -72,21 +135,26 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
       {canAttachSafe === safe.CAN_ATTACH && hsgAddress && !isSuccessTwo && (
         <>
           <Button
-            isDisabled={!connectedAddress}
+            leftIcon={<AiOutlinePaperClip />}
+            isDisabled={!connectedAddress || isSigningExecuting}
             onClick={() => {
+              setIsSigningExecuting(true);
               if (connectedAddress && hsgAddress) {
                 handleConnect(
                   hsgAddress,
                   connectedAddress,
                   formData._safe,
-                  setIsSuccessTwo
+                  setTransactionHash,
+                  setIsSigningExecuting
                 );
               }
             }}
-            width={'140px'}
           >
             Attach {safeType} to Safe
           </Button>
+          <br></br>
+          <br></br>
+
           <>
             <Text>
               Now that the {safeType} has successfully been created, it needs to
@@ -106,13 +174,17 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
           </>
         </>
       )}
-      {!isPending && isSuccessTwo && (
-        <TransactionDetails
-          data={data}
-          transactionData={transactionData}
-          formData={formData}
-        />
-      )}
+      {!isPending &&
+        isSuccessTwo &&
+        transactionHash &&
+        !isPending_HsgAttachSafe && (
+          <TransactionDetails
+            type={safeType.toUpperCase()}
+            data={data}
+            transactionHash={transactionHash}
+            formData={formData}
+          />
+        )}
     </>
   );
 };

@@ -1,7 +1,7 @@
-import { Flex, VStack } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 import { AbiTypeToPrimitiveType } from 'abitype';
 import { Form, Formik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { decodeEventLog } from 'viem';
 import * as Yup from 'yup';
@@ -21,17 +21,17 @@ import MultiInput from '../../../UI/MultiInput/MultiInput';
 import CustomInputWrapper from '../utils/CustomInputWrapper';
 import { DeployConfigMHSG } from '../types/forms';
 import { EthereumAddress } from '../utils/ReadForm';
-
-// TODO - Implement blue button selection corrections - get the right state sorted out.
-// TODO - finalise connecting "attach MHSG TO SAFE" - READ DOCS!
+import { AiOutlineDeploymentUnit } from 'react-icons/ai';
+import { extractMhsgAddress } from '../utils/extractMhsgAddress';
 
 interface Props {
   setIsPending: (isPending: boolean) => void;
   setData: (data: any) => void;
-  setTransactionData: (data: any) => void;
   formData: DeployConfigMHSG;
   setFormData: (formData: any) => void;
   isPending: boolean;
+  setIsSuccessOne: (isSuccessOne: boolean) => void;
+  setMhsgAddress: (hsgAddress: EthereumAddress | null) => void;
 }
 
 export default function MultiHatsSignerGateForm(props: Props) {
@@ -39,10 +39,11 @@ export default function MultiHatsSignerGateForm(props: Props) {
   const {
     setIsPending,
     setData,
-    setTransactionData,
     formData,
     setFormData,
     isPending,
+    setIsSuccessOne,
+    setMhsgAddress,
   } = props;
 
   const [hash, setHash] = useState<EthereumAddress | ''>('');
@@ -50,7 +51,12 @@ export default function MultiHatsSignerGateForm(props: Props) {
   // Used to prevent the user Deploying when not connected
   const { isConnected } = useAccount();
 
-  const { config, refetch } = useDeployMultiHatSG(formData);
+  const {
+    config,
+    refetch,
+    isSuccess: contractPrepared,
+  } = useDeployMultiHatSG(formData);
+
   const {
     data: contractData,
     isLoading,
@@ -58,24 +64,44 @@ export default function MultiHatsSignerGateForm(props: Props) {
     isError,
   } = useContractWrite(config);
 
+  // console.log('contractData.hash', contractData?.hash);
+
   // This only runs if "hash" is defined
   // Use this to detect isLoading state in transaction
-  const { isSuccess, isLoading: transationPending } = useWaitForTransaction({
+  const {
+    isSuccess,
+    isLoading: transationPending,
+    data: transactionData,
+  } = useWaitForTransaction({
     hash: contractData?.hash as AbiTypeToPrimitiveType<'address'>,
     onSuccess(data) {
       const response = decodeEventLog({
         abi: HatsSignerGateFactoryAbi,
-        data: data.logs[8].data,
-        topics: data.logs[8].topics,
+        data: data.logs[3].data,
+        topics: data.logs[3].topics,
       });
 
-      setTransactionData(data);
       setData(response.args);
       console.log('Transaction Success');
     },
   });
 
-  const handleFormSubmit = useRefetchWrite({ write, refetch, isError });
+  // Get the HsgAddress from the HsgFactory response
+  useEffect(() => {
+    if (transactionData) {
+      const MhsgContractAddress = extractMhsgAddress(transactionData);
+      // console.log('MhsgContractAddress: ', MhsgContractAddress);
+      setMhsgAddress(MhsgContractAddress);
+    }
+  }, [transactionData, setMhsgAddress]);
+  // console.log('inside hsgForm - render');
+
+  const handleFormSubmit = useRefetchWrite({
+    write,
+    refetch,
+    isError,
+    contractPrepared,
+  });
 
   // This is used to update the parent's display status
   useEffect(() => {
@@ -89,6 +115,11 @@ export default function MultiHatsSignerGateForm(props: Props) {
       setHash(contractData.hash);
     }
   }, [contractData]);
+
+  // After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
+  useEffect(() => {
+    setIsSuccessOne(isSuccess);
+  }, [setIsSuccessOne, isSuccess]);
 
   // Custom Validations are in one file for maintainability "validation.tsx"
   const validationSchema = Yup.object().shape({
@@ -161,6 +192,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
             />
 
             <Button
+              leftIcon={<AiOutlineDeploymentUnit />}
               type="submit"
               // Will be grey during submit and after success
               // props.dirty comes from formik and makes the button clickable once values are inputted
@@ -171,7 +203,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
                 isPending ||
                 isSuccess
               }
-              width={'140px'}
+              paddingInline={'30px'}
             >
               Deploy
             </Button>

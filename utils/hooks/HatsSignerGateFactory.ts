@@ -4,8 +4,12 @@ import { HatsSignerGateFactoryAbi } from '../abi/HatsSignerGateFactory/HatsSigne
 import { CONTRACTS } from '../constants';
 import {
   DeployConfigHSG,
+  DeployConfigHSGWF,
   DeployConfigMHSG,
+  DeployConfigMHSGWF,
+  HSGWS_Args,
   HSG_Args,
+  MHSGWS_Args,
   MHSG_Args,
 } from '../../components/Deployers/forms/types/forms';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
@@ -26,13 +30,14 @@ const useDeployHSG = (formData: DeployConfigHSG) => {
   };
 
   return usePrepareContractWrite({
+    enabled: false, // This means that the contract does not get called on every render until refetch is called.
     chainId,
     abi: HatsSignerGateFactoryAbi,
     address: contract,
     functionName: 'deployHatsSignerGate',
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
-      console.log(data);
+      console.log('prepare Contract: ', data);
     },
     onError: (error) => {
       console.log(error);
@@ -40,14 +45,15 @@ const useDeployHSG = (formData: DeployConfigHSG) => {
   });
 };
 
-const useDeployHSGwSafe = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}) =>
-  usePrepareContractWrite({
+const useDeployHSGwSafe = (formData: DeployConfigHSGWF) => {
+  const args: HSGWS_Args = {
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signerHatId: BigInt(formData._signerHatId),
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
+  };
+  return usePrepareContractWrite({
     enabled: false, // This means that the contract does not get called on every render until refetch is called.
     chainId,
     abi: HatsSignerGateFactoryAbi,
@@ -61,6 +67,7 @@ const useDeployHSGwSafe = (args: {
       console.log(error);
     },
   });
+};
 
 const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
   const args: MHSG_Args = {
@@ -87,13 +94,14 @@ const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
   });
 };
 
-const useDeployMultiHatSGwSafe = (args: {
-  _ownerHatId: AbiTypeToPrimitiveType<'uint256'>;
-  _signersHatIds: AbiTypeToPrimitiveType<'uint256'>[];
-  _minThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _targetThreshold: AbiTypeToPrimitiveType<'uint256'>;
-  _maxSigners: AbiTypeToPrimitiveType<'uint256'>;
-}) => {
+const useDeployMultiHatSGwSafe = (formData: DeployConfigMHSGWF) => {
+  const args: MHSGWS_Args = {
+    _ownerHatId: BigInt(formData._ownerHatId),
+    _signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
+    _minThreshold: BigInt(formData._minThreshold),
+    _targetThreshold: BigInt(formData._targetThreshold),
+    _maxSigners: BigInt(formData._maxSigners),
+  };
   return usePrepareContractWrite({
     enabled: false,
     chainId,

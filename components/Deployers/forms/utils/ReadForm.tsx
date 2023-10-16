@@ -4,7 +4,10 @@ import { AiOutlineRead } from 'react-icons/ai';
 import Button from '../../../UI/CustomButton/CustomButton';
 import { Formik, Form } from 'formik';
 import CustomInputWrapper from './CustomInputWrapper';
-import { useGetModulesPaginated } from '../../../../utils/hooks/GnosisSafeL2';
+import {
+  useGetModulesPaginated,
+  useGetOwners,
+} from '../../../../utils/hooks/GnosisSafeL2';
 import * as Yup from 'yup';
 import '../utils/validation'; // for Yup Validation
 import { useSubmitRefetch } from '../../../../hooks/useSubmitRefetch';
@@ -12,38 +15,63 @@ import { DeployConfigHSG, DeployConfigMHSG } from '../types/forms';
 import { safe } from '../../../../pages/deploy/hsg';
 import { useAccount } from 'wagmi';
 
-// TODO - Loading state!!!!!!
-// todo - move the attach button to the correct location = curretnly in HSGform just at the end.
-
 interface Props {
   setCanAttachSafe: (value: number) => void;
   formData: DeployConfigHSG | DeployConfigMHSG;
   setFormData: (formData: any) => void;
+  setSafeOwnerAddress: (safeOwnerAddress: string[]) => void;
 }
 
 export type EthereumAddress = `0x${string}`;
 
 function ReadForm(props: Props) {
-  const { setCanAttachSafe, formData, setFormData } = props;
-  const { isConnected } = useAccount();
+  const { setCanAttachSafe, formData, setFormData, setSafeOwnerAddress } =
+    props;
+  const { isConnected, address } = useAccount();
 
   // This passes the safe address and check's if it's valid for connection
   const { data, refetch, isLoading, isError } = useGetModulesPaginated(
     formData._safe as EthereumAddress
   );
+  // This passes the safe address and check's if the user is connected to the correct wallet.
+  const {
+    data: ownersData,
+    refetch: refetch2,
+    isError: isError2,
+  } = useGetOwners(formData._safe as EthereumAddress);
 
   // This is used to manage unnecessary re-renders. onSubmit only one re-render occurs
   const triggerRefetch = useSubmitRefetch(refetch, isError);
+  const triggerRefetch2 = useSubmitRefetch(refetch2, isError2);
+
+  // On re-render update the status to display relevant user message.
+  // useEffect(() => {
+  //   // If the user is connected to the wrong address, alert user
+  //   if (ownersData) {
+  //     const ownersArray = ownersData as unknown as string[];
+  //     if (address !== undefined && !ownersArray.includes(address)) {
+  //       setCanAttachSafe(safe.WRONG_ADDRESS);
+  //     }
+  //   }
+  // }, [ownersData, address, setCanAttachSafe, refetch2]);
 
   // On re-render update the status to display relevant user message.
   useEffect(() => {
     if (data) {
       console.log('DATA: ', data);
+      if (ownersData) {
+        const ownersArray = ownersData as unknown as string[];
+        if (address !== undefined && !ownersArray.includes(address)) {
+          setCanAttachSafe(safe.WRONG_ADDRESS);
+          setSafeOwnerAddress(ownersArray);
+          return;
+        }
+      }
       setCanAttachSafe(
         data[0].length === 0 ? safe.CAN_ATTACH : safe.CANNOT_ATTACH
       );
     }
-  }, [data, setCanAttachSafe, refetch]);
+  }, [data, ownersData, address, setCanAttachSafe, refetch]);
   // // On re-render check the error
   useEffect(() => {
     if (isError) {
@@ -67,6 +95,7 @@ function ReadForm(props: Props) {
           _safe: values._SafeAddress,
         });
         triggerRefetch();
+        triggerRefetch2();
       }}
     >
       {() => (
@@ -84,6 +113,7 @@ function ReadForm(props: Props) {
               type="submit"
               leftIcon={<AiOutlineRead />}
               isDisabled={isLoading || !isConnected}
+              paddingInline={'30px'}
             >
               Read
             </Button>

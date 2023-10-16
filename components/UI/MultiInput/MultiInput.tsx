@@ -28,10 +28,10 @@ interface P {
 import { FieldArray, FieldArrayRenderProps } from 'formik';
 const MultiInput: React.FC<P> = (p) => {
   return (
-    <Flex flexDirection={'column'} gap={0} w={'80%'}>
+    <Flex flexDirection={'column'} gap={0} w={'100%'}>
       <FieldArray name={p.name}>
         {({ push, remove, form }: FieldArrayRenderProps) => (
-          <VStack gap={'13px'} alignItems="flex-start" width={p.width}>
+          <VStack gap={'13px'} alignItems="flex-start">
             {form.values[p.name].map((v: string, i: number) => {
               const isError =
                 Array.isArray(form.errors[p.name]) &&
@@ -48,7 +48,11 @@ const MultiInput: React.FC<P> = (p) => {
               // );
 
               return (
-                <FormControl key={i} isInvalid={!!(isError && isTouched)}>
+                <FormControl
+                  key={i}
+                  isInvalid={!!(isError && isTouched)}
+                  // w={'100%'}
+                >
                   <Input
                     label={`${p.label} [${p.countLabel}${i + 1}] (integer)`}
                     type={p.type || 'text'}
