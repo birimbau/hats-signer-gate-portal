@@ -96,11 +96,11 @@ const useRemoveSigner = (args: {
 
 const useSetMinThreshold = (args: {
   _minThreshold: AbiTypeToPrimitiveType<"uint256">;
-}) =>
+}, address?: string) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: "setMinThreshold",
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
@@ -131,10 +131,10 @@ const useSetOwnerHat = (args: {
 
 const useSetTargetThreshold = (args: {
   _targetThreshold: AbiTypeToPrimitiveType<"uint256">;
-}) =>
+}, address?: string) =>
   usePrepareContractWrite({
     chainId,
-    abi: HatsSignerGateAbi,
+    abi: address || HatsSignerGateAbi,
     address: contract,
     functionName: "setTargetThreshold",
     args: Array.from(Object.values(args)),

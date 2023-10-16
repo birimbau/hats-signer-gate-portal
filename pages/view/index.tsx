@@ -55,7 +55,7 @@ const View = () => {
             return <HSGAttachSafe address={address} />
         }
 
-        return <VStack justifyContent='flex-end' height='100%' alignItems='flex-start'>
+        return <VStack justifyContent='flex-start' height='100%' alignItems='flex-start'>
         <Text><b>View Parameters</b> of a multisig safe governed by an HSG or MHSG contract.</Text>
         <Text>Any wallet can fetch the contract to view thresholds, Signer Hat IDs, the safe address, and number of valid signers.</Text>
       </VStack>
