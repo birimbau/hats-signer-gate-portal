@@ -10,6 +10,7 @@ import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../../../../components/Deployers/forms/utils/CustomInputWrapper';
 import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
 import { EthereumAddress } from '../../../../components/Deployers/forms/utils/ReadForm';
+import { AiOutlineDownload } from 'react-icons/ai';
 
 interface P {
   onResult: (
@@ -133,7 +134,7 @@ const CheckHatsContract: React.FC<P> = (p) => {
                 checkHSGIsLoading ||
                 !isReadyToUse
               }
-              leftIcon={<GrDownload />}
+              leftIcon={<AiOutlineDownload />}
             >
               Fetch
             </Button>
