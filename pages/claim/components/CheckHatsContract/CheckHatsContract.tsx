@@ -8,6 +8,7 @@ import { useGetHatsContract } from '../../../../utils/hooks/HatsSignerGate';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../../../../components/Deployers/forms/utils/CustomInputWrapper';
+import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
 
 interface P {
   onResult: (
@@ -31,6 +32,8 @@ const CheckHatsContract: React.FC<P> = (p) => {
   const [formData, setFormData] = useState({
     contractAddress: '' as `0x${string}`,
   });
+
+  const { isReadyToUse } = useWalletConnectionContext();
 
   // Used to check if its a MHSG
   const {
@@ -124,7 +127,10 @@ const CheckHatsContract: React.FC<P> = (p) => {
             <Button
               type="submit"
               isDisabled={
-                !props.dirty || checkMHSGIsLoading || checkHSGIsLoading
+                !props.dirty ||
+                checkMHSGIsLoading ||
+                checkHSGIsLoading ||
+                !isReadyToUse
               }
               leftIcon={<GrDownload />}
             >
