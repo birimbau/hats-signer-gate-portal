@@ -57,7 +57,7 @@ const Claim = () => {
   };
 
   const contentTwo = () => {
-    if (result?.isMhsg) {
+    if (!transaction && result?.isMhsg) {
       return (
         <MHSGClaimForm
           address={address}
@@ -69,7 +69,7 @@ const Claim = () => {
       );
     }
 
-    if (result?.isHsg) {
+    if (!transaction && result?.isHsg) {
       return (
         <HSGClaimForm
           address={address}

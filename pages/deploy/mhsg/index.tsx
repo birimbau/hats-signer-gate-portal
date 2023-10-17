@@ -112,9 +112,9 @@ const MHSG = () => {
     )
       return (
         <SafeAttachMessage
-          text="HSG Created"
+          text="MHSG Created"
           color="black"
-          safeData='Click "Attach HSG to Safe"'
+          safeData='Click "Attach MHSG to Safe"'
         />
       );
 
@@ -122,7 +122,7 @@ const MHSG = () => {
     if (isPending_HsgAttachSafe && !isSuccessTwo)
       return (
         <SafeAttachMessage
-          text="Attaching HSG to Safe..."
+          text="Attaching MHSG to Safe..."
           color="black"
           safeData=""
         />
