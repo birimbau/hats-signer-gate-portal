@@ -47,7 +47,7 @@ const MHSGView: React.FC<P> = (p) => {
       </VStack>
       <VStack alignItems="flex-start">
         <Text as="b">Owner Hat ID</Text>
-        <Text>{ownerHatID?.toString()}</Text>
+        <Text wordBreak="break-word">{ownerHatID?.toString()}</Text>
       </VStack>
       <VStack alignItems="flex-start">
         <MinThreshold address={p.address} />
