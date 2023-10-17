@@ -8,8 +8,13 @@ import HSGAttachSafe from './components/HSGAttachSafe/HSGAttachSafe';
 import MHSGAttachSafe from './components/MHSGAttachSafe/MHSGAttachSafe';
 import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
 
+interface resultObject {
+  isMhsg: boolean;
+  isHsg: boolean;
+}
+
 const View = () => {
-  const [result, setResult] = useState(undefined);
+  const [result, setResult] = useState<resultObject | undefined>(undefined);
   const [address, setAddress] = useState<EthereumAddress>(
     '' as EthereumAddress
   );
