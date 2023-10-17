@@ -22,6 +22,8 @@ import { SafeAttachMessage } from '../../components/Deployers/forms/utils/SafeAt
 // Add standardised "isNotConnected" to all button logics. WHOLE APP
 // -- WRONG NETWORK MESSAGE / NOT CONNECTED MESSAGE
 
+// FIGURE OUT THE PROCESS FLOW FOR REMOVE. CURRENTLY UNABLE TO REMOVE - WHAT IS THE DESIRED USECASE, WHAT ACTIONS NEED TO OCCUR FOR A USER TO BE ABLE TO REMOVE?
+
 const Remove = () => {
   const [result, setResult] = useState<
     undefined | { isHsg: boolean; isMhsg: boolean }
