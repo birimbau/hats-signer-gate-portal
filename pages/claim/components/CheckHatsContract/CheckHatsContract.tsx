@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../../../../components/Deployers/forms/utils/CustomInputWrapper';
 import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
+import { EthereumAddress } from '../../../../components/Deployers/forms/utils/ReadForm';
 
 interface P {
   onResult: (
@@ -19,7 +20,7 @@ interface P {
       isMhsg: boolean;
       isHsg: boolean;
     },
-    address: `0x${string}`
+    address: EthereumAddress
   ) => void;
   setIsError?(isError: boolean): void;
   setIsErrorOne?(isErrorOne: boolean): void;
@@ -30,7 +31,7 @@ interface P {
 const CheckHatsContract: React.FC<P> = (p) => {
   const { setIsError, setIsPending, setIsErrorOne, setIsErrorTwo } = p;
   const [formData, setFormData] = useState({
-    contractAddress: '' as `0x${string}`,
+    contractAddress: '' as EthereumAddress,
   });
 
   const { isReadyToUse } = useWalletConnectionContext();

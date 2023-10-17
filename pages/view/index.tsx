@@ -6,10 +6,13 @@ import MHSGView from './components/MHSGView/MHSGView';
 import HSGView from './components/HSGView/HSGView';
 import HSGAttachSafe from './components/HSGAttachSafe/HSGAttachSafe';
 import MHSGAttachSafe from './components/MHSGAttachSafe/MHSGAttachSafe';
+import { EthereumAddress } from '../../components/Deployers/forms/utils/ReadForm';
 
 const View = () => {
   const [result, setResult] = useState(undefined);
-  const [address, setAddress] = useState(undefined);
+  const [address, setAddress] = useState<EthereumAddress>(
+    '' as EthereumAddress
+  );
 
   const headerOne = () => {
     return (
@@ -33,7 +36,7 @@ const View = () => {
 
   const contentTwo = () => {
     if (result?.isMhsg) {
-      return <MHSGView />;
+      return <MHSGView address={address} />;
     }
 
     if (result?.isHsg) {
