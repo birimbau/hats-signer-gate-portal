@@ -3,6 +3,8 @@ import Button from '../../../../components/UI/CustomButton/CustomButton';
 import { useSafe as useHSGSafe } from '../../../../utils/hooks/HatsSignerGate';
 import { useSafe as useMHSGSafe } from '../../../../utils/hooks/MultiHatsSignerGate';
 import { EthereumAddress } from '../../../../components/Deployers/forms/utils/ReadForm';
+import { useNetwork } from 'wagmi';
+import { getSafeAppUrlPrefix } from '../../../../utils/utils';
 
 interface P {
   address?: EthereumAddress;
@@ -23,11 +25,13 @@ interface HSGSafeButtonP {
 
 const HSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
   const { data: safe } = useHSGSafe(p.address);
+  const { chain } = useNetwork();
+
   return (
     <Button
       leftIcon={<BsSafe />}
       onClick={() => {
-        window.open(`https://app.safe.global/home?safe=gor:${safe}`);
+        window.open(`${getSafeAppUrlPrefix(chain?.id)}${safe}`);
       }}
     >
       View Safe
@@ -37,11 +41,13 @@ const HSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
 
 const MHSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
   const { data: safe } = useMHSGSafe(p.address);
+  const { chain } = useNetwork();
+
   return (
     <Button
       leftIcon={<BsSafe />}
       onClick={() => {
-        window.open(`https://app.safe.global/home?safe=gor:${safe}`);
+        window.open(`${getSafeAppUrlPrefix(chain?.id)}${safe}`);
       }}
     >
       View Safe
