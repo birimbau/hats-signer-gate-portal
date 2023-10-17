@@ -1,6 +1,6 @@
 import { useContractWrite, useWaitForTransaction } from 'wagmi';
 import { useRemoveSigner } from '../../../../utils/hooks/MultiHatsSignerGate';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../../../../components/Deployers/forms/utils/CustomInputWrapper';
 import Button from '../../../../components/UI/CustomButton/CustomButton';

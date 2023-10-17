@@ -1,13 +1,14 @@
-import { useMinThreshold } from "../../../../../../utils/hooks/HatsSignerGate";
+import { EthereumAddress } from '../../../../../../components/Deployers/forms/utils/ReadForm';
+import { useMinThreshold } from '../../../../../../utils/hooks/HatsSignerGate';
 
 interface P {
-    address?: string;
+  address?: EthereumAddress;
 }
 
 const MinThreshold: React.FC<P> = (p) => {
-    const { data: minThreshold } = useMinThreshold(p.address);
+  const { data: minThreshold } = useMinThreshold(p.address);
 
-    return <div>Min Threshold = {minThreshold?.toString()}</div>
-}
+  return <div>Min Threshold = {minThreshold?.toString()}</div>;
+};
 
 export default MinThreshold;

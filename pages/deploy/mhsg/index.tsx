@@ -181,6 +181,7 @@ const MHSG = () => {
       isSuccessTwo={isSuccessTwo}
       setIsPending_HsgAttachSafe={setIsPending_HsgAttachSafe}
       isPending_HsgAttachSafe={isPending_HsgAttachSafe}
+      ownerArray={safeOwnerAddress}
     />
   );
 
