@@ -1,8 +1,6 @@
 import { VStack } from '@chakra-ui/react';
-import Input from '../../../../components/UI/CustomInput/CustomInput';
 import { useEffect, useState } from 'react';
 import Button from '../../../../components/UI/CustomButton/CustomButton';
-import { GrDownload } from 'react-icons/gr';
 import { useValidSignerHats } from '../../../../utils/hooks/MultiHatsSignerGate';
 import { useGetHatsContract } from '../../../../utils/hooks/HatsSignerGate';
 import * as Yup from 'yup';

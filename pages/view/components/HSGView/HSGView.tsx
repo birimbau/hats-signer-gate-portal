@@ -13,9 +13,10 @@ import ValidSignerCount from './components/ValidSignerCount/ValidSignerCount';
 import MinThreshold from './components/MinThreshold/MinThreshold';
 import MaxThreshold from './components/MaxThreshold/MaxThreshold';
 import MaxSigners from './components/MaxSigners/MaxSigners';
+import { EthereumAddress } from '../../../../components/Deployers/forms/utils/ReadForm';
 
 interface P {
-  address: string;
+  address: EthereumAddress;
 }
 
 const HSGView: React.FC<P> = (p) => {
