@@ -232,7 +232,7 @@ const HSGForm = (p) => {
         }
       });
     }
-
+    
     if (
       isSubmitted &&
       originalFormData.current.maxThreshold !== formData.maxThreshold &&
