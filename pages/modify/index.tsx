@@ -79,7 +79,6 @@ const ModifyPage: React.FC = () => {
     const contentTwo = () => {
         if (result?.isHsg) {
             return <HSGModifyForm address={address} setIsLoading={setIsLoading} setTransaction={value => {
-                debugger;
                 setTransaction({
                     ...transaction,
                     ...value
@@ -103,22 +102,22 @@ const ModifyPage: React.FC = () => {
            return <VStack height="100%" alignItems="flex-start" gap={'24px'}>
           <Button
             leftIcon={<FiCopy />}
-            onClick={() => {
+            onClick={() => {          
                 if (transaction.ownerHat) {
                     window.open(
-                        `${getBlockExplorerUrl(chain?.id || 1)}/tx/${transaction.ownerHat.hash}`
+                        `${getBlockExplorerUrl(chain?.id || 1)}/tx/${transaction.ownerHat}`
                       );
                 }
              
                 if (transaction.maxThreshold) {
                     window.open(
-                        `${getBlockExplorerUrl(chain?.id || 1)}/tx/${transaction.maxThreshold.hash}`
+                        `${getBlockExplorerUrl(chain?.id || 1)}/tx/${transaction.maxThreshold}`
                       );
                 }
 
                 if (transaction.minThreshold) {
                     window.open(
-                        `${getBlockExplorerUrl(chain?.id || 1)}/tx/${transaction.minThreshold.hash}`
+                        `${getBlockExplorerUrl(chain?.id || 1)}/tx/${transaction.minThreshold}`
                       );
                 }
             }}
