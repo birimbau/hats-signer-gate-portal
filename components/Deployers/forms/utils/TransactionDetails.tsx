@@ -33,6 +33,10 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
   formData,
 }) => {
   const { chain } = useNetwork();
+  console.log(
+    'TransactionDetails Log: ',
+    `${getBlockExplorerUrl(chain?.id)}/tx/${transactionHash}`
+  );
 
   return (
     <VStack height="100%" alignItems="flex-start" gap={'24px'}>
@@ -51,6 +55,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
         leftIcon={<BsCardList />}
         minWidth={'60%'}
         onClick={() => {
+          console;
           window.open(
             `${getBlockExplorerUrl(chain?.id)}/address/${
               (data as unknown as { _hatsSignerGate: string })._hatsSignerGate

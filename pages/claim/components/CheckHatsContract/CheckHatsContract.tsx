@@ -1,13 +1,14 @@
 import { VStack } from '@chakra-ui/react';
-import Input from '../../../../components/UI/CustomInput/CustomInput';
 import { useEffect, useState } from 'react';
 import Button from '../../../../components/UI/CustomButton/CustomButton';
-import { GrDownload } from 'react-icons/gr';
 import { useValidSignerHats } from '../../../../utils/hooks/MultiHatsSignerGate';
 import { useGetHatsContract } from '../../../../utils/hooks/HatsSignerGate';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import CustomInputWrapper from '../../../../components/Deployers/forms/utils/CustomInputWrapper';
+import { useWalletConnectionContext } from '../../../../context/WalletConnectionContext';
+import { EthereumAddress } from '../../../../components/Deployers/forms/utils/ReadForm';
+import { AiOutlineDownload } from 'react-icons/ai';
 
 interface P {
   onResult: (
@@ -18,17 +19,21 @@ interface P {
       isMhsg: boolean;
       isHsg: boolean;
     },
-    address: `0x${string}`
+    address: EthereumAddress
   ) => void;
   setIsError?(isError: boolean): void;
+  setIsErrorOne?(isErrorOne: boolean): void;
+  setIsErrorTwo?(isErrorTwo: boolean): void;
   setIsPending?(isPending: boolean): void;
 }
 
 const CheckHatsContract: React.FC<P> = (p) => {
-  const { setIsError, setIsPending } = p;
+  const { setIsError, setIsPending, setIsErrorOne, setIsErrorTwo } = p;
   const [formData, setFormData] = useState({
-    contractAddress: '' as `0x${string}`,
+    contractAddress: '' as EthereumAddress,
   });
+
+  const { isReadyToUse } = useWalletConnectionContext();
 
   // Used to check if its a MHSG
   const {
@@ -66,6 +71,8 @@ const CheckHatsContract: React.FC<P> = (p) => {
       initialValues={formData}
       validationSchema={validationSchema}
       onSubmit={(values) => {
+        if (setIsErrorOne) setIsErrorOne(false);
+        if (setIsErrorTwo) setIsErrorTwo(false);
         if (setIsError) setIsError(false);
 
         console.log('0');
@@ -120,9 +127,12 @@ const CheckHatsContract: React.FC<P> = (p) => {
             <Button
               type="submit"
               isDisabled={
-                !props.dirty || checkMHSGIsLoading || checkHSGIsLoading
+                !props.dirty ||
+                checkMHSGIsLoading ||
+                checkHSGIsLoading ||
+                !isReadyToUse
               }
-              leftIcon={<GrDownload />}
+              leftIcon={<AiOutlineDownload />}
             >
               Fetch
             </Button>
