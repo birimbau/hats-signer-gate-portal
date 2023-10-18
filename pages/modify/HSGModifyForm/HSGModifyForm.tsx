@@ -139,9 +139,7 @@ const HSGForm = (p) => {
   } = useWaitForTransaction({
     hash: useMaxThresholdData?.hash,
     onSuccess(data) {
-
-        setMaxThresholdData(formdate.maxThreshold);
-     
+      setMaxThresholdData(formdate.maxThreshold);
 
       console.log("Transaction Success");
     },
@@ -162,7 +160,7 @@ const HSGForm = (p) => {
   } = useContractWrite(config);
   const { isSuccess: isSetOwnerHatSuccess, isLoading: setOwnerHatPending } =
     useWaitForTransaction({
-      hash: useMaxThresholdData?.hash,
+      hash: useOwnerHatData?.hash,
       onSuccess(data) {
         setMaxThresholdData(formData.maxThreshold);
         console.log("Transaction Success");
@@ -221,8 +219,7 @@ const HSGForm = (p) => {
     if (
       isSubmitted &&
       originalFormData.current.minThreshold !== formData.minThreshold &&
-      fetchUseMinThreshold &&
-      writeSetMinThresholdAsync
+      fetchUseMinThreshold
     ) {
       fetchUseMinThreshold().then((data) => {
         if (data.status === "error") {
@@ -232,12 +229,11 @@ const HSGForm = (p) => {
         }
       });
     }
-    
+
     if (
       isSubmitted &&
       originalFormData.current.maxThreshold !== formData.maxThreshold &&
-      fetchUseMaxThreshold &&
-      writeSetMaxThresholdAsync
+      fetchUseMaxThreshold
     ) {
       fetchUseMaxThreshold().then((data) => {
         if (data.status === "error") {
@@ -246,21 +242,20 @@ const HSGForm = (p) => {
           writeSetMaxThresholdAsync?.();
         }
       });
+    }
 
-      if (
-        isSubmitted &&
-        originalFormData.current.ownerHat !== formData.ownerHat &&
-        fetchUseOwnerHat &&
-        writeOwnerHatAsync
-      ) {
-        fetchUseOwnerHat().then((data) => {
-          if (data.status === "error") {
-            alert(data.error.message);
-          } else {
-            writeOwnerHatAsync?.();
-          }
-        });
-      }
+    if (
+      isSubmitted &&
+      originalFormData.current.ownerHat !== formData.ownerHat &&
+      fetchUseOwnerHat
+    ) {
+      fetchUseOwnerHat().then((data) => {
+        if (data.status === "error") {
+          alert(data.error.message);
+        } else {
+          writeOwnerHatAsync?.();
+        }
+      });
     }
   }, [isSubmitted]);
 
