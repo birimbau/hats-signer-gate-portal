@@ -119,11 +119,11 @@ const useSetMinThreshold = (args: {
 const useSetOwnerHat = (args: {
   _ownerHat: AbiTypeToPrimitiveType<'uint256'>;
   _hatsContract: AbiTypeToPrimitiveType<'address'>;
-}) =>
+}, address?: EthereumAddress) =>
   usePrepareContractWrite({
     chainId,
     abi: HatsSignerGateAbi,
-    address: contract,
+    address: address || contract,
     functionName: 'setOwnerHat',
     args: Array.from(Object.values(args)),
     onSuccess: (data) => {
@@ -190,8 +190,6 @@ const useCountValidSignatures = (args: {
   });
 
 const useGetHatsContract = (address?: EthereumAddress) => {
-  console.log('useValidSignerHats');
-
   return useContractRead({
     abi: HatsSignerGateAbi,
     address: address || contract,
