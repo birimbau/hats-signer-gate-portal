@@ -232,14 +232,13 @@ const HSGForm = (p) => {
         }
       });
     }
-    debugger;
+
     if (
       isSubmitted &&
       originalFormData.current.maxThreshold !== formData.maxThreshold &&
       fetchUseMaxThreshold &&
       writeSetMaxThresholdAsync
     ) {
-      debugger
       fetchUseMaxThreshold().then((data) => {
         if (data.status === "error") {
           alert(data.error.message);
