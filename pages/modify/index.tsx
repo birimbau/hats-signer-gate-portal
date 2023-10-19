@@ -25,7 +25,7 @@ const ModifyPage: React.FC = () => {
 		undefined | { isHsg: boolean; isMhsg: boolean }
 	>(undefined);
 	const [address, setAddress] = useState<undefined | `0x${string}`>(
-		undefined
+		undefined,
 	);
 
 	const headerOne = () => {
@@ -149,24 +149,24 @@ const ModifyPage: React.FC = () => {
 							if (transaction.ownerHat) {
 								window.open(
 									`${getBlockExplorerUrl(
-										chain?.id || 1
-									)}/tx/${transaction.ownerHat}`
+										chain?.id || 1,
+									)}/tx/${transaction.ownerHat}`,
 								);
 							}
 
 							if (transaction.maxThreshold) {
 								window.open(
 									`${getBlockExplorerUrl(
-										chain?.id || 1
-									)}/tx/${transaction.maxThreshold}`
+										chain?.id || 1,
+									)}/tx/${transaction.maxThreshold}`,
 								);
 							}
 
 							if (transaction.minThreshold) {
 								window.open(
 									`${getBlockExplorerUrl(
-										chain?.id || 1
-									)}/tx/${transaction.minThreshold}`
+										chain?.id || 1,
+									)}/tx/${transaction.minThreshold}`,
 								);
 							}
 						}}
@@ -178,8 +178,8 @@ const ModifyPage: React.FC = () => {
 						onClick={() => {
 							window.open(
 								`${getBlockExplorerUrl(
-									chain?.id || 1
-								)}/address/${address}`
+									chain?.id || 1,
+								)}/address/${address}`,
 							);
 						}}
 					>

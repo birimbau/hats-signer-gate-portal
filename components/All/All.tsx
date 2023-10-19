@@ -1,5 +1,5 @@
 const All = () => {
-  return <>All here</>;
+	return <>All here</>;
 };
 
 export default All;

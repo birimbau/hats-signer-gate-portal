@@ -1,73 +1,73 @@
 import React, {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react';
-import { useSelectedActionContext } from './SelectedActionContext';
+	createContext,
+	useState,
+	useContext,
+	useEffect,
+	useMemo,
+} from "react";
+import { useSelectedActionContext } from "./SelectedActionContext";
 
 export enum DEPLOY_ACTIONS {
-  DEPLOY_HSG = 'hsg',
-  DEPLOY_HSG_W_S = 'hsgws',
-  DEPLOY_MHSG = 'mhsg',
-  DEPLOY_MHSG_W_S = 'mhsgws',
+	DEPLOY_HSG = "hsg",
+	DEPLOY_HSG_W_S = "hsgws",
+	DEPLOY_MHSG = "mhsg",
+	DEPLOY_MHSG_W_S = "mhsgws",
 }
 
 type DeployType = {
-  selectedDeployAction: DEPLOY_ACTIONS | undefined;
-  setSelectedDeployAction: (action: DEPLOY_ACTIONS | undefined) => void;
-  isPending: boolean;
-  setIsPending: (isPending: boolean) => void;
-  transationResult: any;
-  setTransationResult: (result: any) => void;
+	selectedDeployAction: DEPLOY_ACTIONS | undefined;
+	setSelectedDeployAction: (action: DEPLOY_ACTIONS | undefined) => void;
+	isPending: boolean;
+	setIsPending: (isPending: boolean) => void;
+	transationResult: any;
+	setTransationResult: (result: any) => void;
 };
 
 const DeployContext = createContext<DeployType>({
-  selectedDeployAction: undefined,
-  setSelectedDeployAction: () => {},
-  isPending: false,
-  setIsPending: () => {},
-  transationResult: undefined,
-  setTransationResult: () => {},
+	selectedDeployAction: undefined,
+	setSelectedDeployAction: () => {},
+	isPending: false,
+	setIsPending: () => {},
+	transationResult: undefined,
+	setTransationResult: () => {},
 });
 
 export const DeployProvider: React.FC<{ children: React.ReactNode }> = (p) => {
-  const [selectedDeployAction, setSelectedDeployAction] = useState<
-    DEPLOY_ACTIONS | undefined
-  >(undefined);
-  const { selected } = useSelectedActionContext();
-  const [isPending, setIsPending] = useState<boolean>(false);
-  const [transationResult, setTransationResult] = useState<any>();
+	const [selectedDeployAction, setSelectedDeployAction] = useState<
+		DEPLOY_ACTIONS | undefined
+	>(undefined);
+	const { selected } = useSelectedActionContext();
+	const [isPending, setIsPending] = useState<boolean>(false);
+	const [transationResult, setTransationResult] = useState<any>();
 
-  useEffect(() => {
-    setSelectedDeployAction(undefined);
-  }, [selected]);
+	useEffect(() => {
+		setSelectedDeployAction(undefined);
+	}, [selected]);
 
-  const deployContextValue = useMemo(
-    () => ({
-      selectedDeployAction,
-      setSelectedDeployAction,
-      isPending,
-      setIsPending,
-      transationResult,
-      setTransationResult,
-    }),
-    [
-      selectedDeployAction,
-      setSelectedDeployAction,
-      isPending,
-      setIsPending,
-      transationResult,
-      setTransationResult,
-    ]
-  );
+	const deployContextValue = useMemo(
+		() => ({
+			selectedDeployAction,
+			setSelectedDeployAction,
+			isPending,
+			setIsPending,
+			transationResult,
+			setTransationResult,
+		}),
+		[
+			selectedDeployAction,
+			setSelectedDeployAction,
+			isPending,
+			setIsPending,
+			transationResult,
+			setTransationResult,
+		],
+	);
 
-  return (
-    <DeployContext.Provider value={deployContextValue}>
-      {p.children}
-    </DeployContext.Provider>
-  );
+	return (
+		<DeployContext.Provider value={deployContextValue}>
+			{p.children}
+		</DeployContext.Provider>
+	);
 };
 
 export const useDeployContext = () => useContext(DeployContext);
