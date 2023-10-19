@@ -4,14 +4,12 @@ import HatsSignerGateAndSafeForm from "../../../components/Deployers/forms/HatsS
 import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
 import MainContent from "../../../components/MainContent/MainContent";
 import { DEPLOY_ACTIONS } from "../../../context/DeployContext";
-import { useNetwork } from "wagmi";
 import { DeployConfigHSGWF } from "../../../components/Deployers/forms/types/forms";
 import VariableExplanations from "../../../components/Deployers/forms/utils/VariableExplainations";
 import { SafeAttachMessage } from "../../../components/Deployers/forms/utils/SafeAttachMessage";
 import TransactionDetails from "../../../components/Deployers/forms/utils/TransactionDetails";
 
 const HSGWF = () => {
-	const { chain } = useNetwork();
 	const [isPending, setIsPending] = useState<boolean>(false);
 	const [data, setData] = useState(undefined);
 	const [formData, setFormData] = useState<DeployConfigHSGWF>({

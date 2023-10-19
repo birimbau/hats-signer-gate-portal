@@ -1,11 +1,12 @@
 import { Button, VStack } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import CustomInputWrapper from "../../../components/Deployers/forms/utils/CustomInputWrapper";
 import { FiSettings } from "react-icons/fi";
 import {
 	useGetHatsContract,
+	useMaxSigners,
 	useMinThreshold,
 	useOwnerHat,
 	useSetMinThreshold,
@@ -15,14 +16,11 @@ import {
 } from "../../../utils/hooks/HatsSignerGate";
 import { useContractWrite, useWaitForTransaction } from "wagmi";
 import { EthereumAddress } from "../../../components/Deployers/forms/utils/ReadForm";
-import { decodeEventLog } from "viem";
-import { HatsSignerGateAbi } from "../../../utils/abi/HatsSignerGate/HatsSignerGate";
 import {
 	hatIntSchema,
 	minThresholdValidation,
 	targetThresholdValidation,
 } from "../../../components/Deployers/forms/utils/validation";
-import { set } from "zod";
 
 interface P {
 	address?: EthereumAddress;
@@ -42,6 +40,9 @@ const HSGModifyForm: React.FC<P> = (p) => {
 	const { data: ownerHat, isLoading: ownerHatIsLoading } = useOwnerHat(
 		p.address,
 	);
+	const { data: maxSigners, isLoading: maxSignersIsLoading } = useMaxSigners(
+		p.address,
+	);
 	const { data: hatsContract, isLoading: hatsContractIsLoading } =
 		useGetHatsContract(p.address);
 
@@ -49,17 +50,19 @@ const HSGModifyForm: React.FC<P> = (p) => {
 		minThresholdIsLoading ||
 		maxThresholdIsLoading ||
 		ownerHatIsLoading ||
-		hatsContractIsLoading
+		hatsContractIsLoading ||
+		maxSignersIsLoading
 	) {
 		return <></>;
 	} else {
 		return (
 			<HSGForm
 				address={p.address}
-				minThreshold={minThreshold}
-				maxThreshold={maxThreshold}
-				ownerHat={ownerHat}
-				hatsContract={hatsContract}
+				minThreshold={minThreshold as string}
+				maxThreshold={maxThreshold as string}
+				maxSigners={maxSigners as string}
+				ownerHat={ownerHat as string}
+				hatsContract={hatsContract as EthereumAddress}
 				setIsLoading={p.setIsLoading}
 				setTransaction={p.setTransaction}
 			/>
@@ -69,55 +72,57 @@ const HSGModifyForm: React.FC<P> = (p) => {
 
 export default HSGModifyForm;
 
-const HSGForm = (p) => {
+interface HSGFormP {
+	address?: EthereumAddress;
+	minThreshold?: string;
+	maxThreshold?: string;
+	maxSigners?: string;
+	ownerHat?: string;
+	hatsContract?: EthereumAddress;
+	setIsLoading: (isLoading: boolean) => void;
+	setTransaction: (transaction: {
+		ownerHat?: string;
+		minThreshold?: string;
+		maxThreshold?: string;
+	}) => void;
+}
+const HSGForm: React.FC<HSGFormP> = (p) => {
 	const [isSubmitted, setIsSubmitted] = useState(false);
-	const [transaction, setTransaction] = useState({
-		ownerHat: "",
-		minThreshold: "",
-		maxThreshold: "",
-	});
-	const [minThresholdTransationHash, setMinThresholdTransationHash] =
-		useState("");
-	const [minThresholdData, setMinThresholdData] = useState("");
-
-	const [maxThresholdTransationHash, setMaxThresholdTransationHash] =
-		useState("");
-	const [maxThresholdData, setMaxThresholdData] = useState("");
-
-	const [ownerHatTransationHash, setOwnerTransationHash] = useState("");
-	const [ownerHatData, setOwnerHatData] = useState("");
-
 	const [formData, setFormData] = useState({
-		minThreshold: p.minThreshold?.toString(),
-		maxThreshold: p.maxThreshold?.toString(),
-		ownerHat: p.ownerHat.toString(),
+		_minThreshold: p.minThreshold?.toString(),
+		_targetThreshold: p.maxThreshold?.toString(),
+		_ownerHat: p.ownerHat?.toString(),
+		_maxSigners: p.maxSigners?.toString(),
 		hatsContract: p.hatsContract,
 	});
 
 	const originalFormData = useRef(formData);
 	const validationSchema = Yup.object().shape({
-		minThreshold: minThresholdValidation(hatIntSchema),
-		maxThreshold: targetThresholdValidation(hatIntSchema),
+		_ownerHat: hatIntSchema,
+		_minThreshold: minThresholdValidation(hatIntSchema),
+		_targetThreshold: targetThresholdValidation(hatIntSchema),
+		_maxSigners: hatIntSchema.greaterThanTarget(),
 	});
 
 	// MinThreshold hooks
 	const { config: configMinThreshold, refetch: fetchUseMinThreshold } =
 		useSetMinThreshold(
-			{ _minThreshold: BigInt(formData.minThreshold || 0) },
+			{ _minThreshold: BigInt(formData._minThreshold || 0) },
 			p.address,
 		);
 	const {
 		isLoading: setMinThresholdIsLoading,
+		isError: setMinThresholdIsError,
 		writeAsync: writeSetMinThresholdAsync,
 		data: useMinThresholdData,
 	} = useContractWrite(configMinThreshold);
 	const {
 		isSuccess: isSetMinThresholdSuccess,
+		isError: isSetMinThresholdError,
 		isLoading: setMinThresholdtransationPending,
 	} = useWaitForTransaction({
 		hash: useMinThresholdData?.hash,
 		onSuccess(data) {
-			setMinThresholdData(formData.minThreshold);
 			console.log("Transaction Success");
 		},
 	});
@@ -125,22 +130,22 @@ const HSGForm = (p) => {
 	// MaxThreshold hooks
 	const { config: configMaxThreshold, refetch: fetchUseMaxThreshold } =
 		useSetTargetThreshold(
-			{ _targetThreshold: BigInt(formData.maxThreshold || 0) },
+			{ _targetThreshold: BigInt(formData._targetThreshold || 0) },
 			p.address,
 		);
 	const {
 		isLoading: setMaxThresholdIsLoading,
+		isError: setMaxThresholdIsError,
 		writeAsync: writeSetMaxThresholdAsync,
 		data: useMaxThresholdData,
 	} = useContractWrite(configMaxThreshold);
 	const {
 		isSuccess: isSetMaxThresholdSuccess,
+		isError: isSetMaxThresholdError,
 		isLoading: setMaxThresholdtransationPending,
 	} = useWaitForTransaction({
 		hash: useMaxThresholdData?.hash,
 		onSuccess(data) {
-			setMaxThresholdData(formdate.maxThreshold);
-
 			console.log("Transaction Success");
 		},
 	});
@@ -148,24 +153,27 @@ const HSGForm = (p) => {
 	// OwnerHat hooks
 	const { config, refetch: fetchUseOwnerHat } = useSetOwnerHat(
 		{
-			_ownerHat: BigInt(formData.maxThreshold || 0),
-			_hatsContract: formData.hatsContract,
+			_ownerHat: BigInt(formData._ownerHat || 0),
+			_hatsContract: formData.hatsContract || ("" as EthereumAddress),
 		},
 		p.address,
 	);
 	const {
 		isLoading: setOwnerHatIsLoading,
+		isError: setOwnerHatIsError,
 		writeAsync: writeOwnerHatAsync,
 		data: useOwnerHatData,
 	} = useContractWrite(config);
-	const { isSuccess: isSetOwnerHatSuccess, isLoading: setOwnerHatPending } =
-		useWaitForTransaction({
-			hash: useOwnerHatData?.hash,
-			onSuccess(data) {
-				setMaxThresholdData(formData.maxThreshold);
-				console.log("Transaction Success");
-			},
-		});
+	const {
+		isSuccess: isSetOwnerHatSuccess,
+		isLoading: setOwnerHatPending,
+		isError: setOwnerHatError,
+	} = useWaitForTransaction({
+		hash: useOwnerHatData?.hash,
+		onSuccess(data) {
+			console.log("Transaction Success");
+		},
+	});
 
 	useEffect(() => {
 		p.setIsLoading(
@@ -186,11 +194,31 @@ const HSGForm = (p) => {
 	]);
 
 	useEffect(() => {
+		if (
+			setMinThresholdIsError ||
+			isSetMinThresholdError ||
+			setMaxThresholdIsError ||
+			isSetMaxThresholdError ||
+			setOwnerHatIsError ||
+			setOwnerHatError
+		) {
+			setIsSubmitted(false);
+		}
+	}, [
+		setMinThresholdIsError,
+		isSetMinThresholdError,
+		setMaxThresholdIsError,
+		isSetMaxThresholdError,
+		setOwnerHatIsError,
+		setOwnerHatError,
+	]);
+
+	useEffect(() => {
 		if (isSetMinThresholdSuccess) {
 			p.setTransaction({
 				minThreshold: useMinThresholdData?.hash,
 			});
-			originalFormData.current.minThreshold = formData.minThreshold;
+			originalFormData.current._minThreshold = formData._minThreshold;
 			setIsSubmitted(false);
 		}
 	}, [isSetMinThresholdSuccess]);
@@ -198,9 +226,10 @@ const HSGForm = (p) => {
 	useEffect(() => {
 		if (isSetMaxThresholdSuccess) {
 			p.setTransaction({
-				maxThreshold: maxThresholdTransationHash,
+				maxThreshold: useMaxThresholdData?.hash,
 			});
-			originalFormData.current.maxThreshold = formData.maxThreshold;
+			originalFormData.current._targetThreshold =
+				formData._targetThreshold;
 			setIsSubmitted(false);
 		}
 	}, [isSetMaxThresholdSuccess]);
@@ -208,9 +237,9 @@ const HSGForm = (p) => {
 	useEffect(() => {
 		if (isSetOwnerHatSuccess) {
 			p.setTransaction({
-				ownerHat: ownerHatTransationHash,
+				ownerHat: useOwnerHatData?.hash,
 			});
-			originalFormData.current.ownerHat = formData.ownerHat;
+			originalFormData.current._ownerHat = formData._ownerHat;
 			setIsSubmitted(false);
 		}
 	}, [isSetOwnerHatSuccess]);
@@ -218,8 +247,9 @@ const HSGForm = (p) => {
 	useEffect(() => {
 		if (
 			isSubmitted &&
-			originalFormData.current.minThreshold !== formData.minThreshold &&
-			fetchUseMinThreshold
+			originalFormData.current._minThreshold !== formData._minThreshold &&
+			fetchUseMinThreshold &&
+			writeSetMinThresholdAsync
 		) {
 			fetchUseMinThreshold().then((data) => {
 				if (data.status === "error") {
@@ -232,8 +262,10 @@ const HSGForm = (p) => {
 
 		if (
 			isSubmitted &&
-			originalFormData.current.maxThreshold !== formData.maxThreshold &&
-			fetchUseMaxThreshold
+			originalFormData.current._targetThreshold !==
+				formData._targetThreshold &&
+			fetchUseMaxThreshold &&
+			writeSetMaxThresholdAsync
 		) {
 			fetchUseMaxThreshold().then((data) => {
 				if (data.status === "error") {
@@ -246,8 +278,9 @@ const HSGForm = (p) => {
 
 		if (
 			isSubmitted &&
-			originalFormData.current.ownerHat !== formData.ownerHat &&
-			fetchUseOwnerHat
+			originalFormData.current._ownerHat !== formData._ownerHat &&
+			fetchUseOwnerHat &&
+			writeOwnerHatAsync
 		) {
 			fetchUseOwnerHat().then((data) => {
 				if (data.status === "error") {
@@ -280,18 +313,18 @@ const HSGForm = (p) => {
 							<CustomInputWrapper
 								label="New Owner Hat ID (integer)"
 								placeholder="26960000000000000000000000003152"
-								name="ownerHat"
+								name="_ownerHat"
 							/>
 							<CustomInputWrapper
 								label="Min Threshold (integer)"
 								placeholder="3"
-								name="minThreshold"
+								name="_minThreshold"
 							/>
 
 							<CustomInputWrapper
 								label="Max Threshold (integer)"
 								placeholder="3"
-								name="maxThreshold"
+								name="_targetThreshold"
 							/>
 
 							<Button
