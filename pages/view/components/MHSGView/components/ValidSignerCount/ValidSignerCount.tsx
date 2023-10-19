@@ -2,7 +2,7 @@ import { EthereumAddress } from "../../../../../../components/Deployers/forms/ut
 import { useValidSignerCount } from "../../../../../../utils/hooks/MultiHatsSignerGate";
 
 interface P {
-	address: EthereumAddress;
+	address?: EthereumAddress;
 }
 
 const ValidSignerCount: React.FC<P> = (p) => {

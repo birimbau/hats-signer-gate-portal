@@ -16,7 +16,7 @@ import MaxSigners from "./components/MaxSigners/MaxSigners";
 import { EthereumAddress } from "../../../../components/Deployers/forms/utils/ReadForm";
 
 interface P {
-	address: EthereumAddress;
+	address?: EthereumAddress;
 }
 
 const HSGView: React.FC<P> = (p) => {

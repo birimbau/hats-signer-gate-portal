@@ -16,15 +16,20 @@ import HSGMaxThreshold from "../view/components/HSGView/components/MaxThreshold/
 import HSGMinThreshold from "../view/components/HSGView/components/MinThreshold/MinThreshold";
 import { useNetwork } from "wagmi";
 import { getBlockExplorerUrl } from "../../utils/utils";
+import { EthereumAddress } from "../../components/Deployers/forms/utils/ReadForm";
 
 const ModifyPage: React.FC = () => {
 	const { chain } = useNetwork();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [transaction, setTransaction] = useState({});
+	const [transaction, setTransaction] = useState({
+		ownerHat: undefined,
+		maxThreshold: undefined,
+		minThreshold: undefined,
+	});
 	const [result, setResult] = useState<
 		undefined | { isHsg: boolean; isMhsg: boolean }
 	>(undefined);
-	const [address, setAddress] = useState<undefined | `0x${string}`>(
+	const [address, setAddress] = useState<undefined | EthereumAddress>(
 		undefined,
 	);
 

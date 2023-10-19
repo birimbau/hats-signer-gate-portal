@@ -15,7 +15,7 @@ import ValidSignerCount from "./components/ValidSignerCount/ValidSignerCount";
 import { EthereumAddress } from "../../../../components/Deployers/forms/utils/ReadForm";
 
 interface P {
-	address: EthereumAddress;
+	address?: EthereumAddress;
 }
 
 const MHSGView: React.FC<P> = (p) => {
