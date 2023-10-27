@@ -2,6 +2,7 @@ import { useContractRead, usePrepareContractWrite } from "wagmi";
 import { MultiHatsSignerGateAbi } from "../abi/MultiHatsSignerGate/MultiHatsSignerGate";
 import { AbiTypeToPrimitiveType } from "abitype";
 import { CONTRACTS } from "../constants";
+import { EthereumAddress } from "../../components/Deployers/forms/utils/ReadForm";
 
 // Hooks for write functions for the HatsSignerGate contract
 const contract = CONTRACTS.multiHatsSignerGate
@@ -92,36 +93,45 @@ const useRemoveSigner = (
 	});
 };
 
-const useSetMinThreshold = (args: {
-	_minThreshold: AbiTypeToPrimitiveType<"uint256">;
-}) =>
+const useSetMinThreshold = (
+	args: {
+		_minThreshold: AbiTypeToPrimitiveType<"uint256">;
+	},
+	address?: EthereumAddress,
+) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: MultiHatsSignerGateAbi,
-		address: contract,
+		address: address || contract,
 		functionName: "setMinThreshold",
 		args: Array.from(Object.values(args)),
 	});
 
-const useSetOwnerHat = (args: {
-	_ownerHat: AbiTypeToPrimitiveType<"uint256">;
-	_hasContract: AbiTypeToPrimitiveType<"address">;
-}) =>
+const useSetOwnerHat = (
+	args: {
+		_ownerHat: AbiTypeToPrimitiveType<"uint256">;
+		_hatsContract: AbiTypeToPrimitiveType<"address">;
+	},
+	address?: EthereumAddress,
+) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: MultiHatsSignerGateAbi,
-		address: contract,
+		address: address || contract,
 		functionName: "setOwnerHat",
 		args: Array.from(Object.values(args)),
 	});
 
-const useSetTargetThreshold = (args: {
-	_targetThreshold: AbiTypeToPrimitiveType<"uint256">;
-}) =>
+const useSetTargetThreshold = (
+	args: {
+		_targetThreshold: AbiTypeToPrimitiveType<"uint256">;
+	},
+	address?: EthereumAddress,
+) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: MultiHatsSignerGateAbi,
-		address: contract,
+		address: address || contract,
 		functionName: "setTargetThreshold",
 		args: Array.from(Object.values(args)),
 	});

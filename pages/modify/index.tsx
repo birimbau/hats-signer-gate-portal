@@ -17,11 +17,12 @@ import HSGMinThreshold from "../view/components/HSGView/components/MinThreshold/
 import { useNetwork } from "wagmi";
 import { getBlockExplorerUrl } from "../../utils/utils";
 import { EthereumAddress } from "../../components/Deployers/forms/utils/ReadForm";
+import MHSGModifyForm from "./MHSGModifyForm/MHSGModifyForm";
 
 const ModifyPage: React.FC = () => {
 	const { chain } = useNetwork();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [transaction, setTransaction] = useState({
+	const [transaction, setTransaction] = useState<any>({
 		ownerHat: undefined,
 		maxThreshold: undefined,
 		minThreshold: undefined,
@@ -130,7 +131,18 @@ const ModifyPage: React.FC = () => {
 		}
 
 		if (result?.isMhsg) {
-			return <></>;
+			return (
+				<MHSGModifyForm
+					address={address}
+					setIsLoading={setIsLoading}
+					setTransaction={(value) => {
+						setTransaction({
+							...transaction,
+							...value,
+						});
+					}}
+				/>
+			);
 		}
 
 		return <></>;
