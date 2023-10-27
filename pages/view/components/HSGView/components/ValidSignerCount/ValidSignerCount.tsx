@@ -2,13 +2,15 @@ import { EthereumAddress } from "../../../../../../components/Deployers/forms/ut
 import { useValidSignerCount } from "../../../../../../utils/hooks/HatsSignerGate";
 
 interface P {
-	address: EthereumAddress;
+	address?: EthereumAddress;
 }
 
 const ValidSignerCount: React.FC<P> = (p) => {
 	const { data: validSignerCount } = useValidSignerCount(p.address);
 
-	return <div>Valid Signer Count = {validSignerCount?.toString()}</div>;
+	return (
+		<div>Valid Signer Count = {(validSignerCount as any)?.toString()}</div>
+	);
 };
 
 export default ValidSignerCount;
