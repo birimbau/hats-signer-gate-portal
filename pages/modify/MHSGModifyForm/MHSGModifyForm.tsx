@@ -68,6 +68,7 @@ const MHSGModifyForm: React.FC<P> = (p) => {
 				maxSigners={maxSigners as string}
 				ownerHat={ownerHat as string}
 				hatsContract={hatsContract as EthereumAddress}
+				newSignerHats={[""]}
 				setIsLoading={p.setIsLoading}
 				setTransaction={p.setTransaction}
 			/>
@@ -84,7 +85,7 @@ interface MHSGFormP {
 	maxSigners?: string;
 	ownerHat?: string;
 	hatsContract?: EthereumAddress;
-	newMaxSigners?: string[];
+	newSignerHats?: string[];
 	setIsLoading: (isLoading: boolean) => void;
 	setTransaction: (transaction: {
 		ownerHat?: string;
@@ -100,7 +101,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		_targetThreshold: p.maxThreshold?.toString(),
 		_ownerHat: p.ownerHat?.toString(),
 		_maxSigners: p.maxSigners?.toString(),
-		_newSignerHats: p.newMaxSigners,
+		_newSignerHats: p.newSignerHats,
 		hatsContract: p.hatsContract,
 	});
 
