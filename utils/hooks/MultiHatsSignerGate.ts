@@ -333,9 +333,8 @@ const useValidSignerHats = (
 	args: {
 		input: AbiTypeToPrimitiveType<"uint256">;
 	},
-	address?: `0x${string}`,
+	address?: EthereumAddress,
 ) => {
-	console.log("useValidSignerHats");
 	return useContractRead({
 		abi: MultiHatsSignerGateAbi,
 		address: address || contract,
