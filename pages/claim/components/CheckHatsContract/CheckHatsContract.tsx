@@ -55,6 +55,7 @@ const CheckHatsContract: React.FC<P> = (p) => {
 
 	// Used to check if its a HSG
 	const {
+		data: hsgResult,
 		refetch: checkHSG,
 		isLoading: checkHSGIsLoading,
 		error: HsgError,
@@ -74,38 +75,40 @@ const CheckHatsContract: React.FC<P> = (p) => {
 
 	useEffect(() => {
 		if (checkMHSGIsSuccess && isSubmitted) {
-			if (checkMHSGData === undefined) {
-				checkHSG?.().then((hsgResult) => {
-					if (hsgResult.isSuccess) {
-						p.onResult(
-							{
-								isMhsg: false,
-								isHsg: true,
-							},
-							contractAddress.current as EthereumAddress,
-						);
-					} else {
-						p.onResult(
-							{
-								isMhsg: false,
-								isHsg: false,
-							},
-							contractAddress.current as EthereumAddress,
-						);
-					}
-				});
-			} else {
-				p.onResult(
-					{
-						isMhsg: true,
-						isHsg: false,
-					},
-					contractAddress.current as EthereumAddress,
-				);
-			}
+			p.onResult(
+				{
+					isMhsg: true,
+					isHsg: false,
+				},
+				contractAddress.current as EthereumAddress,
+			);
 			setIsSubmitted(false);
 		}
 	}, [checkMHSGIsSuccess, checkMHSGData, isSubmitted]);
+
+	useEffect(() => {
+		if (MhsgError && isSubmitted) {
+			checkHSG().then((hsgResult) => {
+				if (hsgResult.data) {
+					p.onResult(
+						{
+							isMhsg: false,
+							isHsg: true,
+						},
+						contractAddress.current as EthereumAddress,
+					);
+				} else {
+					p.onResult(
+						{
+							isMhsg: false,
+							isHsg: false,
+						},
+						contractAddress.current as EthereumAddress,
+					);
+				}
+			});
+		}
+	}, [MhsgError, isSubmitted, hsgResult]);
 
 	return (
 		<Formik
@@ -120,38 +123,6 @@ const CheckHatsContract: React.FC<P> = (p) => {
 				contractAddress.current = values.contractAddress;
 				setFormData(values);
 				checkMHSG?.();
-
-				// .then((mhsgResult) => {
-				// 	if (mhsgResult.data === undefined) {
-				// 		checkHSG?.().then((hsgResult) => {
-				// 			if (hsgResult.isSuccess) {
-				// 				p.onResult(
-				// 					{
-				// 						isMhsg: false,
-				// 						isHsg: true,
-				// 					},
-				// 					values.contractAddress,
-				// 				);
-				// 			} else {
-				// 				p.onResult(
-				// 					{
-				// 						isMhsg: false,
-				// 						isHsg: false,
-				// 					},
-				// 					values.contractAddress,
-				// 				);
-				// 			}
-				// 		});
-				// 	} else {
-				// 		p.onResult(
-				// 			{
-				// 				isMhsg: true,
-				// 				isHsg: false,
-				// 			},
-				// 			values.contractAddress,
-				// 		);
-				// 	}
-				// });
 			}}
 		>
 			{(props) => (
