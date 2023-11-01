@@ -9,13 +9,16 @@ const contract = CONTRACTS.multiHatsSignerGate
 	.contractAddress as AbiTypeToPrimitiveType<"address">;
 const chainId = process.env.ENVIROMENT === "production" ? 1 : 5;
 
-const useAddSignerHats = (args: {
-	_newSignerHats: AbiTypeToPrimitiveType<"uint256">[];
-}) =>
+const useAddSignerHats = (
+	args: {
+		_newSignerHats: AbiTypeToPrimitiveType<"uint256">[];
+	},
+	address?: EthereumAddress,
+) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: MultiHatsSignerGateAbi,
-		address: contract,
+		address: address || contract,
 		functionName: "addSignerHats",
 		args: Array.from(Object.values(args)),
 	});

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { EthereumAddress } from "../../../components/Deployers/forms/utils/ReadForm";
 import {
+	useAddSignerHats,
 	useGetHatsContract,
 	useMaxSigners,
 	useMinThreshold,
@@ -12,6 +13,7 @@ import {
 } from "../../../utils/hooks/MultiHatsSignerGate";
 import * as Yup from "yup";
 import {
+	arrayOfHatStrings,
 	hatIntSchema,
 	minThresholdValidation,
 	targetThresholdValidation,
@@ -22,6 +24,8 @@ import { VStack } from "@chakra-ui/react";
 import CustomInputWrapper from "../../../components/Deployers/forms/utils/CustomInputWrapper";
 import Button from "../../../components/UI/CustomButton/CustomButton";
 import { FiSettings } from "react-icons/fi";
+import MultiInput from "../../../components/UI/MultiInput/MultiInput";
+import _ from "lodash";
 
 interface P {
 	address?: EthereumAddress;
@@ -80,11 +84,13 @@ interface MHSGFormP {
 	maxSigners?: string;
 	ownerHat?: string;
 	hatsContract?: EthereumAddress;
+	newMaxSigners?: string[];
 	setIsLoading: (isLoading: boolean) => void;
 	setTransaction: (transaction: {
 		ownerHat?: string;
 		minThreshold?: string;
 		maxThreshold?: string;
+		newSignerHats?: string;
 	}) => void;
 }
 const MHSGForm: React.FC<MHSGFormP> = (p) => {
@@ -94,12 +100,14 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		_targetThreshold: p.maxThreshold?.toString(),
 		_ownerHat: p.ownerHat?.toString(),
 		_maxSigners: p.maxSigners?.toString(),
+		_newSignerHats: p.newMaxSigners,
 		hatsContract: p.hatsContract,
 	});
 
 	const originalFormData = useRef(formData);
 	const validationSchema = Yup.object().shape({
 		_ownerHat: hatIntSchema,
+		_newSignerHats: arrayOfHatStrings,
 		_minThreshold: minThresholdValidation(hatIntSchema),
 		_targetThreshold: targetThresholdValidation(hatIntSchema),
 		_maxSigners: hatIntSchema.greaterThanTarget(),
@@ -152,25 +160,53 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	});
 
 	// OwnerHat hooks
-	const { config, refetch: fetchUseOwnerHat } = useSetOwnerHat(
-		{
-			_ownerHat: BigInt(formData._ownerHat || 0),
-			_hatsContract: formData.hatsContract || ("" as EthereumAddress),
-		},
-		p.address,
-	);
+	const { config: configOwnerHat, refetch: fetchUseOwnerHat } =
+		useSetOwnerHat(
+			{
+				_ownerHat: BigInt(formData._ownerHat || 0),
+				_hatsContract: formData.hatsContract || ("" as EthereumAddress),
+			},
+			p.address,
+		);
 	const {
 		isLoading: setOwnerHatIsLoading,
 		isError: setOwnerHatIsError,
 		writeAsync: writeOwnerHatAsync,
 		data: useOwnerHatData,
-	} = useContractWrite(config);
+	} = useContractWrite(configOwnerHat);
 	const {
 		isSuccess: isSetOwnerHatSuccess,
 		isLoading: setOwnerHatPending,
 		isError: setOwnerHatError,
 	} = useWaitForTransaction({
 		hash: useOwnerHatData?.hash,
+		onSuccess(data) {
+			console.log("Transaction Success");
+		},
+	});
+
+	// New Signer Hats hooks
+	const { config: configSertSignerHats, refetch: fetchSetSignerHats } =
+		useAddSignerHats(
+			{
+				_newSignerHats:
+					formData._newSignerHats?.map((hat) => BigInt(hat)) || [],
+			},
+			p.address,
+		);
+
+	const {
+		isLoading: addSignerHatIsLoading,
+		isError: addSignerHatIsError,
+		writeAsync: writeaddSignerHatAsync,
+		data: useAddSignerHatsData,
+	} = useContractWrite(configOwnerHat);
+	const {
+		isSuccess: isAddSignerHatSuccess,
+		isLoading: addSignerHatPending,
+		isError: addSIgnerHatsError,
+	} = useWaitForTransaction({
+		hash: useAddSignerHatsData?.hash,
 		onSuccess(data) {
 			console.log("Transaction Success");
 		},
@@ -183,7 +219,9 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 				setMinThresholdIsLoading ||
 				setMinThresholdtransationPending ||
 				setMaxThresholdtransationPending ||
-				setOwnerHatPending,
+				setOwnerHatPending ||
+				addSignerHatIsLoading ||
+				addSignerHatPending,
 		);
 	}, [
 		setOwnerHatIsLoading,
@@ -192,6 +230,8 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		setMinThresholdtransationPending,
 		setMaxThresholdtransationPending,
 		setOwnerHatPending,
+		addSignerHatIsLoading,
+		addSignerHatPending,
 	]);
 
 	useEffect(() => {
@@ -201,7 +241,9 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 			setMaxThresholdIsError ||
 			isSetMaxThresholdError ||
 			setOwnerHatIsError ||
-			setOwnerHatError
+			setOwnerHatError ||
+			addSignerHatIsError ||
+			addSIgnerHatsError
 		) {
 			setIsSubmitted(false);
 		}
@@ -212,6 +254,8 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		isSetMaxThresholdError,
 		setOwnerHatIsError,
 		setOwnerHatError,
+		addSignerHatIsError,
+		addSIgnerHatsError,
 	]);
 
 	useEffect(() => {
@@ -244,6 +288,17 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 			setIsSubmitted(false);
 		}
 	}, [isSetOwnerHatSuccess]);
+
+	// you are here
+	useEffect(() => {
+		if (isAddSignerHatSuccess) {
+			p.setTransaction({
+				newSignerHats: useAddSignerHatsData?.hash,
+			});
+			originalFormData.current._newSignerHats = formData._newSignerHats;
+			setIsSubmitted(false);
+		}
+	}, [isAddSignerHatSuccess]);
 
 	useEffect(() => {
 		if (
@@ -291,6 +346,24 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 				}
 			});
 		}
+
+		if (
+			isSubmitted &&
+			!_.isEqual(
+				originalFormData.current._newSignerHats,
+				formData._newSignerHats,
+			) &&
+			fetchSetSignerHats &&
+			writeaddSignerHatAsync
+		) {
+			fetchSetSignerHats().then((data) => {
+				if (data.status === "error") {
+					alert(data.error.message);
+				} else {
+					writeaddSignerHatAsync?.();
+				}
+			});
+		}
 	}, [isSubmitted]);
 
 	return (
@@ -315,6 +388,14 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 								label="New Owner Hat ID (integer)"
 								placeholder="26960000000000000000000000003152"
 								name="_ownerHat"
+							/>
+							<MultiInput
+								values={formData._newSignerHats || []}
+								width={"80%"}
+								label="Signer Hat IDs"
+								name="_newSignerHats"
+								countLabel="Id"
+								placeholder="26960000000000000000000000003152..."
 							/>
 							<CustomInputWrapper
 								label="Min Threshold (integer)"
