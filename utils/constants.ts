@@ -16,3 +16,27 @@ export const CONTRACTS = {
 };
 
 export const SUPPORTED_NETWORKS = [goerli, optimism];
+
+export enum DEPLOY_ACTIONS {
+	DEPLOY_HSG = "hsg",
+	DEPLOY_HSG_W_S = "hsgws",
+	DEPLOY_MHSG = "mhsg",
+	DEPLOY_MHSG_W_S = "mhsgws",
+}
+
+export enum HEADER_ACTIONS {
+	DEPLOY = "deploy",
+	MODIFY = "modify",
+	CLAIM = "claim",
+	RENOUNCE = "renounce",
+	REMOVE = "remove",
+	VIEW = "view",
+}
+
+export enum safe {
+	UNSET = 1,
+	INVALID_ADDRESS = 2,
+	CANNOT_ATTACH = 3,
+	CAN_ATTACH = 4,
+	WRONG_ADDRESS = 5,
+}
