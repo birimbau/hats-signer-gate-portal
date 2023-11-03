@@ -25,6 +25,7 @@ const Deploy: React.FC<P> = (p) => {
 			alignItems="flex-start"
 			gap="36px"
 			width={"340px"}
+			mt="24px"
 		>
 			<Button
 				isActive={activeButton === DEPLOY_ACTIONS.DEPLOY_HSG}

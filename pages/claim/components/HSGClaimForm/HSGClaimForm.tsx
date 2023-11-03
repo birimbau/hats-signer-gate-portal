@@ -18,6 +18,7 @@ const HSGClaimForm: React.FC<P> = (p) => {
 		<>
 			<Button
 				leftIcon={<LuEdit />}
+				mt="24px"
 				onClick={() => {
 					refetch?.().then((data) => {
 						if (data.status === "error") {

@@ -109,7 +109,7 @@ const Claim = () => {
 					height="100%"
 					alignItems="flex-start"
 				>
-					<Text as="b">Transaction Complete!</Text>
+					<Text as="b">Transaction Complete</Text>
 				</VStack>
 			);
 		}
@@ -135,9 +135,10 @@ const Claim = () => {
 		}
 		if (!isPending && transaction) {
 			return (
-				<VStack height="100%" alignItems="flex-start" gap={"24px"}>
+				<VStack height="100%" alignItems="flex-start" gap={"24px"} mt="24px">
 					<Button
 						leftIcon={<FiCopy />}
+						minWidth={"60%"}
 						onClick={() => {
 							window.open(
 								`${getBlockExplorerUrl(
@@ -150,6 +151,7 @@ const Claim = () => {
 					</Button>
 					<Button
 						leftIcon={<BsCardList />}
+						minWidth={"60%"}
 						onClick={() => {
 							window.open(
 								`${getBlockExplorerUrl(

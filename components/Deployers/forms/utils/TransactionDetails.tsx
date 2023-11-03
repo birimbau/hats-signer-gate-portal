@@ -39,7 +39,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
 	);
 
 	return (
-		<VStack height="100%" alignItems="flex-start" gap={"24px"}>
+		<VStack height="100%" alignItems="flex-start" gap={"24px"} mt="24px">
 			<Button
 				leftIcon={<FiCopy />}
 				minWidth={"60%"}
@@ -84,9 +84,9 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({
 
 			<Text>
 				Min Threshold = {formData._minThreshold}
-				<br />
+				<br/>
 				Max Threshold = {formData._targetThreshold}
-				<br />
+				<br/>
 				Max Signers = {formData._maxSigners}
 			</Text>
 			<Text>

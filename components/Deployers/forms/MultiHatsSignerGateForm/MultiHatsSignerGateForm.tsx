@@ -160,6 +160,7 @@ export default function MultiHatsSignerGateForm(props: Props) {
 							name="_ownerHatId"
 							label="Owner Hat ID (integer)"
 							placeholder="26950000000000000000000000004196..."
+							width={80}
 						/>
 						<MultiInput
 							values={formData._signersHatIds}
@@ -168,12 +169,14 @@ export default function MultiHatsSignerGateForm(props: Props) {
 							name="_signersHatIds"
 							countLabel="Id"
 							placeholder="26960000000000000000000000003152..."
+							width={80}
 						/>
 						<CustomInputWrapper
 							name="_safe"
 							label="Existing Safe (address)"
 							placeholder="0xC8ac0000000000000000000000000000000047fe"
 							isReadOnly={true}
+							width={80}
 						/>
 						<CustomInputWrapper
 							name="_minThreshold"

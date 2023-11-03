@@ -162,6 +162,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
 							name="_ownerHatId"
 							label="Owner Hat ID (integer)"
 							placeholder="26950000000000000000000000004196..."
+							width={80}
 						/>
 						<MultiInput
 							values={formData._signersHatIds}
@@ -170,6 +171,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
 							name="_signersHatIds"
 							countLabel="Id"
 							placeholder="26960000000000000000000000003152..."
+							width={80}
 						/>
 						<CustomInputWrapper
 							name="_minThreshold"

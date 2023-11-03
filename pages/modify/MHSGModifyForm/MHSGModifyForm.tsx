@@ -389,6 +389,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 								label="New Owner Hat ID (integer)"
 								placeholder="26960000000000000000000000003152"
 								name="_ownerHat"
+								width={80}
 							/>
 							<MultiInput
 								values={formData._newSignerHats || []}
@@ -397,17 +398,20 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 								name="_newSignerHats"
 								countLabel="Id"
 								placeholder="26960000000000000000000000003152..."
+								width={80}
 							/>
 							<CustomInputWrapper
 								label="Min Threshold (integer)"
 								placeholder="3"
 								name="_minThreshold"
+								width={60}
 							/>
 
 							<CustomInputWrapper
 								label="Max Threshold (integer)"
 								placeholder="3"
 								name="_targetThreshold"
+								width={60}
 							/>
 
 							<Button

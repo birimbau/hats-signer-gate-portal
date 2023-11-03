@@ -2,7 +2,7 @@ import { VStack, Text } from "@chakra-ui/react";
 
 function VariableExplanations() {
 	return (
-		<VStack height="100%" alignItems="flex-start" gap={"8px"}>
+		<VStack height="100%" alignItems="flex-start" gap={"8px"} mt="18px">
 			<Text>
 				<b>Owner Hat</b> can transfer ownership to a new Hat ID, set
 				multisig parameters, and for a MHSG, add other Hats as valid
