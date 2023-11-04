@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { VStack } from "@chakra-ui/react";
 import { AbiTypeToPrimitiveType } from "abitype";
 import { Form, Formik } from "formik";
@@ -96,7 +97,6 @@ export default function HatsSignerGateForm(props: Props) {
 			setHsgAddress(HsgContractAddress);
 		}
 	}, [transactionData]);
-	// console.log('HatsSignerGateForm - render');
 
 	const handleFormSubmit = useRefetchWrite({
 		write,
@@ -165,16 +165,19 @@ export default function HatsSignerGateForm(props: Props) {
 							name="_ownerHatId"
 							label="Owner Hat ID (integer)"
 							placeholder="26950000000000000000000000004196..."
+							width={80}
 						/>
 						<CustomInputWrapper
 							name="_signerHatId"
 							label="Signer Hat ID (integer)"
 							placeholder="26960000000000000000000000003152..."
+							width={80}
 						/>
 						<CustomInputWrapper
 							name="_safe"
 							label="Existing Safe (address)"
 							placeholder="0xC8ac0000000000000000000000000000000047fe"
+							width={80}
 							isReadOnly={true}
 						/>
 						<CustomInputWrapper

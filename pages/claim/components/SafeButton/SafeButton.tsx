@@ -30,6 +30,7 @@ const HSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
 	return (
 		<Button
 			leftIcon={<BsSafe />}
+			minWidth={"60%"}
 			onClick={() => {
 				window.open(`${getSafeAppUrlPrefix(chain?.id)}${safe}`);
 			}}
@@ -46,6 +47,7 @@ const MHSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
 	return (
 		<Button
 			leftIcon={<BsSafe />}
+			minWidth={"60%"}
 			onClick={() => {
 				window.open(`${getSafeAppUrlPrefix(chain?.id)}${safe}`);
 			}}

@@ -162,6 +162,7 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
 							name="_ownerHatId"
 							label="Owner Hat ID (integer)"
 							placeholder="26950000000000000000000000004196..."
+							width={80}
 						/>
 						<MultiInput
 							values={formData._signersHatIds}

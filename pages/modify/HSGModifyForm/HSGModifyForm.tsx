@@ -1,4 +1,6 @@
-import { Button, VStack } from "@chakra-ui/react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { VStack } from "@chakra-ui/react";
+import Button from "../../../components/UI/CustomButton/CustomButton";
 import { Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
@@ -314,17 +316,20 @@ const HSGForm: React.FC<HSGFormP> = (p) => {
 								label="New Owner Hat ID (integer)"
 								placeholder="26960000000000000000000000003152"
 								name="_ownerHat"
+								width={80}
 							/>
 							<CustomInputWrapper
 								label="Min Threshold (integer)"
 								placeholder="3"
 								name="_minThreshold"
+								width={60}
 							/>
 
 							<CustomInputWrapper
 								label="Max Threshold (integer)"
 								placeholder="3"
 								name="_targetThreshold"
+								width={60}
 							/>
 
 							<Button

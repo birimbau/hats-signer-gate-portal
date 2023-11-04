@@ -74,11 +74,10 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 					justifyContent="flex-start"
 					height="100%"
 					alignItems="flex-start"
+					mt="18px"
 				>
 					<Text>
-						This step will check if your existing safe can be
-						attached to the
-						{safeType} you are creating.
+						This step will check if your existing safe can be attached to the {safeType} you are creating.
 					</Text>
 				</VStack>
 			)}
@@ -87,9 +86,8 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 					justifyContent="flex-start"
 					height="100%"
 					alignItems="flex-start"
+					mt="18px"
 				>
-					<br></br>
-
 					<Text>&lt;&lt; Check another safe address</Text>
 				</VStack>
 			)}
@@ -98,19 +96,17 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 					justifyContent="flex-start"
 					height="100%"
 					alignItems="flex-start"
+					mt="18px"
 				>
-					<br></br>
-
 					<Text>
-						You are using the wrong wallet address. You must use the
-						same address that owns the Safe.
+						You are using the wrong wallet address. You must use the same address that owns the Safe.
 					</Text>
 
 					<Text>Here is a list of the owner(s):</Text>
 
 					{/* Display the owner(s) of the Safe */}
 					{ownerArray && (
-						<ul>
+						<ul style={{ listStyleType: "none" }}>
 							{ownerArray.map((str, index) => (
 								<li key={index}>
 									<Text wordBreak="break-word">{str}</Text>
@@ -125,9 +121,9 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 					justifyContent="flex-start"
 					height="100%"
 					alignItems="flex-start"
+					mt="18px"
 				>
-					<br></br>
-					<Text>&lt;&lt; Check a valid safe address</Text>
+					<Text>&lt;&lt; Check another safe address</Text>
 				</VStack>
 			)}
 			{canAttachSafe === safe.CAN_ATTACH && !hsgAddress && !isPending && (
@@ -138,6 +134,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 				!isSuccessTwo && (
 					<>
 						<Button
+							mt="24px"
 							leftIcon={<AiOutlinePaperClip />}
 							isDisabled={!connectedAddress || isSigningExecuting}
 							onClick={() => {

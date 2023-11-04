@@ -251,9 +251,10 @@ const Remove = () => {
 		}
 		if (!isPending && transaction) {
 			return (
-				<VStack height="100%" alignItems="flex-start" gap={"24px"}>
+				<VStack height="100%" alignItems="flex-start" gap={"24px"} mt="24px">
 					<Button
 						leftIcon={<FiCopy />}
+						minWidth={"60%"}
 						onClick={() => {
 							window.open(
 								`${getBlockExplorerUrl(
@@ -266,6 +267,7 @@ const Remove = () => {
 					</Button>
 					<Button
 						leftIcon={<BsCardList />}
+						minWidth={"60%"}
 						onClick={() => {
 							window.open(
 								`${getBlockExplorerUrl(

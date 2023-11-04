@@ -43,7 +43,7 @@ const HSGWF = () => {
 			)}
 			{data && !isPending && (
 				<SafeAttachMessage
-					text="Transaction complete"
+					text="Transaction Complete"
 					color="black"
 					safeData=""
 				/>

@@ -1,4 +1,5 @@
-import { VStack, Text, Button } from "@chakra-ui/react";
+import { VStack, Text } from "@chakra-ui/react";
+import Button from "../../components/UI/CustomButton/CustomButton";
 import MainContent from "../../components/MainContent/MainContent";
 import CheckHatsContract from "../claim/components/CheckHatsContract/CheckHatsContract";
 import { useState } from "react";
@@ -159,9 +160,10 @@ const ModifyPage: React.FC = () => {
 			transaction.minThreshold
 		) {
 			return (
-				<VStack height="100%" alignItems="flex-start" gap={"24px"}>
+				<VStack height="100%" alignItems="flex-start" gap={"24px"} mt="24px">
 					<Button
 						leftIcon={<FiCopy />}
+						minWidth={"60%"}
 						onClick={() => {
 							if (transaction.ownerHat) {
 								window.open(
@@ -192,6 +194,7 @@ const ModifyPage: React.FC = () => {
 					</Button>
 					<Button
 						leftIcon={<BsCardList />}
+						minWidth={"60%"}
 						onClick={() => {
 							window.open(
 								`${getBlockExplorerUrl(
@@ -227,7 +230,7 @@ const ModifyPage: React.FC = () => {
 
 		if (result) {
 			return (
-				<VStack justifyContent="flex-start" alignItems="flex-start">
+				<VStack justifyContent="flex-start" alignItems="flex-start" mt="18px">
 					<Text>
 						<b>Owner Hat</b> can transfer ownership to a new Hat ID,
 						set multisig parameters, and for a MHSG, add other Hats
