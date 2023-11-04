@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Flex, VStack } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { AiOutlineRead } from "react-icons/ai";

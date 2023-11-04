@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { VStack } from "@chakra-ui/react";
 import { AbiTypeToPrimitiveType } from "abitype";
 import { Form, Formik } from "formik";
@@ -96,7 +97,6 @@ export default function HatsSignerGateForm(props: Props) {
 			setHsgAddress(HsgContractAddress);
 		}
 	}, [transactionData]);
-	// console.log('HatsSignerGateForm - render');
 
 	const handleFormSubmit = useRefetchWrite({
 		write,

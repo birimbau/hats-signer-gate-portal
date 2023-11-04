@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import { EthereumAddress } from "../../../components/Deployers/forms/utils/ReadForm";
 import {
@@ -398,7 +399,6 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 								name="_newSignerHats"
 								countLabel="Id"
 								placeholder="26960000000000000000000000003152..."
-								width={80}
 							/>
 							<CustomInputWrapper
 								label="Min Threshold (integer)"

@@ -164,12 +164,11 @@ export default function MultiHatsSignerGateForm(props: Props) {
 						/>
 						<MultiInput
 							values={formData._signersHatIds}
-							width="372px"
 							label="Signer Hat IDs"
 							name="_signersHatIds"
 							countLabel="Id"
 							placeholder="26960000000000000000000000003152..."
-							width={80}
+							width={"80%"}
 						/>
 						<CustomInputWrapper
 							name="_safe"
