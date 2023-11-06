@@ -1,6 +1,5 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import * as S from "./MainContent.styled";
-import styles from "../../styles/Main.module.css";
+import { MainContentStyled, CellContent } from "./MainContentComponents";
 
 interface P {
 	headerOne?: React.ReactNode;
@@ -13,8 +12,8 @@ interface P {
 
 const MainContent: React.FC<P> = (p) => {
 	return (
-		<S.MainContentStyled
-			direction={"column"}
+		<MainContentStyled
+			direction="column"
 			grow={1}
 			position="relative"
 			width="100%"
@@ -30,9 +29,7 @@ const MainContent: React.FC<P> = (p) => {
 					background="#EDF8FE"
 					padding="16px 24px"
 				>
-					<S.CellContent className={styles.CellContent}>
-						{p.headerOne}
-					</S.CellContent>
+					<CellContent>{p.headerOne}</CellContent>
 				</GridItem>
 				<GridItem
 					rowSpan={1}
@@ -40,9 +37,7 @@ const MainContent: React.FC<P> = (p) => {
 					background="#F9FFFF"
 					padding="16px 24px"
 				>
-					<S.CellContent className={styles.CellContent}>
-						{p.headerTwo}
-					</S.CellContent>
+					<CellContent>{p.headerTwo}</CellContent>
 				</GridItem>
 				<GridItem
 					rowSpan={1}
@@ -50,9 +45,7 @@ const MainContent: React.FC<P> = (p) => {
 					background="#FAFAFA"
 					padding="16px 24px"
 				>
-					<S.CellContent className={styles.CellContent}>
-						{p.headerThree}
-					</S.CellContent>
+					<CellContent>{p.headerThree}</CellContent>
 				</GridItem>
 				<GridItem
 					rowSpan={1}
@@ -60,7 +53,7 @@ const MainContent: React.FC<P> = (p) => {
 					background="#F6FCFF"
 					padding="24px 24px"
 				>
-					<S.CellContent>{p.contentOne}</S.CellContent>
+					<CellContent>{p.contentOne}</CellContent>
 				</GridItem>
 				<GridItem
 					rowSpan={1}
@@ -68,7 +61,7 @@ const MainContent: React.FC<P> = (p) => {
 					background="#F0FCFD"
 					padding="24px 24px"
 				>
-					<S.CellContent>{p.contentTwo}</S.CellContent>
+					<CellContent>{p.contentTwo}</CellContent>
 				</GridItem>
 				<GridItem
 					rowSpan={1}
@@ -76,10 +69,10 @@ const MainContent: React.FC<P> = (p) => {
 					background="#FFFFFF"
 					padding="24px 24px"
 				>
-					<S.CellContent>{p.contentThree}</S.CellContent>
+					<CellContent>{p.contentThree}</CellContent>
 				</GridItem>
 			</Grid>
-		</S.MainContentStyled>
+		</MainContentStyled>
 	);
 };
 

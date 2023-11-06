@@ -1,18 +1,18 @@
 import { VStack, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import HatsSignerGateAndSafeForm from "../../../components/Deployers/forms/HatsSignerGateAndSafeForm/HatsSignerGateAndSafeForm";
-import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
-import MainContent from "../../../components/MainContent/MainContent";
-import { DEPLOY_ACTIONS } from "../../../context/DeployContext";
-import { DeployConfigHSGWF } from "../../../components/Deployers/forms/types/forms";
-import VariableExplanations from "../../../components/Deployers/forms/utils/VariableExplainations";
-import { SafeAttachMessage } from "../../../components/Deployers/forms/utils/SafeAttachMessage";
-import TransactionDetails from "../../../components/Deployers/forms/utils/TransactionDetails";
+import HatsSignerGateAndSafeForm from "@/forms/HatsSignerGateAndSafeForm";
+import Deploy from "@/components/DeployButtons";
+import MainContent from "@/components/MainContent";
+import { DEPLOY_ACTIONS } from "@/utils";
+import { DeployConfigHSGWS } from "@/types/forms";
+import VariableExplanations from "@/components/form/VariableExplanations";
+import { SafeAttachMessage } from "@/components/form/SafeAttachMessage";
+import TransactionDetails from "@/components/form/TransactionDetails";
 
-const HSGWF = () => {
+const HSGWS = () => {
 	const [isPending, setIsPending] = useState<boolean>(false);
 	const [data, setData] = useState(undefined);
-	const [formData, setFormData] = useState<DeployConfigHSGWF>({
+	const [formData, setFormData] = useState<DeployConfigHSGWS>({
 		_ownerHatId: "",
 		_signerHatId: "",
 		_minThreshold: "",
@@ -93,4 +93,4 @@ const HSGWF = () => {
 	);
 };
 
-export default HSGWF;
+export default HSGWS;

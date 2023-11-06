@@ -1,24 +1,15 @@
 import { VStack, Text } from "@chakra-ui/react";
-import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
-import MainContent from "../../../components/MainContent/MainContent";
-import { DEPLOY_ACTIONS } from "../../../context/DeployContext";
-import ReadForm, {
-	EthereumAddress,
-} from "../../../components/Deployers/forms/utils/ReadForm";
+import Deploy from "@/components/DeployButtons";
+import MainContent from "@/components/MainContent";
+import { DEPLOY_ACTIONS, safe } from "@/utils";
+import ReadForm from "@/forms/ReadForm";
 import { useState } from "react";
-import { DeployConfigHSG } from "../../../components/Deployers/forms/types/forms";
-import HatsSignerGateForm from "../../../components/Deployers/forms/HatsSignerGateForm/HatsSignerGateForm";
-import { SafeAttachMessage } from "../../../components/Deployers/forms/utils/SafeAttachMessage";
+import { DeployConfigHSG } from "@/types/forms";
+import HatsSignerGateForm from "@/forms/HatsSignerGateForm";
+import { SafeAttachMessage } from "@/components/form/SafeAttachMessage";
 import { useAccount } from "wagmi";
-import SafeInstructions from "../../../components/Deployers/forms/utils/SafeInstruction";
-
-export enum safe {
-	UNSET = 1,
-	INVALID_ADDRESS = 2,
-	CANNOT_ATTACH = 3,
-	CAN_ATTACH = 4,
-	WRONG_ADDRESS = 5,
-}
+import SafeInstructions from "@/components/form/SafeInstruction";
+import { Hex } from "viem";
 
 const HSG = () => {
 	const [isPending, setIsPending] = useState<boolean>(false);
@@ -34,7 +25,7 @@ const HSG = () => {
 	});
 
 	// This is extracted form the HSG factory response and connected to the existing safe
-	const [hsgAddress, setHsgAddress] = useState<EthereumAddress | null>(null);
+	const [hsgAddress, setHsgAddress] = useState<Hex | null>(null);
 
 	const [isSuccessOne, setIsSuccessOne] = useState(false);
 	const [isSuccessTwo, setIsSuccessTwo] = useState(false);
