@@ -1,15 +1,14 @@
 import { VStack, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import MultiHatsSignerGateAndSafeForm from "../../../components/Deployers/forms/MultiHatsSignerGateAndSafeForm/MultiHatsSignerGateAndSafeForm";
-import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
-import MainContent from "../../../components/MainContent/MainContent";
-import { DEPLOY_ACTIONS } from "../../../context/DeployContext";
-import { useNetwork } from "wagmi";
-import VariableExplanations from "../../../components/Deployers/forms/utils/VariableExplainations";
-import TransactionDetails from "../../../components/Deployers/forms/utils/TransactionDetails";
-import { SafeAttachMessage } from "../../../components/Deployers/forms/utils/SafeAttachMessage";
+import MultiHatsSignerGateAndSafeForm from "@/forms/MultiHatsSignerGateAndSafeForm";
+import Deploy from "@/components/DeployButtons";
+import MainContent from "@/components/MainContent";
+import { DEPLOY_ACTIONS } from "@/utils";
+import VariableExplanations from "@/components/form/VariableExplanations";
+import TransactionDetails from "@/components/form/TransactionDetails";
+import { SafeAttachMessage } from "@/components/form/SafeAttachMessage";
 
-const MHSGWF = () => {
+const MHSGWS = () => {
 	const [isPending, setIsPending] = useState(false);
 	const [data, setData] = useState(undefined);
 	const [formData, setFormData] = useState({
@@ -100,4 +99,4 @@ const MHSGWF = () => {
 	);
 };
 
-export default MHSGWF;
+export default MHSGWS;

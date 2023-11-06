@@ -1,0 +1,199 @@
+import { VStack, Text } from "@chakra-ui/react";
+import VariableExplanations from "./VariableExplanations";
+import TransactionDetails from "./TransactionDetails";
+import { DeployConfigHSG, DeployConfigMHSG } from "@/types/forms";
+import { handleConnect } from "../../utils/form/connectSafeToHSG";
+import { AiOutlinePaperClip } from "react-icons/ai";
+import Button from "@/components/ui/CustomButton";
+import { useWaitForTransaction } from "wagmi";
+import { useEffect, useState } from "react";
+import { AbiTypeToPrimitiveType } from "abitype";
+import { Hex } from "viem";
+import { safe } from "@/utils";
+
+interface SafeInstructionsProps {
+	canAttachSafe: number;
+	hsgAddress: Hex | null;
+	connectedAddress: Hex | undefined;
+	safeType: string;
+	data: any; // Adjust the type accordingly
+	formData: DeployConfigHSG | DeployConfigMHSG;
+	isPending: boolean;
+	setIsSuccessTwo: (isSuccess: boolean) => void;
+	isSuccessTwo: boolean;
+	setIsPending_HsgAttachSafe: (isSuccess: boolean) => void;
+	isPending_HsgAttachSafe: boolean;
+	ownerArray?: string[];
+}
+
+const SafeInstructions: React.FC<SafeInstructionsProps> = ({
+	canAttachSafe,
+	hsgAddress,
+	connectedAddress,
+	safeType,
+	data,
+	formData,
+	isPending,
+	setIsSuccessTwo,
+	isSuccessTwo,
+	setIsPending_HsgAttachSafe,
+	isPending_HsgAttachSafe,
+	ownerArray,
+}) => {
+	const [transactionHash, setTransactionHash] = useState<string | undefined>(
+		undefined,
+	);
+	const [isSigningExecuting, setIsSigningExecuting] = useState(false);
+
+	const { isSuccess, isLoading, isError } = useWaitForTransaction({
+		hash: transactionHash as AbiTypeToPrimitiveType<"address">,
+		onSuccess() {
+			console.log("Transaction Successful");
+		},
+	});
+
+	// After 'useWaitForTransaction' returns 'isSuccess', update the state above to render next stage
+	useEffect(() => {
+		setIsSuccessTwo(isSuccess);
+	}, [setIsSuccessTwo, isSuccess]);
+
+	// This is used to update the parent's display status
+	useEffect(() => {
+		setIsPending_HsgAttachSafe(isLoading && !!transactionHash);
+	}, [isLoading, setIsPending_HsgAttachSafe, transactionHash]);
+
+	// // This is used to update the parent's display status
+	// useEffect(() => {
+	//   setIsSigningExecuting(false);
+	// }, [isError, setIsSigningExecuting]);
+
+	return (
+		<>
+			{canAttachSafe === safe.UNSET && (
+				<VStack
+					justifyContent="flex-start"
+					height="100%"
+					alignItems="flex-start"
+					mt="18px"
+				>
+					<Text>
+						This step will check if your existing safe can be
+						attached to the {safeType} you are creating.
+					</Text>
+				</VStack>
+			)}
+			{canAttachSafe === safe.CANNOT_ATTACH && (
+				<VStack
+					justifyContent="flex-start"
+					height="100%"
+					alignItems="flex-start"
+					mt="18px"
+				>
+					<Text>&lt;&lt; Check another safe address</Text>
+				</VStack>
+			)}
+			{canAttachSafe === safe.WRONG_ADDRESS && (
+				<VStack
+					justifyContent="flex-start"
+					height="100%"
+					alignItems="flex-start"
+					mt="18px"
+				>
+					<Text>
+						You are using the wrong wallet address. You must use the
+						same address that owns the Safe.
+					</Text>
+
+					<Text>Here is a list of the owner(s):</Text>
+
+					{/* Display the owner(s) of the Safe */}
+					{ownerArray && (
+						<ul style={{ listStyleType: "none" }}>
+							{ownerArray.map((str, index) => (
+								<li key={index}>
+									<Text wordBreak="break-word">{str}</Text>
+								</li>
+							))}
+						</ul>
+					)}
+				</VStack>
+			)}
+			{canAttachSafe === safe.INVALID_ADDRESS && (
+				<VStack
+					justifyContent="flex-start"
+					height="100%"
+					alignItems="flex-start"
+					mt="18px"
+				>
+					<Text>&lt;&lt; Check another safe address</Text>
+				</VStack>
+			)}
+			{canAttachSafe === safe.CAN_ATTACH && !hsgAddress && !isPending && (
+				<VariableExplanations />
+			)}
+			{canAttachSafe === safe.CAN_ATTACH &&
+				hsgAddress &&
+				!isSuccessTwo && (
+					<>
+						<Button
+							mt="24px"
+							leftIcon={<AiOutlinePaperClip />}
+							isDisabled={!connectedAddress || isSigningExecuting}
+							onClick={() => {
+								setIsSigningExecuting(true);
+								if (connectedAddress && hsgAddress) {
+									handleConnect(
+										hsgAddress,
+										connectedAddress,
+										formData._safe,
+										setTransactionHash,
+										setIsSigningExecuting,
+									);
+								}
+							}}
+						>
+							Attach {safeType} to Safe
+						</Button>
+						<br></br>
+						<br></br>
+
+						<>
+							<Text>
+								Now that the {safeType} has successfully been
+								created, it needs to be attached to the Safe via
+								the following batched multisend transaction:
+							</Text>
+							<Text>
+								Approve the {safeType} address as a module on
+								the Safe.
+							</Text>
+							<Text>
+								Approve the {safeType} address as the guard on
+								the Safe.
+							</Text>
+							<br />
+							<Text>
+								This is a multisig transaction needing the
+								required number of signers to execute. This step
+								initiates the transaction with you as first
+								signer.
+							</Text>
+						</>
+					</>
+				)}
+			{!isPending &&
+				isSuccessTwo &&
+				transactionHash &&
+				!isPending_HsgAttachSafe && (
+					<TransactionDetails
+						type={safeType.toUpperCase()}
+						data={data}
+						transactionHash={transactionHash}
+						formData={formData}
+					/>
+				)}
+		</>
+	);
+};
+
+export default SafeInstructions;

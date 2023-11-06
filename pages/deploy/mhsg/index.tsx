@@ -1,17 +1,15 @@
 import { VStack, Text } from "@chakra-ui/react";
-import Deploy from "../../../components/MainContent/components/Deploy/Deploy";
-import MainContent from "../../../components/MainContent/MainContent";
-import { DEPLOY_ACTIONS } from "../../../context/DeployContext";
-import ReadForm, {
-	EthereumAddress,
-} from "../../../components/Deployers/forms/utils/ReadForm";
+import Deploy from "@/components/DeployButtons";
+import MainContent from "@/components/MainContent";
+import { DEPLOY_ACTIONS, safe } from "@/utils";
+import ReadForm from "@/forms/ReadForm";
 import { useState } from "react";
-import MultiHatsSignerGateForm from "../../../components/Deployers/forms/MultiHatsSignerGateForm/MultiHatsSignerGateForm";
-import { DeployConfigMHSG } from "../../../components/Deployers/forms/types/forms";
-import { safe } from "../hsg";
-import { SafeAttachMessage } from "../../../components/Deployers/forms/utils/SafeAttachMessage";
-import SafeInstructions from "../../../components/Deployers/forms/utils/SafeInstruction";
+import MultiHatsSignerGateForm from "@/forms/MultiHatsSignerGateForm";
+import { DeployConfigMHSG } from "@/types/forms";
+import { SafeAttachMessage } from "@/components/form/SafeAttachMessage";
+import SafeInstructions from "@/components/form/SafeInstruction";
 import { useAccount } from "wagmi";
+import { Hex } from "viem";
 
 const MHSG = () => {
 	const [isPending, setIsPending] = useState<boolean>(false);
@@ -27,9 +25,7 @@ const MHSG = () => {
 	});
 
 	// This is extracted form the HSG factory response and connected to the existing safe
-	const [mhsgAddress, setMhsgAddress] = useState<EthereumAddress | null>(
-		null,
-	);
+	const [mhsgAddress, setMhsgAddress] = useState<Hex | null>(null);
 
 	const [isSuccessOne, setIsSuccessOne] = useState(false);
 	const [isSuccessTwo, setIsSuccessTwo] = useState(false);

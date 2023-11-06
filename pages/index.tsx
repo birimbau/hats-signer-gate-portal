@@ -3,17 +3,25 @@ import MainContent from "../components/MainContent/MainContent";
 import { VStack, Text, Card, CardBody } from "@chakra-ui/react";
 import { useWalletConnectionContext } from "../context/WalletConnectionContext";
 import { AiOutlineDeploymentUnit, AiOutlineSetting } from "react-icons/ai";
-import { LuEdit } from "react-icons/lu";
+import { LuFileEdit } from "react-icons/lu";
 import { CgUserRemove } from "react-icons/cg";
 import { LiaCopySolid } from "react-icons/lia";
-import Button from "../components/UI/CustomButton/CustomButton";
-import { HEADER_ACTIONS } from "../context/SelectedActionContext";
+import Button from "../components/ui/CustomButton";
+import { HEADER_ACTIONS } from "@/utils/constants";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const Home: NextPage = () => {
+	const [connected, setConnected] = useState(false);
+	const [wrongNetwork, setWrongNetwork] = useState(false);
 	const { isConnected, isWrongNetwork, isReadyToUse } =
 		useWalletConnectionContext();
 	const router = useRouter();
+
+	useEffect(() => {
+		if (isConnected && isReadyToUse) setConnected(true);
+		if (isWrongNetwork) setConnected(true);
+	}, [isConnected, isReadyToUse, isWrongNetwork]);
 
 	const onClickHandler = (action: HEADER_ACTIONS) => {
 		router.replace(`/${action.toLowerCase()}`);
@@ -37,16 +45,7 @@ const Home: NextPage = () => {
 			headerTwo={<></>}
 			headerThree={
 				<>
-					{!isConnected && (
-						<VStack
-							justifyContent="flex-end"
-							height="100%"
-							alignItems="flex-start"
-						>
-							<Text as="b">Please Connect Your Wallet</Text>
-						</VStack>
-					)}
-					{isWrongNetwork && (
+					{isWrongNetwork ? (
 						<VStack
 							justifyContent="flex-end"
 							height="100%"
@@ -54,8 +53,15 @@ const Home: NextPage = () => {
 						>
 							<Text as="b">Wrong Network</Text>
 						</VStack>
-					)}
-					{isReadyToUse && (
+					) : !connected ? (
+						<VStack
+							justifyContent="flex-end"
+							height="100%"
+							alignItems="flex-start"
+						>
+							<Text as="b">Please Connect Your Wallet</Text>
+						</VStack>
+					) : (
 						<VStack
 							justifyContent="flex-end"
 							height="100%"
@@ -104,7 +110,7 @@ const Home: NextPage = () => {
 									onClick={() =>
 										onClickHandler(HEADER_ACTIONS.CLAIM)
 									}
-									leftIcon={<LuEdit />}
+									leftIcon={<LuFileEdit />}
 								>
 									Claim
 								</Button>
