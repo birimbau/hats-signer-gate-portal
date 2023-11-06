@@ -2,7 +2,7 @@
 import { VStack } from "@chakra-ui/react";
 import Button from "@/components/ui/CustomButton";
 import { Form, Formik } from "formik";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import CustomInputWrapper from "@/components/form/CustomInputWrapper";
 import { FiSettings } from "react-icons/fi";
@@ -23,6 +23,7 @@ import {
 	targetThresholdValidation,
 } from "@/utils/form/validation";
 import { Hex } from "viem";
+import { set } from "lodash";
 
 interface P {
 	address?: Hex;
@@ -115,7 +116,7 @@ const HSGForm: React.FC<HSGFormP> = (p) => {
 	const {
 		isLoading: setMinThresholdIsLoading,
 		isError: setMinThresholdIsError,
-		writeAsync: writeSetMinThresholdAsync,
+		write: writeSetMinThresholdAsync,
 		data: useMinThresholdData,
 	} = useContractWrite(configMinThreshold);
 	const {
@@ -138,7 +139,7 @@ const HSGForm: React.FC<HSGFormP> = (p) => {
 	const {
 		isLoading: setMaxThresholdIsLoading,
 		isError: setMaxThresholdIsError,
-		writeAsync: writeSetMaxThresholdAsync,
+		write: writeSetMaxThresholdAsync,
 		data: useMaxThresholdData,
 	} = useContractWrite(configMaxThreshold);
 	const {
@@ -163,7 +164,7 @@ const HSGForm: React.FC<HSGFormP> = (p) => {
 	const {
 		isLoading: setOwnerHatIsLoading,
 		isError: setOwnerHatIsError,
-		writeAsync: writeOwnerHatAsync,
+		write: writeOwnerHatAsync,
 		data: useOwnerHatData,
 	} = useContractWrite(config);
 	const {
@@ -250,49 +251,53 @@ const HSGForm: React.FC<HSGFormP> = (p) => {
 		if (
 			isSubmitted &&
 			originalFormData.current._minThreshold !== formData._minThreshold &&
-			fetchUseMinThreshold &&
-			writeSetMinThresholdAsync
+			fetchUseMinThreshold
 		) {
 			fetchUseMinThreshold().then((data) => {
 				if (data.status === "error") {
 					alert(data.error.message);
+					setIsSubmitted(false);
 				} else {
 					writeSetMinThresholdAsync?.();
 				}
 			});
 		}
+	}, [isSubmitted, writeSetMinThresholdAsync]);
 
+	useEffect(() => {
 		if (
 			isSubmitted &&
 			originalFormData.current._targetThreshold !==
 				formData._targetThreshold &&
-			fetchUseMaxThreshold &&
-			writeSetMaxThresholdAsync
+			fetchUseMaxThreshold
 		) {
 			fetchUseMaxThreshold().then((data) => {
 				if (data.status === "error") {
 					alert(data.error.message);
+					setIsSubmitted(false);
 				} else {
 					writeSetMaxThresholdAsync?.();
 				}
 			});
 		}
+	}, [isSubmitted, writeSetMaxThresholdAsync]);
 
+	useEffect(() => {
 		if (
 			isSubmitted &&
 			originalFormData.current._ownerHat !== formData._ownerHat &&
-			fetchUseOwnerHat &&
-			writeOwnerHatAsync
+			fetchUseOwnerHat
 		) {
 			fetchUseOwnerHat().then((data) => {
 				if (data.status === "error") {
 					alert(data.error.message);
+					setIsSubmitted(false);
 				} else {
 					writeOwnerHatAsync?.();
 				}
 			});
 		}
-	}, [isSubmitted]);
+	}, [isSubmitted, writeOwnerHatAsync]);
 
 	return (
 		<>
