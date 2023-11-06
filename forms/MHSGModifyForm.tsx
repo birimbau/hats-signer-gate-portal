@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import {
 	useAddSignerHats,
 	useGetHatsContract,
@@ -124,7 +124,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	const {
 		isLoading: setMinThresholdIsLoading,
 		isError: setMinThresholdIsError,
-		writeAsync: writeSetMinThresholdAsync,
+		write: writeSetMinThresholdAsync,
 		data: useMinThresholdData,
 	} = useContractWrite(configMinThreshold);
 	const {
@@ -147,7 +147,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	const {
 		isLoading: setMaxThresholdIsLoading,
 		isError: setMaxThresholdIsError,
-		writeAsync: writeSetMaxThresholdAsync,
+		write: writeSetMaxThresholdAsync,
 		data: useMaxThresholdData,
 	} = useContractWrite(configMaxThreshold);
 	const {
@@ -173,7 +173,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	const {
 		isLoading: setOwnerHatIsLoading,
 		isError: setOwnerHatIsError,
-		writeAsync: writeOwnerHatAsync,
+		write: writeOwnerHatAsync,
 		data: useOwnerHatData,
 	} = useContractWrite(configOwnerHat);
 	const {
@@ -200,7 +200,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	const {
 		isLoading: addSignerHatIsLoading,
 		isError: addSignerHatIsError,
-		writeAsync: writeaddSignerHatAsync,
+		write: writeaddSignerHatAsync,
 		data: useAddSignerHatsData,
 	} = useContractWrite(configOwnerHat);
 	const {
@@ -306,67 +306,73 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		if (
 			isSubmitted &&
 			originalFormData.current._minThreshold !== formData._minThreshold &&
-			fetchUseMinThreshold &&
-			writeSetMinThresholdAsync
+			fetchUseMinThreshold
 		) {
 			fetchUseMinThreshold().then((data) => {
 				if (data.status === "error") {
 					alert(data.error.message);
+					setIsSubmitted(false);
 				} else {
 					writeSetMinThresholdAsync?.();
 				}
 			});
 		}
+	}, [isSubmitted, writeSetMinThresholdAsync]);
 
+	useEffect(() => {
 		if (
 			isSubmitted &&
 			originalFormData.current._targetThreshold !==
 				formData._targetThreshold &&
-			fetchUseMaxThreshold &&
-			writeSetMaxThresholdAsync
+			fetchUseMaxThreshold
 		) {
 			fetchUseMaxThreshold().then((data) => {
 				if (data.status === "error") {
 					alert(data.error.message);
+					setIsSubmitted(false);
 				} else {
 					writeSetMaxThresholdAsync?.();
 				}
 			});
 		}
+	}, [isSubmitted, writeSetMaxThresholdAsync]);
 
+	useEffect(() => {
 		if (
 			isSubmitted &&
 			originalFormData.current._ownerHat !== formData._ownerHat &&
-			fetchUseOwnerHat &&
-			writeOwnerHatAsync
+			fetchUseOwnerHat
 		) {
 			fetchUseOwnerHat().then((data) => {
 				if (data.status === "error") {
 					alert(data.error.message);
+					setIsSubmitted(false);
 				} else {
 					writeOwnerHatAsync?.();
 				}
 			});
 		}
+	}, [isSubmitted, writeOwnerHatAsync]);
 
+	useEffect(() => {
 		if (
 			isSubmitted &&
 			!_.isEqual(
 				originalFormData.current._newSignerHats,
 				formData._newSignerHats,
 			) &&
-			fetchSetSignerHats &&
-			writeaddSignerHatAsync
+			fetchSetSignerHats
 		) {
 			fetchSetSignerHats().then((data) => {
 				if (data.status === "error") {
 					alert(data.error.message);
+					setIsSubmitted(false);
 				} else {
 					writeaddSignerHatAsync?.();
 				}
 			});
 		}
-	}, [isSubmitted]);
+	}, [isSubmitted, writeaddSignerHatAsync]);
 
 	return (
 		<>
