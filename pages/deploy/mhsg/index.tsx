@@ -1,12 +1,11 @@
 import { VStack, Text } from "@chakra-ui/react";
 import Deploy from "@/components/DeployButtons";
 import MainContent from "@/components/MainContent";
-import { DEPLOY_ACTIONS } from "@/utils";
+import { DEPLOY_ACTIONS, safe } from "@/utils";
 import ReadForm from "@/forms/ReadForm";
 import { useState } from "react";
 import MultiHatsSignerGateForm from "@/forms/MultiHatsSignerGateForm";
 import { DeployConfigMHSG } from "@/types/forms";
-import { safe } from "../hsg";
 import { SafeAttachMessage } from "@/components/form/SafeAttachMessage";
 import SafeInstructions from "@/components/form/SafeInstruction";
 import { useAccount } from "wagmi";
