@@ -11,7 +11,7 @@ import "../utils/form/validation"; // for Yup Validation
 import { useSubmitRefetch } from "@/hooks/useSubmitRefetch";
 import { DeployConfigHSG, DeployConfigMHSG } from "@/types/forms";
 import { safe } from "@/utils";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { Hex } from "viem";
 
 interface Props {
@@ -25,17 +25,19 @@ function ReadForm(props: Props) {
 	const { setCanAttachSafe, formData, setFormData, setSafeOwnerAddress } =
 		props;
 	const { isConnected, address } = useAccount();
+	const chainId = useChainId();
 
 	// This passes the safe address and check's if it's valid for connection
 	const { data, refetch, isLoading, isError } = useGetModulesPaginated(
 		formData._safe as Hex,
+		chainId,
 	);
 	// This passes the safe address and check's if the user is connected to the correct wallet.
 	const {
 		data: ownersData,
 		refetch: refetch2,
 		isError: isError2,
-	} = useGetOwners(formData._safe as Hex);
+	} = useGetOwners(formData._safe as Hex, chainId);
 
 	// This is used to manage unnecessary re-renders. onSubmit only one re-render occurs
 	const triggerRefetch = useSubmitRefetch(refetch, isError);

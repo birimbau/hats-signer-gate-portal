@@ -1,4 +1,4 @@
-import { useContractWrite, useWaitForTransaction } from "wagmi";
+import { useChainId, useContractWrite, useWaitForTransaction } from "wagmi";
 import Button from "@/components/ui/CustomButton";
 import { useRemoveSigner } from "@/hooks/useHatsSignerGate";
 import { useEffect, useState } from "react";
@@ -30,6 +30,7 @@ const HSGRemoveForm: React.FC<P> = (p) => {
 		setIsPending,
 		onTransactionComplete,
 	} = p;
+	const chainId = useChainId();
 
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [refetchNow, setRefetchNow] = useState(false);
@@ -42,6 +43,7 @@ const HSGRemoveForm: React.FC<P> = (p) => {
 	const { config, refetch, error } = useRemoveSigner(
 		p.hsgAddress,
 		formData._signer,
+		chainId,
 	);
 
 	const {

@@ -7,6 +7,7 @@ import { AiOutlineRead } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { useIsValidSigner } from "@/hooks/useMultiHatsSignerGate";
 import { Hex } from "viem";
+import { useChainId } from "wagmi";
 
 interface P {
 	address: Hex;
@@ -15,6 +16,7 @@ interface P {
 // TODO is this attach safe?
 
 const MHSGAttachSafe: React.FC<P> = (p) => {
+	const chainId = useChainId();
 	const [result, setResult] = useState<any>(null);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [formData, setFormData] = useState({
@@ -28,6 +30,7 @@ const MHSGAttachSafe: React.FC<P> = (p) => {
 	const { refetch, data, isLoading, isSuccess } = useIsValidSigner(
 		formData,
 		p.address,
+		chainId,
 	);
 
 	// LOGIC FOR RUNNING `Refetch` AFTER CLICKING FORMIK'S OnSubmit

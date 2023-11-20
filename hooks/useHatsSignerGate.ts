@@ -1,36 +1,32 @@
 import { useContractRead, usePrepareContractWrite } from "wagmi";
 import { HatsSignerGateAbi } from "@/utils/abi/HatsSignerGate";
 import { AbiTypeToPrimitiveType } from "abitype";
-import { CONTRACTS } from "@/utils";
 import { Hex } from "viem";
 import _ from "lodash";
 
-// Hooks for write functions for the HatsSignerGate contract
-const contract = (CONTRACTS.hatsSignerGate.contractAddress ||
-	"0x844b3c7781338d3308eb8d64727033893fce1432") as AbiTypeToPrimitiveType<"address">;
-// TODO handle more chains
-const chainId = process.env.ENVIRONMENT === "production" ? 1 : 5;
-
+// not used
 const useCheckAfterExecution = (
 	address: Hex,
 	args: {
 		bytes32: AbiTypeToPrimitiveType<"bytes32">;
 		bool: boolean;
 	},
+	chainId?: number,
 ) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
 		functionName: "checkAfterExecution",
 		args: _.values(args),
 	});
 
-const useClaimSigner = (address?: Hex) =>
+// dupe
+const useClaimSigner = (address?: Hex, chainId?: number) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
 		functionName: "claimSigner",
 		enabled: !!address,
 		onError: (error) => {
@@ -38,11 +34,12 @@ const useClaimSigner = (address?: Hex) =>
 		},
 	});
 
-const useReconcileSignerCount = (address: Hex) =>
+// not used
+const useReconcileSignerCount = (address: Hex, chainId?: number) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
 		enabled: !!address,
 		functionName: "reconcileSignerCount",
 		onError: (error) => {
@@ -50,15 +47,17 @@ const useReconcileSignerCount = (address: Hex) =>
 		},
 	});
 
+// dupe
 const useRemoveSigner = (
 	address: AbiTypeToPrimitiveType<"address">,
 	_signer?: AbiTypeToPrimitiveType<"address">,
+	chainId?: number,
 ) => {
 	const args = { _signer: _signer };
 	return usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
 		functionName: "removeSigner",
 		args: _.values(args),
 		enabled: !_.some(_.values(args), _.isUndefined),
@@ -68,25 +67,32 @@ const useRemoveSigner = (
 	});
 };
 
+// dupe
 const useSetMinThreshold = (
 	args: {
 		_minThreshold?: AbiTypeToPrimitiveType<"uint256">;
 	},
 	address?: Hex,
 	isOwner?: boolean,
+	chainId?: number,
 ) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
 		functionName: "setMinThreshold",
 		args: _.values(args),
-		enabled: !_.some(_.values(args), _.isUndefined) && !!isOwner,
+		enabled:
+			!_.some(_.values(args), _.isUndefined) &&
+			!!isOwner &&
+			!!address &&
+			!!chainId,
 		onError: (error) => {
 			console.log(error);
 		},
 	});
 
+// dupe
 const useSetOwnerHat = (
 	args: {
 		_ownerHat: AbiTypeToPrimitiveType<"uint256">;
@@ -94,11 +100,12 @@ const useSetOwnerHat = (
 	},
 	address?: Hex,
 	isOwner?: boolean,
+	chainId?: number,
 ) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
 		functionName: "setOwnerHat",
 		args: _.values(args),
 		enabled: !_.some(_.values(args), _.isUndefined) && !!isOwner,
@@ -107,17 +114,19 @@ const useSetOwnerHat = (
 		},
 	});
 
+// dupe
 const useSetTargetThreshold = (
 	args: {
 		_targetThreshold: AbiTypeToPrimitiveType<"uint256">;
 	},
 	address?: Hex,
 	isOwner?: boolean,
+	chainId?: number,
 ) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address: address,
 		functionName: "setTargetThreshold",
 		args: _.values(args),
 		enabled: !!_.some(_.values(args), _.isUndefined) && !!isOwner,
@@ -126,6 +135,7 @@ const useSetTargetThreshold = (
 		},
 	});
 
+// not used
 const useSetup = (
 	address: Hex,
 	args: {
@@ -133,11 +143,12 @@ const useSetup = (
 		initializeParams?: AbiTypeToPrimitiveType<"bytes">;
 	},
 	isOwner?: boolean,
+	chainId?: number,
 ) =>
 	usePrepareContractWrite({
 		chainId,
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
 		functionName: "setup",
 		args: Array.from(Object.values(args)),
 		enabled: !_.some(_.values(args), _.isUndefined) && isOwner,
@@ -155,10 +166,12 @@ const useCountValidSignatures = (
 		signature?: AbiTypeToPrimitiveType<"bytes">;
 		sigCount?: AbiTypeToPrimitiveType<"uint256">;
 	},
+	chainId?: number,
 ) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "countValidSignatures",
 		args: Array.from(Object.values(args)),
 		enabled: !_.some(_.values(args), _.isUndefined),
@@ -167,27 +180,36 @@ const useCountValidSignatures = (
 		},
 	});
 
-const useGetHatsContract = (address?: Hex) => {
+// dupe
+const useGetHatsContract = (
+	address?: Hex,
+	enabled: boolean = true,
+	chainId?: number,
+) => {
 	return useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address: address,
+		chainId,
 		functionName: "getHatsContract",
-		enabled: !!address,
+		enabled: !!address && enabled,
 		onError: (error) => {
 			console.log(error);
 		},
 	});
 };
 
+// dupe
 const useIsValidSigner = (
 	args: {
 		_account: AbiTypeToPrimitiveType<"address"> | undefined;
 	},
 	address?: Hex,
+	chainId?: number,
 ) => {
 	return useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "isValidSigner",
 		args: _.values(args),
 		enabled: !!address && !_.some(_.values(args), _.isUndefined),
@@ -197,18 +219,20 @@ const useIsValidSigner = (
 	});
 };
 
-const useMaxSigners = (address?: Hex) =>
+const useMaxSigners = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address: address,
+		chainId,
 		functionName: "maxSigners",
 		enabled: !!address,
 	});
 
-const useMinThreshold = (address?: Hex) =>
+const useMinThreshold = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "minThreshold",
 		enabled: !!address,
 		onError: (error) => {
@@ -216,10 +240,11 @@ const useMinThreshold = (address?: Hex) =>
 		},
 	});
 
-const useOwnerHat = (address?: Hex) =>
+const useOwnerHat = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "ownerHat",
 		enabled: !!address,
 		onError: (error) => {
@@ -227,10 +252,11 @@ const useOwnerHat = (address?: Hex) =>
 		},
 	});
 
-const useSafe = (address?: Hex) =>
+const useSafe = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address: address,
+		chainId,
 		functionName: "safe",
 		enabled: !!address,
 		onError: (error) => {
@@ -238,10 +264,11 @@ const useSafe = (address?: Hex) =>
 		},
 	});
 
-const useSignersHatId = (address?: Hex) =>
+const useSignersHatId = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "signersHatId",
 		enabled: !!address,
 		onError: (error) => {
@@ -254,10 +281,12 @@ const useSupportsInterface = (
 	args: {
 		interfaceId: AbiTypeToPrimitiveType<"bytes4">;
 	},
+	chainId?: number,
 ) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "supportsInterface",
 		args: _.values(args),
 		enabled: !_.some(_.values(args), _.isUndefined),
@@ -266,10 +295,11 @@ const useSupportsInterface = (
 		},
 	});
 
-const useTargetThreshold = (address?: Hex) =>
+const useTargetThreshold = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "targetThreshold",
 		enabled: !!address,
 		onError: (error) => {
@@ -277,10 +307,12 @@ const useTargetThreshold = (address?: Hex) =>
 		},
 	});
 
-const useValidSignerCount = (address?: Hex) =>
+// dupe
+const useValidSignerCount = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "validSignerCount",
 		enabled: !!address,
 		onError: (error) => {
@@ -288,10 +320,12 @@ const useValidSignerCount = (address?: Hex) =>
 		},
 	});
 
-const useVersion = (address?: Hex) =>
+// dupe
+const useVersion = (address?: Hex, chainId?: number) =>
 	useContractRead({
 		abi: HatsSignerGateAbi,
-		address: address || contract,
+		address,
+		chainId,
 		functionName: "version",
 		enabled: !!address,
 		onError: (error) => {

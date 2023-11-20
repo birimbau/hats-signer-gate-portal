@@ -1,7 +1,12 @@
 import { VStack } from "@chakra-ui/react";
 import Button from "@/components/ui/CustomButton";
 import { useState, useEffect } from "react";
-import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
+import {
+	useAccount,
+	useChainId,
+	useContractWrite,
+	useWaitForTransaction,
+} from "wagmi";
 import { Form, Formik } from "formik";
 import { useDeployHSGwSafe } from "@/hooks/useHatsSignerGateFactory";
 import { AbiTypeToPrimitiveType } from "abitype";
@@ -37,6 +42,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 		setFormData,
 		isPending,
 	} = props;
+	const chainId = useChainId();
 
 	const [hash, setHash] = useState<Hex | "">("");
 	const [isSubmitted, setIsSubmitted] = useState(false);
@@ -45,7 +51,7 @@ export default function HatsSignerGateAndSafeForm(props: Props) {
 	// Used to prevent the user Deploying when not connected
 	const { isConnected } = useAccount();
 
-	const { config, refetch } = useDeployHSGwSafe(formData);
+	const { config, refetch } = useDeployHSGwSafe(formData, chainId);
 
 	const {
 		data: contractData,

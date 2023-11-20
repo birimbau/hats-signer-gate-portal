@@ -103,12 +103,7 @@ const ModifyPage: React.FC = () => {
 
 		return (
 			<>
-				<CheckHatsContract
-					onResult={(result, address) => {
-						setResult(result);
-						setAddress(address);
-					}}
-				/>
+				<CheckHatsContract formikProps={formikProps} />
 			</>
 		);
 	};

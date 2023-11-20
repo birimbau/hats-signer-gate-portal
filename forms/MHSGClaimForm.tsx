@@ -1,4 +1,4 @@
-import { useContractWrite } from "wagmi";
+import { useChainId, useContractWrite } from "wagmi";
 import { useClaimSigner } from "@/hooks/useMultiHatsSignerGate";
 import { useState } from "react";
 import { Form, Formik } from "formik";
@@ -7,9 +7,10 @@ import Button from "@/components/ui/CustomButton";
 import { LuFileEdit } from "react-icons/lu";
 import { VStack } from "@chakra-ui/react";
 import * as Yup from "yup";
+import { Hex } from "viem";
 
 interface P {
-	address?: `0x${string}`;
+	address?: Hex;
 	onLoading: (value: boolean) => void;
 	onTransactionComplete: (transaction: any) => void;
 }
@@ -18,8 +19,9 @@ const MHSGClaimForm: React.FC<P> = (p) => {
 	const [formData, setFormData] = useState({
 		_hatId: BigInt(0),
 	});
+	const chainId = useChainId();
 
-	const { config, refetch } = useClaimSigner(formData, p.address);
+	const { config, refetch } = useClaimSigner(formData, p.address, chainId);
 	const {
 		data: transactionData,
 		isLoading,

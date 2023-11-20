@@ -1,4 +1,4 @@
-import { useContractWrite } from "wagmi";
+import { useChainId, useContractWrite } from "wagmi";
 import Button from "@/components/ui/CustomButton";
 import { LuFileEdit } from "react-icons/lu";
 import { useClaimSigner } from "@/hooks/useHatsSignerGate";
@@ -11,7 +11,8 @@ interface P {
 }
 
 const HSGClaimForm: React.FC<P> = (p) => {
-	const { config, refetch } = useClaimSigner(p.address);
+	const chainId = useChainId();
+	const { config, refetch } = useClaimSigner(p.address, chainId);
 	const { writeAsync } = useContractWrite(config);
 
 	// TODO transaction complete on `useWaitForTransaction`
