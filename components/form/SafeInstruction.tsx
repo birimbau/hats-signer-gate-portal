@@ -5,7 +5,7 @@ import { DeployConfigHSG, DeployConfigMHSG } from "@/types/forms";
 import { handleConnect } from "../../utils/form/connectSafeToHSG";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import Button from "@/components/ui/CustomButton";
-import { useWaitForTransaction } from "wagmi";
+import { useChainId, useWaitForTransaction } from "wagmi";
 import { useEffect, useState } from "react";
 import { AbiTypeToPrimitiveType } from "abitype";
 import { Hex } from "viem";
@@ -40,6 +40,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 	isPending_HsgAttachSafe,
 	ownerArray,
 }) => {
+	const chainId = useChainId();
 	const [transactionHash, setTransactionHash] = useState<string | undefined>(
 		undefined,
 	);
@@ -146,6 +147,7 @@ const SafeInstructions: React.FC<SafeInstructionsProps> = ({
 										hsgAddress,
 										connectedAddress,
 										formData._safe,
+										chainId,
 										setTransactionHash,
 										setIsSigningExecuting,
 									);

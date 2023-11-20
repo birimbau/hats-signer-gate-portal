@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-	useAddSignerHats,
 	useGetHatsContract,
 	useMaxSigners,
 	useMinThreshold,
@@ -10,7 +9,8 @@ import {
 	useSetOwnerHat,
 	useSetTargetThreshold,
 	useTargetThreshold,
-} from "@/hooks/useMultiHatsSignerGate";
+} from "@/hooks/useHatsSignerGate";
+import { useAddSignerHats } from "@/hooks/useMultiHatsSignerGate";
 import * as Yup from "yup";
 import {
 	arrayOfHatStrings,
@@ -51,7 +51,7 @@ const MHSGModifyForm: React.FC<P> = (p) => {
 		p.address,
 	);
 	const { data: hatsContract, isLoading: hatsContractIsLoading } =
-		useGetHatsContract(p.address, chainId);
+		useGetHatsContract(p.address, true, chainId);
 
 	if (
 		minThresholdIsLoading ||
@@ -122,6 +122,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		useSetMinThreshold(
 			{ _minThreshold: BigInt(formData._minThreshold || 0) },
 			p.address,
+			true,
 			chainId,
 		);
 	const {

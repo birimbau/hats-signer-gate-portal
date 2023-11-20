@@ -5,7 +5,7 @@ import CustomInputWrapper from "../components/form/CustomInputWrapper";
 import Button from "../components/ui/CustomButton";
 import { AiOutlineRead } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import { useIsValidSigner } from "@/hooks/useMultiHatsSignerGate";
+import { useIsValidSigner } from "@/hooks/useHatsSignerGate";
 import { Hex } from "viem";
 import { useChainId } from "wagmi";
 

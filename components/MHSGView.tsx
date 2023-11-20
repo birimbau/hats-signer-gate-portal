@@ -1,7 +1,7 @@
 import { VStack, Text, Link } from "@chakra-ui/react";
 import { getBlockExplorerUrl, getSafeAppUrlPrefix } from "@/utils";
 import { useNetwork } from "wagmi";
-import { useOwnerHat, useSafe } from "@/hooks/useMultiHatsSignerGate";
+import { useOwnerHat, useSafe } from "@/hooks/useHatsSignerGate";
 import MinThreshold from "@/components/ui/MinThreshold";
 import MaxThreshold from "@/components/ui/MaxThreshold";
 import MaxSigners from "@/components/ui/MaxSigners";

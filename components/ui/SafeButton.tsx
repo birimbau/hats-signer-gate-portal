@@ -1,7 +1,6 @@
 import { BsSafe } from "react-icons/bs";
 import Button from "@/components/ui/CustomButton";
-import { useSafe as useHSGSafe } from "@/hooks/useHatsSignerGate";
-import { useSafe as useMHSGSafe } from "@/hooks/useMultiHatsSignerGate";
+import { useSafe } from "@/hooks/useHatsSignerGate";
 import { useNetwork } from "wagmi";
 import { getSafeAppUrlPrefix } from "@/utils";
 import { Hex } from "viem";
@@ -25,7 +24,7 @@ interface HSGSafeButtonP {
 }
 
 const HSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
-	const { data: safe } = useHSGSafe(p.address);
+	const { data: safe } = useSafe(p.address);
 	const { chain } = useNetwork();
 
 	return (
@@ -38,7 +37,7 @@ const HSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
 };
 
 const MHSGSafeButton: React.FC<HSGSafeButtonP> = (p) => {
-	const { data: safe } = useMHSGSafe(p.address);
+	const { data: safe } = useSafe(p.address);
 	const { chain } = useNetwork();
 
 	return (

@@ -1,5 +1,5 @@
 import { useChainId, useContractWrite } from "wagmi";
-import { useClaimSigner } from "@/hooks/useMultiHatsSignerGate";
+import { useClaimSigner } from "@/hooks/useHatsSignerGate";
 import { useState } from "react";
 import { Form, Formik } from "formik";
 import CustomInputWrapper from "@/components/form/CustomInputWrapper";
@@ -21,7 +21,7 @@ const MHSGClaimForm: React.FC<P> = (p) => {
 	});
 	const chainId = useChainId();
 
-	const { config, refetch } = useClaimSigner(formData, p.address, chainId);
+	const { config, refetch } = useClaimSigner(p.address, chainId);
 	const {
 		data: transactionData,
 		isLoading,

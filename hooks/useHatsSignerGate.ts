@@ -21,7 +21,6 @@ const useCheckAfterExecution = (
 		args: _.values(args),
 	});
 
-// dupe
 const useClaimSigner = (address?: Hex, chainId?: number) =>
 	usePrepareContractWrite({
 		chainId,
@@ -47,7 +46,6 @@ const useReconcileSignerCount = (address: Hex, chainId?: number) =>
 		},
 	});
 
-// dupe
 const useRemoveSigner = (
 	address: AbiTypeToPrimitiveType<"address">,
 	_signer?: AbiTypeToPrimitiveType<"address">,
@@ -67,7 +65,6 @@ const useRemoveSigner = (
 	});
 };
 
-// dupe
 const useSetMinThreshold = (
 	args: {
 		_minThreshold?: AbiTypeToPrimitiveType<"uint256">;
@@ -92,7 +89,6 @@ const useSetMinThreshold = (
 		},
 	});
 
-// dupe
 const useSetOwnerHat = (
 	args: {
 		_ownerHat: AbiTypeToPrimitiveType<"uint256">;
@@ -114,7 +110,6 @@ const useSetOwnerHat = (
 		},
 	});
 
-// dupe
 const useSetTargetThreshold = (
 	args: {
 		_targetThreshold: AbiTypeToPrimitiveType<"uint256">;
@@ -135,7 +130,6 @@ const useSetTargetThreshold = (
 		},
 	});
 
-// not used
 const useSetup = (
 	address: Hex,
 	args: {

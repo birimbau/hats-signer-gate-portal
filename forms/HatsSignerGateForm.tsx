@@ -60,18 +60,14 @@ export default function HatsSignerGateForm(props: Props) {
 	const {
 		config,
 		refetch,
-		error,
 		isSuccess: contractPrepared,
 	} = useDeployHSG(formData, chainId);
-	console.log(error);
 	const {
 		data: contractData,
 		isLoading,
 		write,
 		isError,
 	} = useContractWrite(config);
-	console.log(formData);
-	console.log(write);
 	// console.log(contractData?.hash);
 
 	// This only runs if "hash" is defined

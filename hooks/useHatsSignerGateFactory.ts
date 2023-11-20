@@ -26,8 +26,7 @@ const useDeployHSG = (formData: DeployConfigHSG, chainId?: number) => {
 		_maxSigners: BigInt(formData._maxSigners),
 	};
 
-	const contract =
-		CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys[number]];
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
 
 	return usePrepareContractWrite({
 		enabled: false, // This means that the contract does not get called on every render until refetch is called.
@@ -54,8 +53,7 @@ const useDeployHSGwSafe = (formData: DeployConfigHSGWS, chainId?: number) => {
 		_maxSigners: BigInt(formData._maxSigners),
 	};
 
-	const contract =
-		CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys[number]];
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
 
 	return usePrepareContractWrite({
 		enabled: false, // This means that the contract does not get called on every render until refetch is called.
@@ -83,8 +81,7 @@ const useDeployMultiHatSG = (formData: DeployConfigMHSG, chainId?: number) => {
 		_maxSigners: BigInt(formData._maxSigners),
 	};
 
-	const contract =
-		CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys[number]];
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
 
 	return usePrepareContractWrite({
 		enabled: false,
@@ -114,8 +111,7 @@ const useDeployMultiHatSGwSafe = (
 		_maxSigners: BigInt(formData._maxSigners),
 	};
 
-	const contract =
-		CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys[number]];
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
 
 	return usePrepareContractWrite({
 		enabled: false,
