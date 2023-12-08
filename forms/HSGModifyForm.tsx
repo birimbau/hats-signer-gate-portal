@@ -16,7 +16,7 @@ import {
 	useSetTargetThreshold,
 	useTargetThreshold,
 } from "@/hooks/useHatsSignerGate";
-import { useContractWrite, useWaitForTransaction } from "wagmi";
+import { useChainId, useContractWrite, useWaitForTransaction } from "wagmi";
 import {
 	hatIntSchema,
 	minThresholdValidation,
@@ -36,6 +36,7 @@ interface P {
 }
 
 const HSGModifyForm: React.FC<P> = (p) => {
+	const chainId = useChainId();
 	const { data: minThreshold, isLoading: minThresholdIsLoading } =
 		useMinThreshold(p.address);
 	const { data: maxThreshold, isLoading: maxThresholdIsLoading } =
@@ -47,7 +48,7 @@ const HSGModifyForm: React.FC<P> = (p) => {
 		p.address,
 	);
 	const { data: hatsContract, isLoading: hatsContractIsLoading } =
-		useGetHatsContract(p.address);
+		useGetHatsContract(p.address, true, chainId);
 
 	if (
 		minThresholdIsLoading ||
@@ -90,6 +91,7 @@ interface HSGFormP {
 	}) => void;
 }
 const HSGForm: React.FC<HSGFormP> = (p) => {
+	const chainId = useChainId();
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [formData, setFormData] = useState({
 		_minThreshold: p.minThreshold?.toString(),
@@ -112,13 +114,20 @@ const HSGForm: React.FC<HSGFormP> = (p) => {
 		useSetMinThreshold(
 			{ _minThreshold: BigInt(formData._minThreshold || 0) },
 			p.address,
+			undefined, // TODO: isOwner?
+			chainId,
 		);
 	const {
 		isLoading: setMinThresholdIsLoading,
 		isError: setMinThresholdIsError,
 		write: writeSetMinThresholdAsync,
 		data: useMinThresholdData,
-	} = useContractWrite(configMinThreshold);
+	} = useContractWrite({
+		...configMinThreshold,
+		onSuccess(data) {
+			// handlePendingTx(data);
+		},
+	});
 	const {
 		isSuccess: isSetMinThresholdSuccess,
 		isError: isSetMinThresholdError,

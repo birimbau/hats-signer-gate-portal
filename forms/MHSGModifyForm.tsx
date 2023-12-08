@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-	useAddSignerHats,
 	useGetHatsContract,
 	useMaxSigners,
 	useMinThreshold,
@@ -10,7 +9,8 @@ import {
 	useSetOwnerHat,
 	useSetTargetThreshold,
 	useTargetThreshold,
-} from "@/hooks/useMultiHatsSignerGate";
+} from "@/hooks/useHatsSignerGate";
+import { useAddSignerHats } from "@/hooks/useMultiHatsSignerGate";
 import * as Yup from "yup";
 import {
 	arrayOfHatStrings,
@@ -18,7 +18,7 @@ import {
 	minThresholdValidation,
 	targetThresholdValidation,
 } from "@/utils/form/validation";
-import { useContractWrite, useWaitForTransaction } from "wagmi";
+import { useChainId, useContractWrite, useWaitForTransaction } from "wagmi";
 import { Form, Formik } from "formik";
 import { VStack } from "@chakra-ui/react";
 import CustomInputWrapper from "@/components/form/CustomInputWrapper";
@@ -39,6 +39,7 @@ interface P {
 }
 
 const MHSGModifyForm: React.FC<P> = (p) => {
+	const chainId = useChainId();
 	const { data: minThreshold, isLoading: minThresholdIsLoading } =
 		useMinThreshold(p.address);
 	const { data: maxThreshold, isLoading: maxThresholdIsLoading } =
@@ -50,7 +51,7 @@ const MHSGModifyForm: React.FC<P> = (p) => {
 		p.address,
 	);
 	const { data: hatsContract, isLoading: hatsContractIsLoading } =
-		useGetHatsContract(p.address);
+		useGetHatsContract(p.address, true, chainId);
 
 	if (
 		minThresholdIsLoading ||
@@ -96,6 +97,7 @@ interface MHSGFormP {
 	}) => void;
 }
 const MHSGForm: React.FC<MHSGFormP> = (p) => {
+	const chainId = useChainId();
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [formData, setFormData] = useState({
 		_minThreshold: p.minThreshold?.toString(),
@@ -120,6 +122,8 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		useSetMinThreshold(
 			{ _minThreshold: BigInt(formData._minThreshold || 0) },
 			p.address,
+			true,
+			chainId,
 		);
 	const {
 		isLoading: setMinThresholdIsLoading,
@@ -130,7 +134,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	const {
 		isSuccess: isSetMinThresholdSuccess,
 		isError: isSetMinThresholdError,
-		isLoading: setMinThresholdtransactionPending,
+		isLoading: setMinThresholdTransactionPending,
 	} = useWaitForTransaction({
 		hash: useMinThresholdData?.hash,
 		onSuccess(data) {
@@ -153,7 +157,7 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	const {
 		isSuccess: isSetMaxThresholdSuccess,
 		isError: isSetMaxThresholdError,
-		isLoading: setMaxThresholdtransactionPending,
+		isLoading: setMaxThresholdTransactionPending,
 	} = useWaitForTransaction({
 		hash: useMaxThresholdData?.hash,
 		onSuccess(data) {
@@ -188,19 +192,20 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 	});
 
 	// New Signer Hats hooks
-	const { config: configSertSignerHats, refetch: fetchSetSignerHats } =
+	const { config: configSetSignerHats, refetch: fetchSetSignerHats } =
 		useAddSignerHats(
 			{
 				_newSignerHats:
 					formData._newSignerHats?.map((hat) => BigInt(hat)) || [],
 			},
 			p.address,
+			chainId,
 		);
 
 	const {
 		isLoading: addSignerHatIsLoading,
 		isError: addSignerHatIsError,
-		write: writeaddSignerHatAsync,
+		write: writeAddSignerHatAsync,
 		data: useAddSignerHatsData,
 	} = useContractWrite(configOwnerHat);
 	const {
@@ -219,8 +224,8 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 			setOwnerHatIsLoading ||
 				setMaxThresholdIsLoading ||
 				setMinThresholdIsLoading ||
-				setMinThresholdtransactionPending ||
-				setMaxThresholdtransactionPending ||
+				setMinThresholdTransactionPending ||
+				setMaxThresholdTransactionPending ||
 				setOwnerHatPending ||
 				addSignerHatIsLoading ||
 				addSignerHatPending,
@@ -229,8 +234,8 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		setOwnerHatIsLoading,
 		setMaxThresholdIsLoading,
 		setMinThresholdIsLoading,
-		setMinThresholdtransactionPending,
-		setMaxThresholdtransactionPending,
+		setMinThresholdTransactionPending,
+		setMaxThresholdTransactionPending,
 		setOwnerHatPending,
 		addSignerHatIsLoading,
 		addSignerHatPending,
@@ -291,7 +296,6 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 		}
 	}, [isSetOwnerHatSuccess]);
 
-	// you are here
 	useEffect(() => {
 		if (isAddSignerHatSuccess) {
 			p.setTransaction({
@@ -368,11 +372,11 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 					alert(data.error.message);
 					setIsSubmitted(false);
 				} else {
-					writeaddSignerHatAsync?.();
+					writeAddSignerHatAsync?.();
 				}
 			});
 		}
-	}, [isSubmitted, writeaddSignerHatAsync]);
+	}, [isSubmitted, writeAddSignerHatAsync]);
 
 	return (
 		<>
@@ -427,8 +431,8 @@ const MHSGForm: React.FC<MHSGFormP> = (p) => {
 									setOwnerHatIsLoading ||
 									setMaxThresholdIsLoading ||
 									setMinThresholdIsLoading ||
-									setMinThresholdtransactionPending ||
-									setMaxThresholdtransactionPending ||
+									setMinThresholdTransactionPending ||
+									setMaxThresholdTransactionPending ||
 									setOwnerHatPending
 								}
 								leftIcon={<FiSettings />}

@@ -1,11 +1,7 @@
 import { AbiTypeToPrimitiveType } from "abitype";
 import { useContractRead } from "wagmi";
 import { GnosisSafeL2Abi } from "@/utils/abi/GnosisSafeL2";
-import { CONTRACTS } from "@/utils";
 import { Hex } from "viem";
-
-const contract = CONTRACTS.GnosisSafeL2.contractAddress as Hex;
-const chainId = process.env.ENVIRONMENT === "production" ? 1 : 5;
 
 // The expected response shape based on the GnosisScan response
 interface ContractResponse {
@@ -15,7 +11,7 @@ interface ContractResponse {
 	next: string;
 }
 
-const useGetModulesPaginated = (safeAddress: Hex) => {
+const useGetModulesPaginated = (safeAddress: Hex, chainId?: number) => {
 	const args = {
 		start: "0x0000000000000000000000000000000000000001" as AbiTypeToPrimitiveType<"address">, // SENTINAL_ADDRESS - DO NOT CHANGE
 		pageSize: BigInt(1) as AbiTypeToPrimitiveType<"uint256">,
@@ -29,7 +25,7 @@ const useGetModulesPaginated = (safeAddress: Hex) => {
 		ContractResponse
 	>({
 		abi: GnosisSafeL2Abi,
-		address: safeAddress || contract,
+		address: safeAddress,
 		functionName: "getModulesPaginated",
 		args: Array.from(Object.values(args)),
 		enabled: false,
@@ -43,7 +39,7 @@ const useGetModulesPaginated = (safeAddress: Hex) => {
 	});
 };
 
-const useGetOwners = (safeAddress: Hex) => {
+const useGetOwners = (safeAddress: Hex, chainId?: number) => {
 	// console.log('safeAddress: ', safeAddress);
 	// useContractRead<TAbi, TFunctionName, TSelectData> - Generic types
 	// ContractResponse is the generic which is passed in
@@ -53,7 +49,7 @@ const useGetOwners = (safeAddress: Hex) => {
 		ContractResponse
 	>({
 		abi: GnosisSafeL2Abi,
-		address: safeAddress || contract,
+		address: safeAddress,
 		functionName: "getOwners",
 		args: [], // No arguments required for the getOwners function
 		enabled: false,

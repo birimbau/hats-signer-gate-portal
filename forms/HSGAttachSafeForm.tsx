@@ -7,6 +7,7 @@ import { AiOutlineRead } from "react-icons/ai";
 import { useIsValidSigner } from "@/hooks/useHatsSignerGate";
 import { useEffect, useState } from "react";
 import { Hex } from "viem";
+import { useChainId } from "wagmi";
 
 interface P {
 	address: Hex;
@@ -16,6 +17,7 @@ interface P {
 // TODO copy to MHSGAttachSafeForm
 
 const HSGAttachSafe: React.FC<P> = (p) => {
+	const chainId = useChainId();
 	const [result, setResult] = useState<any>(null);
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [formData, setFormData] = useState<{ _account: Hex | undefined }>({
@@ -29,6 +31,7 @@ const HSGAttachSafe: React.FC<P> = (p) => {
 	const { refetch, data, isLoading, isSuccess } = useIsValidSigner(
 		formData,
 		p.address,
+		chainId,
 	);
 
 	// // LOGIC FOR RUNNING `Refetch` AFTER CLICKING FORMIK'S OnSubmit

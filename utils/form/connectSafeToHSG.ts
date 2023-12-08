@@ -1,7 +1,9 @@
 import Web3 from "web3";
 import Safe, { Web3Adapter } from "@safe-global/protocol-kit";
+import SafeApiKit, { ProposeTransactionProps } from "@safe-global/api-kit";
 import { MetaTransactionData } from "@safe-global/safe-core-sdk-types";
 import { Hex } from "viem";
+import { ChainKeys, SAFE_API_URL } from "../constants";
 
 // Add error rendering
 
@@ -9,6 +11,7 @@ async function connectSafeToHSG(
 	existingHSGAddress: Hex,
 	connectedAddress: Hex,
 	safeAddress: Hex,
+	chainId: number,
 	setTransactionHash: (transactionHash?: string) => void,
 	setIsSigningExecuting: (isSigningExecuting: boolean) => void,
 ): Promise<boolean> {
@@ -38,11 +41,16 @@ async function connectSafeToHSG(
 	// I need to use the EthersAdapter to connect to the @safe-global/protocol-kit SDK.
 	// To use 'Ethers' for the EthersAdapter, we must use V5. Because this project uses Ethers V6, I opted for a Web3 implementation instead.
 	let safeSdk;
+	let safeService;
 	try {
 		// Connects the 'Connected user' to the safe in question so that the user can perform the required actions: 'createEnableModuleTx' & 'createEnableGuardTx'
 		safeSdk = await Safe.create({
 			ethAdapter,
 			safeAddress: safeAddress,
+		});
+		safeService = new SafeApiKit({
+			txServiceUrl: SAFE_API_URL[chainId as ChainKeys],
+			ethAdapter,
 		});
 		// console.log('safeSdk: ', safeSdk);
 	} catch (error) {
@@ -52,6 +60,7 @@ async function connectSafeToHSG(
 
 	try {
 		// 1. Prepare the transactions
+		const safeThreshold = await safeSdk.getThreshold();
 		const enableModuleTx =
 			await safeSdk.createEnableModuleTx(existingHSGAddress);
 		// console.log('enableModuleTx: ', enableModuleTx);
@@ -80,26 +89,49 @@ async function connectSafeToHSG(
 		const batchedTransaction = await safeSdk.createTransaction({
 			safeTransactionData,
 		});
-		// console.log('batchedTransaction: ', batchedTransaction);
+		console.log("batchedTransaction: ", batchedTransaction);
 
 		// 3. Sign the batched transaction
 		const signedBatchedTx = await safeSdk.signTransaction(
 			batchedTransaction,
 			"eth_signTypedData_v4",
 		);
-		// console.log('signedBatchedTx: ', signedBatchedTx);
+		console.log("signedBatchedTx: ", signedBatchedTx);
 
-		// 4. Execute the batched transaction
-		const txResponse = await safeSdk.executeTransaction(signedBatchedTx);
-		// console.log('txResponse1', txResponse);
-		await txResponse.transactionResponse?.wait();
-		// console.log(
-		//   'Batched transaction executed successfully. Response:',
-		//   txResponse
-		// );
+		// 4. Propose or execute the batched transaction
+		if (safeThreshold === 1) {
+			const txResponse =
+				await safeSdk.executeTransaction(signedBatchedTx);
+			console.log("txResponse1", txResponse);
+			// await txResponse.transactionResponse?.wait();
+			// console.log(
+			//   'Batched transaction executed successfully. Response:',
+			//   txResponse
+			// );
+			// 5. Pass new data back to parents
+			if (txResponse.hash) setTransactionHash(txResponse.hash);
+			return true;
+		}
 
-		// 5. Pass new data back to parents
-		if (txResponse.hash) setTransactionHash(txResponse.hash);
+		const safeTxHash = await safeSdk.getTransactionHash(batchedTransaction);
+		const senderSignature = signedBatchedTx.signatures.get(
+			connectedAddress?.toLowerCase(),
+		)?.data;
+		if (!senderSignature) {
+			console.log("no sender signature");
+			return false;
+		}
+
+		const transactionConfig: ProposeTransactionProps = {
+			safeAddress,
+			safeTxHash,
+			safeTransactionData: batchedTransaction.data,
+			senderAddress: connectedAddress,
+			senderSignature,
+			origin,
+		};
+		const result = await safeService.proposeTransaction(transactionConfig);
+		console.log(result);
 
 		return true;
 	} catch (error) {
@@ -115,16 +147,26 @@ export async function handleConnect(
 	existingHSGAddress: Hex,
 	connectedAddress: Hex,
 	safeAddress: Hex,
+	chainId: number,
 	setTransactionHash: (transactionHash?: string) => void,
 	setIsSigningExecuting: (isSigningExecuting: boolean) => void,
 ): Promise<void> {
 	// console.log('inside handleConnect');
+	console.log(
+		existingHSGAddress,
+		connectedAddress,
+		safeAddress,
+		chainId,
+		setTransactionHash,
+		setIsSigningExecuting,
+	);
 
 	try {
 		await connectSafeToHSG(
 			existingHSGAddress,
 			connectedAddress,
 			safeAddress,
+			chainId,
 			setTransactionHash,
 			setIsSigningExecuting,
 		); // <-- Get the return value (True/False)

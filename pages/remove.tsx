@@ -166,10 +166,6 @@ const Remove = () => {
 	};
 
 	const contentThree = () => {
-		console.log("isErrorOne", isErrorOne);
-		console.log("isErrorTwo", isErrorTwo);
-		console.log("isPending", isPending);
-		console.log("isErrorCheckHats", isErrorCheckHats);
 		if (!isPending && isErrorCheckHats) {
 			return (
 				<SafeAttachMessage

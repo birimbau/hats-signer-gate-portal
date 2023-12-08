@@ -1,7 +1,7 @@
 import { AbiTypeToPrimitiveType } from "abitype";
 import { useContractRead, usePrepareContractWrite } from "wagmi";
 import { HatsSignerGateFactoryAbi } from "@/utils/abi/HatsSignerGateFactory";
-import { CONTRACTS } from "@/utils";
+import { CONTRACTS, ChainKeys } from "@/utils";
 import {
 	DeployConfigHSG,
 	DeployConfigHSGWS,
@@ -14,13 +14,9 @@ import {
 } from "@/types/forms";
 import { Hex } from "viem";
 
-const contract = CONTRACTS.hatsSignerGateFactory
-	.contractAddress as `0x${string}`;
-const chainId = process.env.ENVIRONMENT === "production" ? 1 : 5;
-
 // Hooks for write functions for the HatsSignerGateFactory contract
 
-const useDeployHSG = (formData: DeployConfigHSG) => {
+const useDeployHSG = (formData: DeployConfigHSG, chainId?: number) => {
 	const args: HSG_Args = {
 		_ownerHatId: BigInt(formData._ownerHatId),
 		_signerHatId: BigInt(formData._signerHatId),
@@ -29,6 +25,8 @@ const useDeployHSG = (formData: DeployConfigHSG) => {
 		_targetThreshold: BigInt(formData._targetThreshold),
 		_maxSigners: BigInt(formData._maxSigners),
 	};
+
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
 
 	return usePrepareContractWrite({
 		enabled: false, // This means that the contract does not get called on every render until refetch is called.
@@ -46,7 +44,7 @@ const useDeployHSG = (formData: DeployConfigHSG) => {
 	});
 };
 
-const useDeployHSGwSafe = (formData: DeployConfigHSGWS) => {
+const useDeployHSGwSafe = (formData: DeployConfigHSGWS, chainId?: number) => {
 	const args: HSGWS_Args = {
 		_ownerHatId: BigInt(formData._ownerHatId),
 		_signerHatId: BigInt(formData._signerHatId),
@@ -54,6 +52,9 @@ const useDeployHSGwSafe = (formData: DeployConfigHSGWS) => {
 		_targetThreshold: BigInt(formData._targetThreshold),
 		_maxSigners: BigInt(formData._maxSigners),
 	};
+
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
+
 	return usePrepareContractWrite({
 		enabled: false, // This means that the contract does not get called on every render until refetch is called.
 		chainId,
@@ -70,7 +71,7 @@ const useDeployHSGwSafe = (formData: DeployConfigHSGWS) => {
 	});
 };
 
-const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
+const useDeployMultiHatSG = (formData: DeployConfigMHSG, chainId?: number) => {
 	const args: MHSG_Args = {
 		_ownerHatId: BigInt(formData._ownerHatId),
 		_signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
@@ -79,6 +80,9 @@ const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
 		_targetThreshold: BigInt(formData._targetThreshold),
 		_maxSigners: BigInt(formData._maxSigners),
 	};
+
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
+
 	return usePrepareContractWrite({
 		enabled: false,
 		chainId,
@@ -95,7 +99,10 @@ const useDeployMultiHatSG = (formData: DeployConfigMHSG) => {
 	});
 };
 
-const useDeployMultiHatSGwSafe = (formData: DeployConfigMHSGWS) => {
+const useDeployMultiHatSGwSafe = (
+	formData: DeployConfigMHSGWS,
+	chainId?: number,
+) => {
 	const args: MHSGWS_Args = {
 		_ownerHatId: BigInt(formData._ownerHatId),
 		_signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
@@ -103,6 +110,9 @@ const useDeployMultiHatSGwSafe = (formData: DeployConfigMHSGWS) => {
 		_targetThreshold: BigInt(formData._targetThreshold),
 		_maxSigners: BigInt(formData._maxSigners),
 	};
+
+	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
+
 	return usePrepareContractWrite({
 		enabled: false,
 		chainId,
@@ -122,14 +132,20 @@ const useDeployMultiHatSGwSafe = (formData: DeployConfigMHSGWS) => {
 
 // Hooks for read functions for the HatsSignerGateFactory contract
 
-const useCanAttachHSG2Safe = (args: {
-	_hsg: AbiTypeToPrimitiveType<"address">;
-}) =>
+const useCanAttachHSG2Safe = (
+	args: {
+		_hsg: AbiTypeToPrimitiveType<"address">;
+	},
+	address: Hex,
+	chainId?: number,
+) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
+		chainId,
 		functionName: "canAttachHSGToSafe",
 		args: Array.from(Object.values(args)),
+		enabled: !!address,
 		onSuccess: (data) => {
 			console.log(data);
 		},
@@ -138,12 +154,17 @@ const useCanAttachHSG2Safe = (args: {
 		},
 	});
 
-const useCanAttachMHSG2Safe = (args: {
-	_mhsg: AbiTypeToPrimitiveType<"address">;
-}) =>
+const useCanAttachMHSG2Safe = (
+	args: {
+		_mhsg: AbiTypeToPrimitiveType<"address">;
+	},
+	address: Hex,
+	chainId?: number,
+) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
+		chainId,
 		functionName: "canAttachMHSGToSafe",
 		args: Array.from(Object.values(args)),
 		onSuccess: (data) => {
@@ -154,10 +175,10 @@ const useCanAttachMHSG2Safe = (args: {
 		},
 	});
 
-const useGnosisFallbackLibrary = () =>
+const useGnosisFallbackLibrary = (address: Hex) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "gnosisFallbackLibrary",
 
 		onSuccess: (data) => {
@@ -168,10 +189,10 @@ const useGnosisFallbackLibrary = () =>
 		},
 	});
 
-const useGnosisMultiSendLibrary = () =>
+const useGnosisMultiSendLibrary = (address: Hex) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "gnosisMultiSendLibrary",
 		onSuccess: (data) => {
 			console.log(data);
@@ -181,10 +202,10 @@ const useGnosisMultiSendLibrary = () =>
 		},
 	});
 
-const useGnosisSafeProxyFactory = () => {
+const useGnosisSafeProxyFactory = (address: Hex) => {
 	return useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "gnosisSafeProxyFactory",
 		onSuccess: (data) => {
 			console.log(data);
@@ -195,10 +216,10 @@ const useGnosisSafeProxyFactory = () => {
 	});
 };
 
-const useGnosisHasProxyFactory = () => {
+const useGnosisHasProxyFactory = (address: Hex) => {
 	return useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "gnosisHasProxyFactory",
 
 		onSuccess: (data) => {
@@ -210,10 +231,10 @@ const useGnosisHasProxyFactory = () => {
 	});
 };
 
-const useHatsAddresses = () =>
+const useHatsAddresses = (address: Hex) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "hatAddress",
 
 		onSuccess: (data) => {
@@ -224,10 +245,10 @@ const useHatsAddresses = () =>
 		},
 	});
 
-const useHatsSignerGateSingleton = () =>
+const useHatsSignerGateSingleton = (address: Hex) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "hatsSignerGateSingleton",
 
 		onSuccess: (data) => {
@@ -238,10 +259,10 @@ const useHatsSignerGateSingleton = () =>
 		},
 	});
 
-const useMultiHatsSignerGateSingleton = () =>
+const useMultiHatsSignerGateSingleton = (address: Hex) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "multiHatsSignerGateSingleton",
 
 		onSuccess: (data) => {
@@ -252,10 +273,10 @@ const useMultiHatsSignerGateSingleton = () =>
 		},
 	});
 
-const useSafeSigleton = () =>
+const useSafeSingleton = (address: Hex) =>
 	useContractRead({
 		abi: HatsSignerGateFactoryAbi,
-		address: contract,
+		address,
 		functionName: "safe",
 
 		onSuccess: (data) => {
@@ -282,5 +303,5 @@ export {
 	useHatsAddresses,
 	useHatsSignerGateSingleton,
 	useMultiHatsSignerGateSingleton,
-	useSafeSigleton,
+	useSafeSingleton,
 };
