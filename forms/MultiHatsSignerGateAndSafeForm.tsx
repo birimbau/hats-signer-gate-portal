@@ -1,7 +1,12 @@
 import { VStack } from "@chakra-ui/react";
 import { AbiTypeToPrimitiveType } from "abitype";
 import { useEffect, useState } from "react";
-import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
+import {
+	useAccount,
+	useChainId,
+	useContractWrite,
+	useWaitForTransaction,
+} from "wagmi";
 import { useDeployMultiHatSGwSafe } from "@/hooks/useHatsSignerGateFactory";
 import Button from "@/components/ui/CustomButton";
 import MultiInput from "@/components/ui/MultiInput/MultiInput";
@@ -46,8 +51,9 @@ const MultiHatsSignerGateAndSafeForm: React.FC<P> = (props) => {
 
 	// Used to prevent the user Deploying when not connected
 	const { isConnected } = useAccount();
+	const chainId = useChainId();
 
-	const { config, refetch } = useDeployMultiHatSGwSafe(formData);
+	const { config, refetch } = useDeployMultiHatSGwSafe(formData, chainId);
 	const {
 		data: contractData,
 		isLoading,
