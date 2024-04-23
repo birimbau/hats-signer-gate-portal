@@ -13,6 +13,7 @@ import {
 	MHSG_Args,
 } from "@/types/forms";
 import { Hex } from "viem";
+import _ from "lodash";
 
 // Hooks for write functions for the HatsSignerGateFactory contract
 
@@ -114,7 +115,7 @@ const useDeployMultiHatSGwSafe = (
 	const contract = CONTRACTS.hatsSignerGateFactory[chainId as ChainKeys];
 
 	return usePrepareContractWrite({
-		enabled: false,
+		enabled: !!chainId && _.every(Object.values(formData), (v) => !!v),
 		chainId,
 		abi: HatsSignerGateFactoryAbi,
 		address: contract,
