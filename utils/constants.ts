@@ -6,9 +6,10 @@ import {
 	sepolia,
 	arbitrum,
 	polygon,
+	base,
 } from "wagmi/chains";
 
-export type ChainKeys = 1 | 10 | 100 | 137 | 42161 | 11155111;
+export type ChainKeys = 1 | 10 | 100 | 137 | 8453 | 42161 | 11155111;
 
 export const CONTRACTS: {
 	hatsSignerGateFactory: {
@@ -29,6 +30,7 @@ export const CONTRACTS: {
 		10: "0x39Ae0B5e81A69F7092EC4394b111b6a6411377e8",
 		100: "0x0F22eFC6EA47b1EFF42D1A2a6E69440929400F86",
 		137: "0x0F22eFC6EA47b1EFF42D1A2a6E69440929400F86",
+		8453: "0x5CB8a5B063B7E94cF39E8A8813A777f49B8DD050",
 		42161: "0x6FE52b46Af16F960E0eB1E15D2b27422ab158733",
 		11155111: "0x5CB8a5B063B7E94cF39E8A8813A777f49B8DD050",
 	},
@@ -37,6 +39,7 @@ export const CONTRACTS: {
 		10: "0x19932b8E9dab073C0123a5792B44a8966Bf9C6eF",
 		100: "0x19932b8E9dab073C0123a5792B44a8966Bf9C6eF",
 		137: "0x19932b8E9dab073C0123a5792B44a8966Bf9C6eF",
+		8453: "0x19932b8E9dab073C0123a5792B44a8966Bf9C6eF",
 		42161: "0x9B24db6ceB45F157B53d846f2e012C00956a67b6",
 		11155111: "0x19932b8E9dab073C0123a5792B44a8966Bf9C6eF",
 	},
@@ -45,6 +48,7 @@ export const CONTRACTS: {
 		10: "0x51486A1Db10992302922c5ae563088e1443d3d69",
 		100: "0x51486A1Db10992302922c5ae563088e1443d3d69",
 		137: "0x51486A1Db10992302922c5ae563088e1443d3d69",
+		8453: "0x51486A1Db10992302922c5ae563088e1443d3d69",
 		42161: "0xca2E8dC908Bb18ADaB496601f3FaEA3c69c19f6f",
 		11155111: "0x51486A1Db10992302922c5ae563088e1443d3d69",
 	},
@@ -59,6 +63,7 @@ export const SAFE_API_URL: { [chainId in ChainKeys]: string } = {
 	10: "https://safe-transaction-optimism.safe.global",
 	100: "https://safe-transaction-gnosis-chain.safe.global",
 	137: "https://safe-transaction-polygon.safe.global",
+	8453: "https://safe-transaction-base.safe.global",
 	42161: "https://safe-transaction-arbitrum.safe.global",
 	11155111: "https://safe-transaction-sepolia.safe.global",
 };
@@ -72,6 +77,7 @@ const customGnosis = {
 
 export const SUPPORTED_NETWORKS = [
 	mainnet,
+	base,
 	optimism,
 	arbitrum,
 	polygon,
