@@ -1,4 +1,4 @@
-import { Hex } from "viem";
+import { Chain, Hex } from "viem";
 import {
 	optimism,
 	mainnet,
@@ -76,16 +76,19 @@ const customGnosis = {
 	iconBackground: "none",
 };
 
-export const SUPPORTED_NETWORKS = [
-	mainnet,
-	base,
-	optimism,
-	arbitrum,
-	polygon,
-	customGnosis,
-	// testnets
-	sepolia,
-];
+export const chainsList: { [key in number]: Chain } = {
+	1: mainnet,
+	10: optimism,
+	100: customGnosis,
+	137: polygon,
+	8453: base,
+	42161: arbitrum,
+
+	// TESTNETS
+	// 84532: baseSepolia,
+	11155111: sepolia,
+};
+
 
 export enum DEPLOY_ACTIONS {
 	DEPLOY_HSG = "hsg",
@@ -110,3 +113,16 @@ export enum safe {
 	CAN_ATTACH = 4,
 	WRONG_ADDRESS = 5,
 }
+
+export const SAFE_URL = 'https://app.safe.global';
+
+export const SAFE_CHAIN_MAP: { [key in number]: string } = {
+	1: 'eth',
+	10: 'oeth',
+	100: 'gno',
+	137: 'matic',
+	8453: 'base',
+	42161: 'arb1',
+	42220: 'celo',
+	11155111: 'sep',
+};

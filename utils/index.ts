@@ -1,4 +1,6 @@
+import { first, get, has, keys, reject } from "lodash";
 import { Hex } from "viem";
+import { SAFE_CHAIN_MAP, SAFE_URL, chainsList } from "./constants";
 
 export * from "./constants";
 export * from "./web3";
@@ -18,24 +20,16 @@ export const findAction = (value: string | undefined, pos: number) => {
 	}
 	return undefined;
 };
-export function getBlockExplorerUrl(networkId = 1): string {
-	switch (networkId) {
-		case 1:
-			return "https://etherscan.io";
-		case 5:
-			return "https://goerli.etherscan.io";
-		default:
-			return "https://etherscan.io";
-	}
+
+export function getBlockExplorerUrl(networkId: number | undefined): string {
+	if (!networkId) return "#";
+
+	const explorersWithoutDefault = reject(keys(chainsList[networkId]?.blockExplorers), 'default')
+	return chainsList[networkId]?.blockExplorers?.default?.url || get(first(explorersWithoutDefault), 'url') || "#";
 }
 
-export function getSafeAppUrlPrefix(networkId = 1): string {
-	switch (networkId) {
-		case 1:
-			return "https://app.safe.global/home?safe=eth:";
-		case 5:
-			return "https://app.safe.global/home?safe=gor:";
-		default:
-			return "https://app.safe.global/home?safe=eth:";
-	}
+export function getSafeAppUrlPrefix(networkId: number | undefined): string {
+	if (!networkId || !has(SAFE_CHAIN_MAP, networkId)) return "#";
+
+	return `${SAFE_URL}/home?safe=${SAFE_CHAIN_MAP[networkId]}:`;
 }
