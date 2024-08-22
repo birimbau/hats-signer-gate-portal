@@ -75,7 +75,7 @@ const useDeployHSGwSafe = (formData: DeployConfigHSGWS, chainId?: number) => {
 const useDeployMultiHatSG = (formData: DeployConfigMHSG, chainId?: number) => {
 	const args: MHSG_Args = {
 		_ownerHatId: BigInt(formData._ownerHatId),
-		_signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
+		_signersHatIds: formData._signersHatIds.map((v) => BigInt(v)),
 		_safe: formData._safe as Hex,
 		_minThreshold: BigInt(formData._minThreshold),
 		_targetThreshold: BigInt(formData._targetThreshold),
@@ -106,7 +106,7 @@ const useDeployMultiHatSGwSafe = (
 ) => {
 	const args: MHSGWS_Args = {
 		_ownerHatId: BigInt(formData._ownerHatId),
-		_signersHatIds: formData._signersHatIds.map((v) => BigInt(Number(v))),
+		_signersHatIds: formData._signersHatIds.map((v) => BigInt(v)),
 		_minThreshold: BigInt(formData._minThreshold),
 		_targetThreshold: BigInt(formData._targetThreshold),
 		_maxSigners: BigInt(formData._maxSigners),
