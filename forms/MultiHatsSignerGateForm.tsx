@@ -2,7 +2,12 @@ import { VStack } from "@chakra-ui/react";
 import { AbiTypeToPrimitiveType } from "abitype";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
-import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
+import {
+	useAccount,
+	useChainId,
+	useContractWrite,
+	useWaitForTransaction,
+} from "wagmi";
 import { Hex, decodeEventLog } from "viem";
 import * as Yup from "yup";
 import "../utils/form/validation"; // for Yup Validation
@@ -49,12 +54,13 @@ export default function MultiHatsSignerGateForm(props: Props) {
 
 	// Used to prevent the user Deploying when not connected
 	const { isConnected } = useAccount();
+	const chainId = useChainId();
 
 	const {
 		config,
 		refetch,
 		isSuccess: contractPrepared,
-	} = useDeployMultiHatSG(formData);
+	} = useDeployMultiHatSG(formData, chainId);
 
 	const {
 		data: contractData,
